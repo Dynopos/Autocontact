@@ -5,25 +5,35 @@ tiada yuran. Berfungsi atas **Android dan iPhone**.
 
 ---
 
-## 🚀 Lancarkan dalam 3 minit (percuma)
+## 🚀 Sudah hidup
 
-1. Muat naik keseluruhan projek ke repository GitHub
-2. Di repo → **Settings** → **Pages**
-3. **Source:** Deploy from a branch → **Branch:** `main` → **Folder:** `/docs`
-4. Tekan **Save**, tunggu ± 1 minit
+| | |
+|---|---|
+| Repo | `Dynopos/Autocontact` |
+| Sumber Pages | branch `main`, folder `/docs` |
+| Custom domain | `autocontact.dynopro.my` |
 
-App Bob kini hidup di:
-```
-https://[username-github-anda].github.io/dynopro-auto-contact/
-```
+Alamat sebenar setiap halaman:
 
-Privacy policy pula automatik berada di:
-```
-https://[username-github-anda].github.io/dynopro-auto-contact/privacy-policy.html
-```
+| Halaman | URL |
+|---|---|
+| Halaman jualan utama | <https://autocontact.dynopro.my/> |
+| Halaman jualan kedua | <https://autocontact.dynopro.my/buang-kontak-pendua.html> |
+| Alat simpan nombor | <https://autocontact.dynopro.my/simpan.html> |
+| Alat kemas kontak | <https://autocontact.dynopro.my/kemas.html> |
+| Privacy policy | <https://autocontact.dynopro.my/privacy-policy.html> |
+| Sitemap | <https://autocontact.dynopro.my/sitemap.xml> |
 
-> 💡 Nak nama sendiri seperti `dynopro.my`? Beli domain, kemudian di
-> **Settings → Pages → Custom domain**, masukkan domain tersebut. HTTPS percuma disediakan.
+### Cara ia disiapkan (rujukan jika perlu diulang)
+
+1. Di repo → **Settings** → **Pages**
+2. **Source:** Deploy from a branch → **Branch:** `main` → **Folder:** `/docs`
+3. Tekan **Save**
+
+Custom domain dikawal oleh fail **`docs/CNAME`** — bukan melalui borang di Settings.
+GitHub Pages hanya membaca `CNAME` dari folder sumber penerbitan, jadi meletakkannya
+di root repo tidak berfungsi. Di sebelah DNS, satu rekod `CNAME` diperlukan:
+host `autocontact` → nilai `dynopos.github.io`.
 
 ---
 
@@ -91,12 +101,26 @@ kemudian bina versi Play Store sebagai naik taraf apabila sudah ada pendapatan.
 
 ```
 docs/
-├── index.html              # App web (PWA)
-├── manifest.webmanifest    # Maklumat pemasangan
-├── sw.js                   # Service worker (offline + boleh pasang)
-├── icons/                  # Ikon app pelbagai saiz
-├── privacy-policy.html     # Privacy policy (wajib jika ke Play Store)
-├── PANDUAN-PLAY-STORE.md   # Panduan Play Store
-├── JUSTIFIKASI-CONTACTS.md # Justifikasi kebenaran
-└── README-WEB.md           # Fail ini
+├── index.html                 # Halaman jualan SEO — "simpan nombor WhatsApp"
+├── buang-kontak-pendua.html   # Halaman jualan SEO — "buang kontak pendua"
+├── simpan.html                # Alat: simpan nombor pukal  (start_url PWA)
+├── kemas.html                 # Alat: kemas kontak / buang pendua
+├── kemas-engine.js            # Enjin normalisasi nombor & pengesan pendua
+├── seo.css                    # Gaya dikongsi kedua-dua halaman jualan
+├── manifest.webmanifest       # Maklumat pemasangan PWA
+├── sw.js                      # Service worker (offline + boleh pasang)
+├── icons/                     # Ikon app pelbagai saiz (8 fail)
+├── privacy-policy.html        # Privacy policy (wajib jika ke Play Store)
+├── sitemap.xml                # Sitemap untuk enjin carian
+├── robots.txt                 # Arahan crawler
+├── CNAME                      # Custom domain: autocontact.dynopro.my
+├── .nojekyll                  # Matikan pemprosesan Jekyll
+├── PANDUAN-PLAY-STORE.md      # Panduan Play Store
+├── JUSTIFIKASI-CONTACTS.md    # Justifikasi kebenaran
+└── README-WEB.md              # Fail ini
 ```
+
+**Dua halaman jualan, dua alat.** `index.html` dan `buang-kontak-pendua.html` ialah
+halaman SEO yang menarik pengunjung dari Google; kedua-duanya menghantar pengguna ke
+alat sebenar, iaitu `simpan.html` dan `kemas.html`. PWA dipasang dari `simpan.html`
+kerana itulah `start_url` dalam `manifest.webmanifest`.
