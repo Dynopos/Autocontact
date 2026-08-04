@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Dynopro Auto Contact — Simpan Nombor Pukal ke Contacts</title>
+<meta name="description" content="Tukar fail eksport perbualan menjadi kontak telefon secara pukal. Beratus nombor dalam satu ketukan.">
+<meta name="theme-color" content="#2A0550">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dynopro Auto Contact">
+<style>
+  :root{
+    --brand:#8B2FD6; --brand-dk:#5B1094; --deep:#2A0550; --ink:#14091f;
+    --muted:#6b6480; --line:#eae7f0; --glow:rgba(139,47,214,.40);
+    --silver:#D5D9E0; --silver-dk:#9AA0AB;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:linear-gradient(170deg,#12021f 0%,#22043f 46%,#2E0757 100%);
+    background-attachment:fixed;
+    color:var(--ink);display:flex;justify-content:center;
+  }
+  .app{width:100%;max-width:460px;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+
+  header{padding:calc(env(safe-area-inset-top) + 20px) 20px 12px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:54px;height:54px;flex:none;
+        filter:drop-shadow(0 6px 16px rgba(157,75,232,.55))}
+  .logo img{width:100%;height:100%;display:block}
+  .brand h1{color:#fff;font-size:21px;font-weight:800;letter-spacing:-.3px}
+  .brand p{color:#c9b3e8;font-size:12.5px;margin-top:2px}
+  .intro{color:#e2d6f5;font-size:13.5px;margin-top:15px;line-height:1.55}
+
+  .memo{margin-top:15px;display:flex;gap:11px;align-items:flex-start;
+        background:rgba(255,255,255,.10);padding:13px 15px;border-radius:14px}
+  .memo svg{flex:none;margin-top:1px}
+  .memo div{color:#e2d6f5;font-size:12.5px;line-height:1.5}
+  .memo b{color:#fff}
+
+  .sheet{background:#f0f2f5;margin-top:18px;border-radius:28px 28px 0 0;flex:1;
+         padding:22px 20px calc(env(safe-area-inset-bottom) + 26px);
+         box-shadow:0 -10px 40px rgba(0,0,0,.25);display:flex;flex-direction:column}
+
+  .panel{display:none;animation:rise .4s cubic-bezier(.2,.8,.2,1);flex:1;flex-direction:column}
+  .panel.show{display:flex}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  h2{font-size:19px;font-weight:800;margin-bottom:6px}
+  .sub{font-size:14px;color:var(--muted);line-height:1.55;margin-bottom:18px}
+
+  .drop{border:2px dashed #b9c6cc;border-radius:20px;background:#fff;padding:30px 18px;
+        text-align:center;transition:.22s;cursor:pointer;display:block}
+  .drop:active{transform:scale(.985)}
+  .drop.hot{border-color:var(--brand);background:#f5edff}
+  .drop b{display:block;margin-top:11px;font-size:15.5px}
+  .drop span{display:block;margin-top:4px;font-size:12.5px;color:var(--muted)}
+
+  .btn{width:100%;border:none;border-radius:16px;padding:16px;font-size:16px;font-weight:700;
+       color:#fff;background:linear-gradient(135deg,#9D4BE8,#5B1094);cursor:pointer;
+       box-shadow:0 9px 24px var(--glow);transition:.18s;
+       display:flex;align-items:center;justify-content:center;gap:9px}
+  .btn:active{transform:translateY(2px);box-shadow:0 4px 12px var(--glow)}
+  .btn:disabled{opacity:.45;pointer-events:none;box-shadow:none}
+  .btn.alt{background:#fff;color:#5B1094;box-shadow:none;border:1.5px solid #dcc6f5;
+           font-size:14.5px;padding:13px;margin-top:13px}
+  .linkbtn{background:none;border:none;color:var(--muted);font-size:13px;padding:11px;
+           width:100%;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+
+  .stats{display:flex;gap:9px;margin-bottom:14px}
+  .stat{flex:1;background:#fff;border-radius:16px;padding:13px 8px;text-align:center}
+  .stat b{display:block;font-size:23px;font-weight:900;line-height:1.15}
+  .stat.g b{color:var(--brand-dk)}
+  .stat span{font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+
+  .tip{background:#f5edff;border:1px solid #dcc6f5;border-radius:14px;padding:12px 14px;
+       font-size:12.5px;color:#5B1094;line-height:1.5;margin-bottom:14px;
+       display:flex;gap:9px;align-items:flex-start}
+  .tip svg{flex:none;margin-top:1px}
+
+  .list{background:#fff;border-radius:18px;overflow-y:auto;flex:1;min-height:120px;max-height:44vh}
+  .row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}
+  .av{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;
+      color:#fff;font-weight:800;font-size:12px}
+  .nm{font-size:15px;font-weight:700}
+  .ph{font-size:13px;color:var(--muted);margin-top:1px;font-variant-numeric:tabular-nums}
+  .empty{padding:34px 22px;text-align:center;color:var(--muted);font-size:14.5px;line-height:1.6}
+  .foot{margin-top:14px}
+  .note{font-size:11.5px;color:#8a969c;text-align:center;margin-top:11px;line-height:1.5}
+
+  .done{text-align:center;padding:14px 0;margin:auto 0}
+  .done .big{width:92px;height:92px;border-radius:50%;margin:0 auto 16px;
+             background:linear-gradient(135deg,#9D4BE8,#5B1094);display:grid;place-items:center;
+             color:#fff;box-shadow:0 12px 30px var(--glow);animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
+  @keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+  .badge{display:inline-block;background:#f0e4ff;color:#5B1094;font-size:12.5px;font-weight:700;
+         padding:6px 15px;border-radius:20px;margin-top:6px}
+  .howto{background:#fff;border-radius:16px;padding:16px 18px;margin-top:20px;text-align:left}
+  .howto h3{font-size:13px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:10px}
+  .howto ol{margin:0;padding-left:19px;font-size:13.5px;line-height:1.75;color:var(--ink)}
+
+  dialog{border:none;border-radius:20px;padding:0;max-width:330px;width:88%;
+         box-shadow:0 20px 60px rgba(0,0,0,.3)}
+  dialog::backdrop{background:rgba(0,0,0,.45)}
+  .dlg{padding:22px}
+  .dlg h3{font-size:17px;margin-bottom:9px}
+  .dlg p{font-size:13.5px;color:var(--muted);line-height:1.6}
+  .dlg .acts{display:flex;gap:9px;margin-top:18px}
+  .dlg button{flex:1;border:none;border-radius:12px;padding:12px;font-size:14px;
+              font-weight:700;cursor:pointer}
+  .dlg .no{background:#f0f2f5;color:var(--ink)}
+  .dlg .yes{background:#ffe9e9;color:#c0392b}
+
+  #install{display:none;align-items:center;gap:9px;margin-top:14px;width:100%;
+           background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);
+           color:#fff;border-radius:14px;padding:13px 15px;font-size:13.5px;
+           font-weight:600;cursor:pointer;text-align:left}
+  #install.show{display:flex}
+  #install svg{flex:none}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div class="brand">
+      <div class="logo"><img src="icons/logo-mark.png" alt="Dynopro"></div>
+      <div>
+        <h1>Dynopro</h1>
+        <p>Auto Contact — simpan nombor pukal</p>
+      </div>
+    </div>
+
+    <div class="intro" id="intro">
+      Muat naik fail eksport perbualan — kami tapis semua nombor, buang yang berulang,
+      dan sediakan fail kontak untuk anda import sekali gus.
+    </div>
+
+    <div class="memo" id="memo" style="display:none">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#c9b3e8" stroke-width="2" stroke-linecap="round"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>
+      <div id="memoText"></div>
+    </div>
+
+    <button id="install">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+      <span>Pasang ke skrin utama telefon</span>
+    </button>
+  </header>
+
+  <div class="sheet">
+
+    <!-- PANEL 1 -->
+    <section class="panel show" id="p0">
+      <h2>Muat naik fail chat</h2>
+      <p class="sub">Dalam app chat: buka perbualan atau kumpulan → ⋮ → <b>More</b> →
+        <b>Export chat</b> → <b>Without media</b>. Kemudian pilih fail di sini.</p>
+
+      <label class="drop" id="drop">
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#7C22CE" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5-5 5 5"/><path d="M12 5v13"/></svg>
+        <b>Ketuk untuk pilih fail .txt</b>
+        <span>atau seret fail ke sini</span>
+        <input type="file" id="file" accept=".txt,text/plain" hidden>
+      </label>
+
+      <button class="btn alt" id="demo">✨ Cuba dengan contoh (demo)</button>
+
+      <a href="kemas.html" class="btn alt" style="text-decoration:none;margin-top:9px">
+        🧹 Kemas kontak sedia ada — pendua &amp; kosong
+      </a>
+
+      <div style="flex:1"></div>
+      <button class="linkbtn" id="reset" style="display:none">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 109-9 9 9 0 00-6.4 2.6L3 8"/><path d="M3 3v5h5"/></svg>
+        Set semula rekod
+      </button>
+      <div class="note">🔒 Fail diproses dalam telefon anda. Tiada data dihantar ke server.</div>
+    </section>
+
+    <!-- PANEL 2 -->
+    <section class="panel" id="p1">
+      <h2>Hasil tapisan</h2>
+      <p class="sub" id="resultSub"></p>
+
+      <div class="stats">
+        <div class="stat g"><b id="sNew">0</b><span>Baharu</span></div>
+        <div class="stat"><b id="sOld">0</b><span>Sudah ada</span></div>
+        <div class="stat"><b id="sDup">0</b><span>Berulang</span></div>
+      </div>
+
+      <div class="tip" id="skipTip" style="display:none">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#7C22CE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        <span id="skipText"></span>
+      </div>
+
+      <div class="list" id="list"></div>
+
+      <div class="foot">
+        <button class="btn" id="save">💾 Simpan kontak baharu</button>
+        <button class="linkbtn" id="back">← Pilih fail lain</button>
+      </div>
+    </section>
+
+    <!-- PANEL 3 -->
+    <section class="panel" id="p2">
+      <div class="done">
+        <div class="big">
+          <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <h2>Fail kontak sedia!</h2>
+        <span class="badge" id="doneBadge"></span>
+
+        <div class="howto">
+          <h3>Langkah terakhir</h3>
+          <ol>
+            <li>Buka fail <b>.vcf</b> yang baru dimuat turun</li>
+            <li>Telefon akan tanya — pilih <b>Import</b> / <b>Add All Contacts</b></li>
+            <li>Siap! Semua kontak masuk serentak</li>
+          </ol>
+        </div>
+
+        <button class="btn" id="again" style="margin-top:20px">➕ Import fail lain</button>
+        <button class="linkbtn" id="redownload">Muat turun semula fail .vcf</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<dialog id="resetDlg">
+  <div class="dlg">
+    <h3>Set semula rekod?</h3>
+    <p>App akan lupa nombor yang pernah disimpan, dan penomboran bermula semula dari
+       Customer 001.<br><br>Kontak yang sudah ada dalam telefon anda <b>tidak</b> akan dipadam.</p>
+    <div class="acts">
+      <button class="no" id="rNo">Batal</button>
+      <button class="yes" id="rYes">Set semula</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+  'use strict';
+
+  // ---------- Storan (selamat walau localStorage disekat) ----------
+  var mem = {};
+  function sGet(k){ try{ return localStorage.getItem(k); }catch(e){ return k in mem ? mem[k] : null; } }
+  function sSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){ mem[k]=v; } }
+  function sDel(k){ try{ localStorage.removeItem(k); }catch(e){ delete mem[k]; } }
+
+  var K_NUM='dyno_nombor', K_IDX='dyno_indeks', K_IMP='dyno_import';
+
+  function savedSet(){
+    try { return new Set(JSON.parse(sGet(K_NUM) || '[]')); }
+    catch(e){ return new Set(); }
+  }
+  function lastIndex(){ return parseInt(sGet(K_IDX) || '0', 10) || 0; }
+  function importCount(){ return parseInt(sGet(K_IMP) || '0', 10) || 0; }
+  function record(added, newLast){
+    if(!added.length) return;
+    var s = savedSet();
+    added.forEach(function(n){ s.add(n); });
+    sSet(K_NUM, JSON.stringify(Array.from(s)));
+    sSet(K_IDX, String(newLast));
+    sSet(K_IMP, String(importCount()+1));
+  }
+
+  // ---------- Enjin tapisan ----------
+  // Eksport perbualan dari iPhone guna ruang tak-putus (U+00A0 / U+202F)
+  // di dalam nombor telefon, bukan ruang biasa.
+  var RE = /\+\d[\d   \-\(\)]{6,}\d/g;
+
+  function analyse(text, already, last){
+    var seen = Object.create(null), fresh = [], dup = 0, old = 0;
+    var m;
+    RE.lastIndex = 0;
+    while((m = RE.exec(text)) !== null){
+      var norm = m[0].replace(/[^\d+]/g,'');
+      if(norm.length < 8 || norm.length > 16) continue;
+      if(seen[norm]){ dup++; continue; }
+      seen[norm] = 1;
+      if(already.has(norm)){ old++; continue; }
+      fresh.push(norm);
+    }
+    return { fresh:fresh, dup:dup, old:old, start:last+1 };
+  }
+
+  function pad3(i){ return String(i).padStart(3,'0'); }
+  function pretty(n){
+    // Mudah dibaca: +60 12-345 6789 / +60 11-2093 4471
+    if(n.indexOf('+60')===0){
+      var r = n.slice(3);
+      if(r.length===9) return '+60 '+r.slice(0,2)+'-'+r.slice(2,5)+' '+r.slice(5);
+      if(r.length===10) return '+60 '+r.slice(0,2)+'-'+r.slice(2,6)+' '+r.slice(6);
+      if(r.length>2)  return '+60 '+r.slice(0,2)+'-'+r.slice(2);
+    }
+    return n;
+  }
+  // Palet jenama Dynopro — keluarga ungu/violet
+  var COLORS=['#7C22CE','#9D4BE8','#6D28D9','#A855F7','#5B1094','#8B5CF6','#4C1D95','#C084FC'];
+
+  // ---------- vCard ----------
+  function buildVCF(nums, start){
+    return nums.map(function(n,i){
+      var name = 'Customer ' + pad3(start + i);
+      return ['BEGIN:VCARD','VERSION:3.0','N:;'+name+';;;','FN:'+name,
+              'TEL;TYPE=CELL:'+n,'END:VCARD'].join('\r\n');
+    }).join('\r\n') + '\r\n';
+  }
+  var lastBlobUrl = null;
+  function download(name, data){
+    var blob = new Blob([data], {type:'text/vcard;charset=utf-8'});
+    if(lastBlobUrl) URL.revokeObjectURL(lastBlobUrl);
+    lastBlobUrl = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = lastBlobUrl; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  // ---------- UI ----------
+  var $ = function(id){ return document.getElementById(id); };
+  var cur = null, lastFile = null;
+
+  function show(i){
+    ['p0','p1','p2'].forEach(function(p,n){ $(p).classList.toggle('show', n===i); });
+    window.scrollTo(0,0);
+  }
+
+  function refreshMemo(){
+    var s = savedSet(), n = s.size;
+    if(n > 0){
+      $('memo').style.display = 'flex';
+      $('intro').style.display = 'none';
+      $('reset').style.display = 'flex';
+      $('memoText').innerHTML = '<b>'+n+' kontak</b> telah disediakan dalam '+
+        importCount()+' import.<br>Import seterusnya bermula dari <b>Customer '+
+        pad3(lastIndex()+1)+'</b>.';
+    } else {
+      $('memo').style.display = 'none';
+      $('intro').style.display = 'block';
+      $('reset').style.display = 'none';
+    }
+  }
+
+  function process(text){
+    cur = analyse(text, savedSet(), lastIndex());
+    var f = cur.fresh;
+    $('sNew').textContent = f.length;
+    $('sOld').textContent = cur.old;
+    $('sDup').textContent = cur.dup;
+
+    if(cur.old > 0 && f.length > 0){
+      $('skipTip').style.display = 'flex';
+      $('skipText').textContent = cur.old + ' nombor sudah pernah disimpan — kami langkau supaya tiada kontak berganda.';
+    } else {
+      $('skipTip').style.display = 'none';
+    }
+
+    var list = $('list');
+    if(f.length === 0){
+      $('save').disabled = true;
+      $('resultSub').textContent = 'Tiada nombor baharu untuk disimpan.';
+      list.innerHTML = '<div class="empty">' + (cur.old > 0
+        ? 'Tiada nombor baharu. 👍<br><br>Kesemua '+cur.old+' nombor dalam fail ini sudah pernah anda simpan sebelum ini.'
+        : 'Tiada nombor dijumpai.<br><br>Pastikan ia fail <b>eksport perbualan</b> (.txt), dan ada orang yang <b>belum tersimpan</b> dalam telefon anda.'
+      ) + '</div>';
+    } else {
+      $('save').disabled = false;
+      $('resultSub').textContent = 'Kami jumpa '+f.length+' nombor baharu, bermula dari Customer '+pad3(cur.start)+'.';
+      list.innerHTML = f.map(function(n,i){
+        var lb = pad3(cur.start + i);
+        return '<div class="row"><div class="av" style="background:'+COLORS[i%COLORS.length]+'">'+lb+'</div>'+
+               '<div style="flex:1;min-width:0"><div class="nm">Customer '+lb+'</div>'+
+               '<div class="ph">'+pretty(n)+'</div></div>'+
+               '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8B2FD6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>';
+      }).join('');
+    }
+    show(1);
+  }
+
+  function readFile(f){
+    if(!f) return;
+    var r = new FileReader();
+    r.onload = function(){ process(String(r.result)); };
+    r.readAsText(f);
+  }
+
+  // Events
+  $('file').addEventListener('change', function(e){ readFile(e.target.files[0]); });
+
+  var drop = $('drop');
+  ['dragenter','dragover'].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add('hot'); });
+  });
+  ['dragleave','drop'].forEach(function(ev){
+    drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove('hot'); });
+  });
+  drop.addEventListener('drop', function(e){
+    if(e.dataTransfer && e.dataTransfer.files[0]) readFile(e.dataTransfer.files[0]);
+  });
+
+  $('demo').addEventListener('click', function(){
+    var nums = ['+60 12-345 6789','+60 19-887 2231','+60 11-2093 4471','+60 13-556 0021',
+                '+60 17-720 9938','+60 16-441 2087','+60 12-908 1123','+60 18-334 7765',
+                '+60 12-345 6789','+65 8123 4567','+62 812-9988-771'];
+    var t = 'Chat export\n';
+    nums.forEach(function(n,i){
+      t += '['+(i+1)+'/8/2026, 1:5'+(i%10)+':00 PM] '+n+': Salam nak order\n';
+    });
+    t += '[2/8/2026, 2:00:00 PM] Ali Kedai: ok boss\n';
+    process(t);
+  });
+
+  $('save').addEventListener('click', function(){
+    if(!cur || !cur.fresh.length) return;
+    lastFile = { name:'DynoproAutoContact_'+cur.fresh.length+'_kontak.vcf',
+                 data:buildVCF(cur.fresh, cur.start) };
+    download(lastFile.name, lastFile.data);
+    record(cur.fresh, cur.start + cur.fresh.length - 1);
+    $('doneBadge').textContent = cur.fresh.length + ' kontak dalam fail';
+    refreshMemo();
+    show(2);
+  });
+
+  $('redownload').addEventListener('click', function(){
+    if(lastFile) download(lastFile.name, lastFile.data);
+  });
+
+  $('back').addEventListener('click', function(){ $('file').value=''; show(0); });
+  $('again').addEventListener('click', function(){ $('file').value=''; cur=null; show(0); });
+
+  var dlg = $('resetDlg');
+  $('reset').addEventListener('click', function(){
+    if(dlg.showModal) dlg.showModal(); else if(confirm('Set semula rekod?')) doReset();
+  });
+  $('rNo').addEventListener('click', function(){ dlg.close(); });
+  $('rYes').addEventListener('click', function(){ dlg.close(); doReset(); });
+  function doReset(){ sDel(K_NUM); sDel(K_IDX); sDel(K_IMP); refreshMemo(); }
+
+  // ---------- Pemasangan PWA ----------
+  var deferred = null;
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault(); deferred = e;
+    $('install').classList.add('show');
+  });
+  $('install').addEventListener('click', function(){
+    if(deferred){ deferred.prompt(); deferred = null; $('install').classList.remove('show'); }
+  });
+  window.addEventListener('appinstalled', function(){ $('install').classList.remove('show'); });
+
+  // iOS tiada beforeinstallprompt — tunjuk arahan manual
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  var standalone = window.navigator.standalone === true ||
+                   (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+  if(isIOS && !standalone){
+    var b = $('install');
+    b.querySelector('span').textContent = 'Pasang: tekan Kongsi ⬆ → "Add to Home Screen"';
+    b.classList.add('show');
+  }
+
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('sw.js').catch(function(){});
+    });
+  }
+
+  refreshMemo();
+
+  // Dedah untuk ujian automatik
+  window.__dyno = { analyse:analyse, buildVCF:buildVCF, pad3:pad3, savedSet:savedSet,
+                  lastIndex:lastIndex, record:record };
+})();
+</script>
+</body>
+</html>

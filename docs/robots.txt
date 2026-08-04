@@ -1,0 +1,5 @@
+# Dynopro Auto Contact
+User-agent: *
+Allow: /
+
+Sitemap: https://autocontact.dynopro.my/sitemap.xml
