@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Tukar Nama Kontak Pukal — Dynopro Auto Contact</title>
+<meta name="description" content="Tersalah nama kontak? Tukar Customer 001–100 kepada nama betul sekali gus, terus dalam telefon anda.">
+<meta name="theme-color" content="#2A0550">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Dynopro Auto Contact">
+<meta property="og:locale" content="ms_MY">
+<meta property="og:url" content="https://autocontact.dynopro.my/tukar-nama.html">
+<meta property="og:title" content="Tukar Nama Kontak Pukal — Dynopro Auto Contact">
+<meta property="og:description" content="Tersalah nama kontak? Tukar Customer 001–100 kepada nama betul sekali gus, terus dalam telefon anda.">
+<meta property="og:image" content="https://autocontact.dynopro.my/icons/og-simpan.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Tukar nama kontak pukal dengan Dynopro Auto Contact">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tukar Nama Kontak Pukal">
+<meta name="twitter:description" content="Tukar Customer 001–100 kepada nama betul sekali gus.">
+<meta name="twitter:image" content="https://autocontact.dynopro.my/icons/og-simpan.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Dynopro Auto Contact">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://autocontact.dynopro.my/tukar-nama.html">
+<style>
+  :root{
+    --brand:#8B2FD6; --brand-dk:#5B1094; --deep:#2A0550; --ink:#14091f;
+    --muted:#6b6480; --line:#eae7f0; --glow:rgba(139,47,214,.40);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:linear-gradient(170deg,#12021f 0%,#22043f 46%,#2E0757 100%);
+    background-attachment:fixed;color:var(--ink);display:flex;justify-content:center}
+  .app{width:100%;max-width:460px;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+
+  header{padding:calc(env(safe-area-inset-top) + 20px) 20px 12px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:54px;height:54px;flex:none;filter:drop-shadow(0 6px 16px rgba(157,75,232,.55))}
+  .logo img{width:100%;height:100%;display:block}
+  .brand h1{color:#fff;font-size:21px;font-weight:800;letter-spacing:-.3px}
+  .brand p{color:#c9b3e8;font-size:12.5px;margin-top:2px}
+  .intro{color:#e2d6f5;font-size:13.5px;margin-top:15px;line-height:1.55}
+  .intro b{color:#fff}
+  .backlink{display:inline-block;margin-top:13px;color:#c9b3e8;font-size:13px;
+            font-weight:700;text-decoration:none}
+
+  .sheet{background:#f0f2f5;margin-top:18px;border-radius:28px 28px 0 0;flex:1;
+    padding:22px 20px calc(env(safe-area-inset-bottom) + 26px);
+    box-shadow:0 -10px 40px rgba(0,0,0,.25);display:flex;flex-direction:column}
+
+  .panel{display:none;animation:rise .4s cubic-bezier(.2,.8,.2,1);flex:1;flex-direction:column}
+  .panel.show{display:flex}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+  h2{font-size:19px;font-weight:800;margin-bottom:6px}
+  .sub{font-size:14px;color:var(--muted);line-height:1.55;margin-bottom:18px}
+
+  .tip{background:#f5edff;border:1px solid #dcc6f5;border-radius:14px;padding:12px 14px;
+    font-size:12.5px;color:#5B1094;line-height:1.55;margin-bottom:15px}
+  .tip b{font-weight:800}
+
+  .drop{border:2px dashed #b9a9cc;border-radius:20px;background:#fff;padding:30px 18px;
+    text-align:center;transition:.22s;cursor:pointer;display:block}
+  .drop:active{transform:scale(.985)}
+  .drop.hot{border-color:var(--brand);background:#f5edff}
+  .drop b{display:block;margin-top:11px;font-size:15.5px}
+  .drop span{display:block;margin-top:4px;font-size:12.5px;color:var(--muted)}
+
+  .btn{width:100%;border:none;border-radius:16px;padding:16px;font-size:16px;font-weight:700;
+    color:#fff;background:linear-gradient(135deg,#9D4BE8,#5B1094);cursor:pointer;
+    box-shadow:0 9px 24px var(--glow);transition:.18s;
+    display:flex;align-items:center;justify-content:center;gap:9px}
+  .btn:active{transform:translateY(2px);box-shadow:0 4px 12px var(--glow)}
+  .btn:disabled{opacity:.45;pointer-events:none;box-shadow:none}
+  .btn.alt{background:#fff;color:#5B1094;box-shadow:none;border:1.5px solid #dcc6f5;
+    font-size:14.5px;padding:13px;margin-top:11px}
+
+  .groups{background:#fff;border-radius:18px;overflow:hidden;margin-bottom:16px}
+  .grp{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid var(--line);
+       cursor:pointer;transition:.15s;background:#fff;width:100%;border:none;text-align:left;
+       font-family:inherit}
+  .grp:last-child{border-bottom:none}
+  .grp.on{background:#f5edff}
+  .tick{width:22px;height:22px;border-radius:50%;border:2px solid #cfc4de;flex:none;
+        display:grid;place-items:center}
+  .grp.on .tick{background:var(--brand);border-color:var(--brand)}
+  .grp.on .tick::after{content:"";width:6px;height:10px;border:solid #fff;border-width:0 2.5px 2.5px 0;
+        transform:rotate(45deg) translate(-1px,-1px)}
+  .grp .gn{font-size:15px;font-weight:700;color:var(--ink)}
+  .grp .gc{font-size:12.5px;color:var(--muted);margin-top:2px}
+
+  .namebox{background:#fff;border-radius:16px;padding:15px;margin-bottom:14px}
+  .namebox>label{display:block;font-size:13px;font-weight:700;margin-bottom:8px}
+  .namebox input{width:100%;border:1.5px solid var(--line);border-radius:12px;
+    padding:13px;font-size:16px;font-family:inherit;color:var(--ink);background:#fff}
+  .namebox input:focus{outline:none;border-color:var(--brand);
+    box-shadow:0 0 0 3px rgba(139,47,214,.14)}
+  .arrow{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:14px;
+    font-weight:700;flex-wrap:wrap}
+  .arrow .old{color:#a4959c;text-decoration:line-through}
+  .arrow .new{color:#5B1094;background:#f5edff;border-radius:9px;padding:6px 11px}
+
+  .list{background:#fff;border-radius:18px;overflow-y:auto;max-height:34vh;margin-bottom:14px}
+  .row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}
+  .av{width:40px;height:40px;border-radius:50%;flex:none;display:grid;place-items:center;
+    color:#fff;font-weight:800;font-size:11px;background:linear-gradient(135deg,#9D4BE8,#5B1094)}
+  .nm{font-size:14.5px;font-weight:700}
+  .ph{font-size:12.5px;color:var(--muted);margin-top:1px;font-variant-numeric:tabular-nums}
+
+  .steps{background:#fff;border-radius:18px;padding:16px;margin-bottom:14px}
+  .steps h3{font-size:14px;font-weight:800;margin-bottom:10px}
+  .steps ol{margin:0;padding-left:19px}
+  .steps li{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:8px}
+  .steps li:last-child{margin-bottom:0}
+  .steps b{color:var(--ink)}
+
+  .note{font-size:11.5px;color:#8a969c;text-align:center;margin-top:11px;line-height:1.5}
+  .done{text-align:center;padding:16px 0;margin:auto 0}
+  .done .big{width:88px;height:88px;border-radius:50%;margin:0 auto 16px;
+    background:linear-gradient(135deg,#9D4BE8,#5B1094);display:grid;place-items:center;
+    box-shadow:0 12px 32px var(--glow)}
+  .done h2{font-size:21px}
+  .done p{font-size:14px;color:var(--muted);line-height:1.6;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div class="brand">
+      <div class="logo"><img src="icons/logo-mark.png" alt="Logo Dynopro" width="54" height="54"></div>
+      <div>
+        <h1>Tukar Nama Kontak</h1>
+        <p>Dynopro Auto Contact</p>
+      </div>
+    </div>
+    <div class="intro">
+      Tersalah nama semasa simpan? Tukar <b>Customer 001–100</b> kepada nama betul
+      sekali gus — nombor turutan dikekalkan.
+    </div>
+    <a class="backlink" href="simpan.html">← Kembali ke simpan nombor</a>
+  </header>
+
+  <div class="sheet">
+
+    <!-- PANEL 0 -->
+    <section class="panel show" id="p0">
+      <h2>Pilih fail kontak</h2>
+      <p class="sub">Fail <b>.vcf</b> yang app ini muat turun dahulu, atau eksport
+        baharu dari Google Contacts.</p>
+
+      <div class="tip">
+        <b>Paling cepat:</b> fail asal masih ada dalam folder <b>Muat Turun</b>
+        telefon anda — nama seperti <b>kontak-baharu.vcf</b>. Guna fail itu terus,
+        tak perlu eksport apa-apa.
+      </div>
+
+      <label class="drop" id="drop">
+        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#8B2FD6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L8 8m4-4l4 4"/><path d="M4 15v3a3 3 0 003 3h10a3 3 0 003-3v-3"/></svg>
+        <b>Ketuk untuk pilih fail</b>
+        <span>.vcf atau .csv</span>
+        <input type="file" id="file" accept=".vcf,.vcard,.csv,text/vcard,text/csv" hidden>
+      </label>
+
+      <p class="note">🔒 Fail diproses dalam telefon anda. Tiada apa dihantar ke server.</p>
+    </section>
+
+    <!-- PANEL 1 -->
+    <section class="panel" id="p1">
+      <h2>Nama mana nak ditukar?</h2>
+      <p class="sub" id="sub1">Kami kumpulkan kontak yang berkongsi nama yang sama.</p>
+      <div class="groups" id="groups"></div>
+      <button class="btn alt" id="back0">← Pilih fail lain</button>
+    </section>
+
+    <!-- PANEL 2 -->
+    <section class="panel" id="p2">
+      <h2>Nama baharu</h2>
+      <p class="sub" id="sub2"></p>
+
+      <div class="namebox">
+        <label for="baru">Tukar kepada</label>
+        <input type="text" id="baru" placeholder="Contoh: Dynopos" autocomplete="off"
+               autocapitalize="words" spellcheck="false">
+        <div class="arrow">
+          <span class="old" id="oldEg">Customer 001</span>
+          <span>→</span>
+          <span class="new" id="newEg">Dynopos 001</span>
+        </div>
+      </div>
+
+      <div class="list" id="list"></div>
+      <button class="btn" id="make">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+        <span id="makeTxt">Muat turun fail nama baharu</span>
+      </button>
+      <button class="btn alt" id="back1">← Pilih nama lain</button>
+    </section>
+
+    <!-- PANEL 3 -->
+    <section class="panel" id="p3">
+      <div class="done">
+        <div class="big">
+          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5.5 5.5L20 7"/></svg>
+        </div>
+        <h2>Fail siap!</h2>
+        <p id="doneTxt"></p>
+      </div>
+
+      <div class="steps">
+        <h3>Langkah seterusnya — penting</h3>
+        <ol>
+          <li>Buka <b>contacts.google.com</b>, cari <b id="cariNama">Customer</b>,
+              pilih semua yang lama itu dan <b>Padam</b>. Kalau tidak, anda akan
+              dapat dua set kontak.</li>
+          <li>Kemudian <b>Import</b> fail yang baru dimuat turun ini.</li>
+          <li>Selesai — nama baharu terus muncul di WhatsApp.</li>
+        </ol>
+      </div>
+
+      <button class="btn alt" id="redl">Muat turun semula</button>
+      <button class="btn alt" id="again">Tukar nama lain</button>
+    </section>
+
+  </div>
+</div>
+
+<script src="kemas-engine.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var E = window.KemasEngine;
+
+  var kontak = [], kumpulan = [], pilih = null, lastFile = null;
+
+  function show(n){
+    ['p0','p1','p2','p3'].forEach(function(id, i){
+      $(id).classList.toggle('show', i === n);
+    });
+    window.scrollTo(0, 0);
+  }
+  function esc(t){
+    return String(t == null ? '' : t)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // "Customer 001" → { asas:"Customer", nombor:"001" }
+  // "Ali"          → { asas:"Ali",      nombor:"" }
+  function pecah(nama){
+    var m = /^(.*?)[\s\-_.]*(\d+)\s*$/.exec(String(nama || '').trim());
+    if(m && m[1].trim()) return { asas: m[1].trim(), nombor: m[2] };
+    return { asas: String(nama || '').trim(), nombor: '' };
+  }
+
+  function kumpul(list){
+    var peta = {};
+    list.forEach(function(c, i){
+      var nama = (c.name || '').trim();
+      if(!nama) return;                       // kontak tanpa nama bukan urusan alat ini
+      var p = pecah(nama);
+      var kunci = p.asas.toLowerCase();
+      if(!peta[kunci]) peta[kunci] = { asas: p.asas, ahli: [], bernombor: 0 };
+      peta[kunci].ahli.push({ idx: i, nombor: p.nombor, nama: nama });
+      if(p.nombor) peta[kunci].bernombor++;
+    });
+    var keluar = Object.keys(peta).map(function(k){ return peta[k]; });
+    // Siri bernombor didahulukan — itu yang biasanya perlu dibetulkan.
+    keluar.sort(function(a, b){
+      if((b.bernombor > 1) !== (a.bernombor > 1)) return b.bernombor > 1 ? 1 : -1;
+      return b.ahli.length - a.ahli.length;
+    });
+    return keluar.filter(function(g){ return g.ahli.length >= 1; });
+  }
+
+  function paparKumpulan(){
+    var h = kumpulan.map(function(g, i){
+      var contoh = g.ahli[0].nama;
+      var akhir  = g.ahli[g.ahli.length - 1].nama;
+      var julat  = (g.ahli.length > 1 && contoh !== akhir)
+        ? esc(contoh) + ' … ' + esc(akhir) : esc(contoh);
+      return '<button class="grp" data-i="' + i + '">' +
+             '<span class="tick"></span><span><span class="gn">' + esc(g.asas) +
+             '</span><span class="gc">' + g.ahli.length + ' kontak · ' + julat +
+             '</span></span></button>';
+    }).join('');
+    $('groups').innerHTML = h || '<div style="padding:26px;text-align:center;color:#6b6480">Tiada kontak bernama dijumpai.</div>';
+    $('sub1').textContent = kontak.length + ' kontak dibaca. Ketuk nama yang tersalah.';
+    Array.prototype.forEach.call($('groups').querySelectorAll('.grp'), function(b){
+      b.addEventListener('click', function(){
+        pilih = kumpulan[parseInt(b.getAttribute('data-i'), 10)];
+        mulaTukar();
+      });
+    });
+  }
+
+  function namaBaru(){ return ($('baru').value || '').trim(); }
+
+  function hasil(){
+    if(!pilih) return [];
+    var baru = namaBaru() || pilih.asas;
+    return pilih.ahli.map(function(a){
+      var c = kontak[a.idx];
+      return {
+        name:   a.nombor ? (baru + ' ' + a.nombor) : baru,
+        phones: c.phones || [], emails: c.emails || [],
+        org: c.org || '', note: c.note || ''
+      };
+    });
+  }
+
+  function paparPratonton(){
+    var eg = pilih.ahli[0];
+    var baru = namaBaru() || pilih.asas;
+    $('oldEg').textContent = eg.nama;
+    $('newEg').textContent = eg.nombor ? (baru + ' ' + eg.nombor) : baru;
+
+    var senarai = hasil();
+    $('list').innerHTML = senarai.slice(0, 60).map(function(c, i){
+      var tel = (c.phones && c.phones[0]) ? E.prettyPhone(c.phones[0]) : '—';
+      return '<div class="row"><div class="av">' + (i + 1) + '</div><div><div class="nm">' +
+             esc(c.name) + '</div><div class="ph">' + esc(tel) + '</div></div></div>';
+    }).join('') + (senarai.length > 60
+      ? '<div class="row"><div style="color:#6b6480;font-size:13px;padding:2px 0">… dan ' +
+        (senarai.length - 60) + ' lagi</div></div>' : '');
+
+    $('makeTxt').textContent = 'Muat turun ' + senarai.length + ' kontak nama baharu';
+    $('make').disabled = !namaBaru() || namaBaru().toLowerCase() === pilih.asas.toLowerCase();
+  }
+
+  function mulaTukar(){
+    $('sub2').textContent = pilih.ahli.length + ' kontak bernama "' + pilih.asas +
+                            '" akan ditukar. Nombor turutan dikekalkan.';
+    if(!$('baru').value) $('baru').value = '';
+    paparPratonton();
+    show(2);
+    setTimeout(function(){ $('baru').focus(); }, 260);
+  }
+
+  function muatTurun(nama, data){
+    var b = new Blob([data], { type: 'text/vcard;charset=utf-8' });
+    var u = URL.createObjectURL(b);
+    var a = document.createElement('a');
+    a.href = u; a.download = nama;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(u); }, 1500);
+  }
+
+  // ---------- Baca fail ----------
+  var drop = $('drop');
+  ['dragenter','dragover'].forEach(function(e){
+    drop.addEventListener(e, function(ev){ ev.preventDefault(); drop.classList.add('hot'); });
+  });
+  ['dragleave','drop'].forEach(function(e){
+    drop.addEventListener(e, function(ev){ ev.preventDefault(); drop.classList.remove('hot'); });
+  });
+  drop.addEventListener('drop', function(ev){
+    if(ev.dataTransfer && ev.dataTransfer.files[0]) baca(ev.dataTransfer.files[0]);
+  });
+  $('file').addEventListener('change', function(){
+    if(this.files[0]) baca(this.files[0]);
+  });
+
+  function baca(f){
+    var r = new FileReader();
+    r.onload = function(){
+      try {
+        kontak = E.parseAny(String(r.result), f.name) || [];
+      } catch(e){ kontak = []; }
+      if(!kontak.length){
+        alert('Tiada kontak dijumpai dalam fail itu. Pastikan ia fail .vcf atau .csv kontak.');
+        return;
+      }
+      kumpulan = kumpul(kontak);
+      if(!kumpulan.length){
+        alert('Kontak dijumpai tetapi semuanya tiada nama — tiada apa untuk ditukar.');
+        return;
+      }
+      paparKumpulan();
+      show(1);
+    };
+    r.onerror = function(){ alert('Fail tidak dapat dibaca.'); };
+    r.readAsText(f);
+  }
+
+  $('baru').addEventListener('input', paparPratonton);
+  $('back0').addEventListener('click', function(){ $('file').value = ''; show(0); });
+  $('back1').addEventListener('click', function(){ show(1); });
+
+  $('make').addEventListener('click', function(){
+    var senarai = hasil();
+    if(!senarai.length) return;
+    var vcf = E.toVCF(senarai);
+    var fail = (namaBaru().replace(/[^\wÀ-ɏ -]/g, '') || 'kontak') + '.vcf';
+    lastFile = { name: fail, data: vcf };
+    muatTurun(fail, vcf);
+    $('doneTxt').textContent = senarai.length + ' kontak ditukar daripada "' +
+      pilih.asas + '" kepada "' + namaBaru() + '".';
+    $('cariNama').textContent = pilih.asas;
+    show(3);
+  });
+
+  $('redl').addEventListener('click', function(){
+    if(lastFile) muatTurun(lastFile.name, lastFile.data);
+  });
+  $('again').addEventListener('click', function(){ show(1); });
+
+  window.__tukar = {
+    get kontak(){ return kontak; },
+    get kumpulan(){ return kumpulan; },
+    pecah: pecah, hasil: hasil
+  };
+})();
+</script>
+<script src="pasang.js" defer></script>
+</body>
+</html>

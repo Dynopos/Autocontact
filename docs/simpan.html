@@ -86,6 +86,23 @@
   .btn.alt{background:#fff;color:#5B1094;box-shadow:none;border:1.5px solid #dcc6f5;
            font-size:14.5px;padding:13px;margin-top:13px}
 
+  /* Perisai nama sedia ada */
+  .shield{background:#fff;border-radius:16px;padding:15px;margin-bottom:14px;
+          border:1.5px solid #f0d8a8}
+  .shield.on{border-color:#bfe6c8}
+  .shrow{display:flex;gap:11px;align-items:flex-start}
+  .shico{flex:none;margin-top:1px;color:#b8860b}
+  .shield.on .shico{color:#1e8e4a}
+  .shtxt b{display:block;font-size:13.5px;font-weight:800;color:var(--ink)}
+  .shtxt span{display:block;font-size:12.5px;color:var(--muted);line-height:1.5;margin-top:4px}
+  .shtxt span b{display:inline;font-weight:800;color:var(--ink)}
+  .shbtn{display:block;margin-top:12px;text-align:center;background:#f5edff;color:#5B1094;
+         border:1.5px solid #dcc6f5;border-radius:12px;padding:12px;font-size:13.5px;
+         font-weight:700;cursor:pointer}
+  .shbtn:active{transform:translateY(1px)}
+  .shclear{display:block;width:100%;margin-top:8px;background:none;border:none;
+           color:var(--muted);font-size:12px;padding:7px;cursor:pointer;font-family:inherit}
+
   /* Nama kontak boleh ubah */
   .namebox{background:#fff;border-radius:16px;padding:15px;margin-bottom:14px}
   .namebox>label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:8px}
@@ -144,6 +161,12 @@
   .nm{font-size:15px;font-weight:700}
   .ph{font-size:13px;color:var(--muted);margin-top:1px;font-variant-numeric:tabular-nums}
   .empty{padding:34px 22px;text-align:center;color:var(--muted);font-size:14.5px;line-height:1.6}
+  .skiphead{background:#f6f5f8;color:var(--muted);font-size:11.5px;font-weight:800;
+            letter-spacing:.4px;text-transform:uppercase;padding:10px 14px;
+            border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .row.skip .nm{color:#8a8496;font-weight:600}
+  .row.skip .ph{color:#a49dae;font-size:12px}
+  .av.dim{background:#c9c3d4}
   .foot{margin-top:14px}
   .note{font-size:11.5px;color:#8a969c;text-align:center;margin-top:11px;line-height:1.5}
 
@@ -216,6 +239,24 @@
         senarai chat anda — nombor pelanggan yang belum disimpan memang sudah terpapar
         di situ.</p>
 
+      <!-- Perisai: elak nama sebenar dalam telefon ditimpa -->
+      <div class="shield" id="shield">
+        <div class="shrow">
+          <svg class="shico" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.2-2.9 7.9-7 9-4.1-1.1-7-4.8-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          <div class="shtxt">
+            <b id="shTitle">Lindungi nama sedia ada</b>
+            <span id="shSub">Muat naik kontak telefon anda dahulu. Nombor yang sudah
+              ada nama sebenar — seperti <b>Kak Nik</b> — akan dilangkau, bukan
+              ditimpa dengan Customer 001.</span>
+          </div>
+        </div>
+        <label class="shbtn" id="shPick">
+          <span id="shBtnTxt">Muat naik kontak saya (.vcf / .csv)</span>
+          <input type="file" id="addrFile" accept=".vcf,.vcard,.csv,text/vcard,text/csv" hidden>
+        </label>
+        <button class="shclear" id="shClear" style="display:none">Buang senarai perlindungan</button>
+      </div>
+
       <div class="namebox">
         <label for="prefix">Nama kontak</label>
         <div class="namerow">
@@ -255,6 +296,10 @@
 
       <a href="kemas.html" class="btn alt" style="text-decoration:none;margin-top:9px">
         🧹 Kemas kontak sedia ada — pendua &amp; kosong
+      </a>
+
+      <a href="tukar-nama.html" class="btn alt" style="text-decoration:none;margin-top:9px">
+        ✏️ Tersalah nama? Tukar nama pukal
       </a>
 
       <div style="flex:1"></div>
@@ -336,6 +381,7 @@
   </div>
 </dialog>
 
+<script src="kemas-engine.js"></script>
 <script src="ocr.js" defer></script>
 <script>
 (function(){
@@ -347,7 +393,8 @@
   function sSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){ mem[k]=v; } }
   function sDel(k){ try{ localStorage.removeItem(k); }catch(e){ delete mem[k]; } }
 
-  var K_NUM='dyno_nombor', K_IDX='dyno_indeks', K_IMP='dyno_import', K_PRE='dyno_awalan';
+  var K_NUM='dyno_nombor', K_IDX='dyno_indeks', K_IMP='dyno_import', K_PRE='dyno_awalan',
+      K_ADR='dyno_bukualamat';
 
   // Awalan nama kontak — pengguna boleh tukar (contoh: Maherian 001)
   function prefixVal(){
@@ -363,6 +410,17 @@
     try { return new Set(JSON.parse(sGet(K_NUM) || '[]')); }
     catch(e){ return new Set(); }
   }
+
+  // Buku alamat pengguna sendiri. Sebab ia wujud:
+  // apabila fail vCard diimport, telefon MENGGABUNGKAN kad baharu dengan
+  // kontak sedia ada yang berkongsi nombor yang sama — dan nama yang
+  // diimport itu menang. Tanpa senarai ini, "Kak Nik" boleh bertukar
+  // menjadi "Customer 001". Maka mana-mana nombor di sini kita LANGKAU.
+  function addrSet(){
+    try { return new Set(JSON.parse(sGet(K_ADR) || '[]')); }
+    catch(e){ return new Set(); }
+  }
+  function addrCount(){ return addrSet().size; }
   // Penomboran diasingkan MENGIKUT NAMA LABEL, supaya setiap kumpulan
   // bermula semula dari 001:  Maherian 001…  Uitm 001…  Bazar 001…
   // Senarai nombor tersimpan pula kekal global, jadi orang yang sama
@@ -439,8 +497,8 @@
     return '';
   }
 
-  function analyse(text, already, last){
-    var seen = Object.create(null), fresh = [], dup = 0, old = 0;
+  function analyse(text, already, addr, last){
+    var seen = Object.create(null), fresh = [], langkau = [], dup = 0, dilindung = 0;
     var m;
     RE.lastIndex = 0;
     while((m = RE.exec(text)) !== null){
@@ -448,10 +506,21 @@
       if(!norm) continue;
       if(seen[norm]){ dup++; continue; }
       seen[norm] = 1;
-      if(already.has(norm)){ old++; continue; }
+      // Dilindungi didahulukan: orang ini sudah ada nama sebenar dalam
+      // telefon, jadi jangan sekali-kali hasilkan kad "Customer" untuknya.
+      if(addr && addr.has(norm)){
+        dilindung++;
+        langkau.push({ n:norm, sebab:'Sudah ada nama dalam telefon' });
+        continue;
+      }
+      if(already.has(norm)){
+        langkau.push({ n:norm, sebab:'Sudah anda simpan sebelum ini' });
+        continue;
+      }
       fresh.push(norm);
     }
-    return { fresh:fresh, dup:dup, old:old, start:last+1 };
+    return { fresh:fresh, langkau:langkau, dup:dup, old:langkau.length,
+             dilindung:dilindung, jumpa:fresh.length + langkau.length, start:last+1 };
   }
 
   function pad3(i){ return String(i).padStart(3,'0'); }
@@ -512,16 +581,44 @@
     }
   }
 
+  // Nombor yang dilangkau ditunjukkan sekali — supaya pengguna nampak
+  // setiap nombor dalam gambar mereka memang dikesan, cuma tidak semuanya
+  // perlu kad baharu. Tanpa ini, "3 nombor jadi 1 kontak" nampak macam bug.
+  function skipRows(){
+    if(!cur || !cur.langkau.length) return '';
+    return '<div class="skiphead">' + cur.langkau.length +
+      ' nombor dikesan tetapi dilangkau</div>' +
+      cur.langkau.map(function(s){
+        return '<div class="row skip"><div class="av dim">' +
+          '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></div>' +
+          '<div style="flex:1;min-width:0"><div class="nm">' + pretty(s.n) + '</div>' +
+          '<div class="ph">' + esc(s.sebab) + '</div></div></div>';
+      }).join('');
+  }
+
   function process(text, fileCount){
-    cur = analyse(text, savedSet(), lastIndex());
+    cur = analyse(text, savedSet(), addrSet(), lastIndex());
     var f = cur.fresh;
     $('sNew').textContent = f.length;
     $('sOld').textContent = cur.old;
     $('sDup').textContent = cur.dup;
 
-    if(cur.old > 0 && f.length > 0){
+    if(cur.dilindung > 0){
+      $('skipTip').style.display = 'flex';
+      $('skipText').innerHTML = '<b>' + cur.dilindung + ' nombor sudah ada nama sebenar</b> ' +
+        'dalam telefon anda — kami langkau supaya nama asal kekal.' +
+        (cur.old > cur.dilindung
+          ? ' ' + (cur.old - cur.dilindung) + ' lagi pernah disimpan sebelum ini.' : '');
+    } else if(cur.old > 0 && f.length > 0){
       $('skipTip').style.display = 'flex';
       $('skipText').textContent = cur.old + ' nombor sudah pernah disimpan — kami langkau supaya tiada kontak berganda.';
+    } else if(f.length > 0 && addrCount() === 0){
+      // Belum ada perlindungan — beritahu risiko sebelum mereka import.
+      $('skipTip').style.display = 'flex';
+      $('skipText').innerHTML = '<b>Amaran:</b> anda belum muat naik kontak telefon. ' +
+        'Jika ada nombor di sini yang sudah tersimpan dengan nama sebenar, nama itu ' +
+        'akan bertukar kepada ' + esc(label(cur.start)) + ' selepas import. ' +
+        'Kembali dan muat naik kontak anda dahulu untuk melindunginya.';
     } else {
       $('skipTip').style.display = 'none';
     }
@@ -531,19 +628,20 @@
       $('save').disabled = true;
       $('resultSub').textContent = 'Tiada nombor baharu untuk disimpan.';
       list.innerHTML = '<div class="empty">' + (cur.old > 0
-        ? 'Tiada nombor baharu. 👍<br><br>Kesemua '+cur.old+' nombor dalam fail ini sudah pernah anda simpan sebelum ini.'
+        ? 'Tiada nombor baharu. 👍<br><br>Kesemua '+cur.old+' nombor di sini sudah tersimpan — senarai penuh di bawah.'
         : 'Tiada nombor dijumpai.<br><br>Pastikan ia fail <b>eksport perbualan</b> (.txt), dan ada orang yang <b>belum tersimpan</b> dalam telefon anda.'
-      ) + '</div>';
+      ) + '</div>' + skipRows();
     } else {
       $('save').disabled = false;
-      $('resultSub').textContent = 'Kami jumpa '+f.length+' nombor baharu, bermula dari '+label(cur.start)+'.';
+      $('resultSub').textContent = 'Kami jumpa '+cur.jumpa+' nombor dalam bahan ini — '+
+        f.length+' baharu, bermula dari '+label(cur.start)+'.';
       list.innerHTML = f.map(function(n,i){
         var lb = pad3(cur.start + i);
         return '<div class="row"><div class="av" style="background:'+COLORS[i%COLORS.length]+'">'+lb+'</div>'+
                '<div style="flex:1;min-width:0"><div class="nm">'+esc(label(cur.start+i))+'</div>'+
                '<div class="ph">'+pretty(n)+'</div></div>'+
                '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#8B2FD6" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>';
-      }).join('');
+      }).join('') + skipRows();
     }
     show(1);
   }
@@ -593,6 +691,22 @@
 
   $('save').addEventListener('click', function(){
     if(!cur || !cur.fresh.length) return;
+
+    // Halangan terakhir sebelum kerosakan berlaku. Tanpa buku alamat,
+    // kami TIDAK dapat tahu sama ada salah satu nombor ini milik isteri,
+    // keluarga atau pembekal yang sudah ada nama sebenar — dan import
+    // vCard akan menimpa nama itu tanpa boleh dibatalkan dari telefon.
+    if(addrCount() === 0){
+      var teruskan = confirm(
+        'Anda belum muat naik kontak telefon anda.\n\n' +
+        'Jika mana-mana daripada ' + cur.fresh.length + ' nombor ini sudah tersimpan ' +
+        'dengan nama sebenar, nama itu akan BERTUKAR kepada ' + label(cur.start) +
+        ' selepas import.\n\n' +
+        'Tekan Batal untuk kembali dan muat naik kontak anda dahulu (disyorkan).\n' +
+        'Tekan OK jika anda pasti kesemuanya nombor baharu.');
+      if(!teruskan){ show(0); return; }
+    }
+
     var safe = prefixVal().replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'') || 'Kontak';
     lastFile = { name: safe+'_'+cur.fresh.length+'_kontak.vcf',
                  data:buildVCF(cur.fresh, cur.start) };
@@ -618,6 +732,75 @@
   $('rNo').addEventListener('click', function(){ dlg.close(); });
   $('rYes').addEventListener('click', function(){ dlg.close(); doReset(); });
   function doReset(){ sDel(K_NUM); sDel(K_IDX); sDel(K_IMP); refreshMemo(); }
+
+  // ---------- Perisai buku alamat ----------
+  function refreshShield(){
+    var n = addrCount();
+    var box = $('shield');
+    if(n > 0){
+      box.classList.add('on');
+      $('shTitle').textContent = n + ' kontak anda dilindungi';
+      $('shSub').innerHTML = 'Nombor yang sudah ada nama sebenar akan dilangkau — ' +
+        'nama asal tidak akan ditimpa. Muat naik semula bila buku alamat anda berubah.';
+      $('shBtnTxt').textContent = 'Kemas kini senarai perlindungan';
+      $('shClear').style.display = 'block';
+    } else {
+      box.classList.remove('on');
+      $('shTitle').textContent = 'Lindungi nama sedia ada';
+      $('shSub').innerHTML = 'Muat naik kontak telefon anda dahulu. Nombor yang sudah ' +
+        'ada nama sebenar — seperti <b>Kak Nik</b> — akan dilangkau, bukan ditimpa ' +
+        'dengan ' + esc(label(1)) + '.';
+      $('shBtnTxt').textContent = 'Muat naik kontak saya (.vcf / .csv)';
+      $('shClear').style.display = 'none';
+    }
+  }
+
+  $('addrFile').addEventListener('change', function(){
+    var f = this.files && this.files[0];
+    if(!f) return;
+    var input = this;
+    var r = new FileReader();
+    r.onload = function(){
+      var senarai = [];
+      try {
+        senarai = (window.KemasEngine &&
+                   window.KemasEngine.parseAny(String(r.result), f.name)) || [];
+      } catch(e){ senarai = []; }
+
+      var set = new Set();
+      senarai.forEach(function(c){
+        (c.phones || []).forEach(function(p){
+          // Simpan kedua-dua bentuk piawai supaya padanan tidak terlepas
+          // walau kontak ditulis dalam format berbeza.
+          var a = toStd(p); if(a) set.add(a);
+          var b = window.KemasEngine.normPhone(p); if(b) set.add(b);
+        });
+      });
+
+      input.value = '';
+      if(!set.size){
+        alert('Tiada nombor telefon dijumpai dalam fail itu.\n\n' +
+              'Pastikan ia fail eksport kontak (.vcf atau .csv) dari ' +
+              'Google Contacts atau telefon anda.');
+        return;
+      }
+      sSet(K_ADR, JSON.stringify(Array.from(set)));
+      refreshShield();
+      alert(set.size + ' nombor kini dilindungi.\n\n' +
+            'Mulai sekarang, sesiapa yang sudah ada nama sebenar dalam telefon anda ' +
+            'akan dilangkau — nama mereka tidak akan bertukar menjadi ' +
+            prefixVal() + ' 001.');
+    };
+    r.onerror = function(){ input.value = ''; alert('Fail tidak dapat dibaca.'); };
+    r.readAsText(f);
+  });
+
+  $('shClear').addEventListener('click', function(){
+    if(!confirm('Buang senarai perlindungan?\n\nSelepas ini nama sebenar dalam ' +
+                'telefon anda boleh ditimpa semasa import.')) return;
+    sDel(K_ADR);
+    refreshShield();
+  });
 
   // ---------- Pemasangan PWA ----------
   // Dikendalikan oleh pasang.js (dikongsi semua halaman); ia guna butang
@@ -690,6 +873,7 @@
   });
 
   syncPreview();
+  refreshShield();
   refreshMemo();
 
   // Dedah untuk ujian automatik
