@@ -70,7 +70,8 @@
       "featureList": [
         "Simpan nombor pukal dari fail eksport chat",
         "Buang nombor berulang secara automatik",
-        "Label kontak berturutan Customer 001, 002",
+        "Nama label boleh diubah, satu siri bagi setiap kumpulan",
+        "Tampal teks terus tanpa perlu eksport",
         "Kesan kontak pendua dalam buku alamat",
         "Berfungsi tanpa internet"
       ],
@@ -82,7 +83,17 @@
         {
           "@type": "Question",
           "name": "Bagaimana cara simpan banyak nombor WhatsApp sekali gus?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Eksport perbualan atau kumpulan anda sebagai fail teks melalui menu Export chat, kemudian muat naik fail itu di sini. Semua nombor akan ditapis, yang berulang dibuang, dan disediakan sebagai satu fail kontak untuk diimport sekali gus." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Eksport kumpulan WhatsApp anda sebagai fail teks melalui menu Export chat, kemudian muat naik fail itu di sini. Semua nombor akan ditapis, yang berulang dibuang, dan disediakan sebagai satu fail kontak untuk diimport sekali gus." }
+        },
+        {
+          "@type": "Question",
+          "name": "Perlukah saya eksport setiap perbualan satu demi satu?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Tidak. Alat ini paling berbaloi untuk kumpulan — satu eksport kumpulan memberi nombor semua ahli sekali gus, dan anda boleh pilih beberapa fail kumpulan serentak. Untuk nombor berselerak daripada perbualan individu, gunakan kotak tampal teks: salin senarai pesanan atau mesej terus ke dalamnya tanpa perlu mengeksport apa-apa." }
+        },
+        {
+          "@type": "Question",
+          "name": "Boleh saya tukar nama label selain \"Customer\"?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Boleh. Taip apa saja dalam ruangan Nama kontak — nama kedai, nama kempen, atau tarikh. Setiap nama mempunyai penomboran sendiri, jadi kumpulan pertama boleh jadi Maherian 001 hingga 050, dan kumpulan kedua bermula semula dari Uitm 001. Bila anda kembali kepada nama lama, penomboran menyambung dari tempat terakhir." }
         },
         {
           "@type": "Question",
@@ -132,10 +143,11 @@
     <span class="pill">✅ Percuma · Tiada pendaftaran · Android &amp; iPhone</span>
     <h1>Simpan Nombor WhatsApp Pukal ke Kontak Telefon</h1>
     <p class="lead">
-      Berhenti menaip nombor pelanggan satu demi satu. Eksport perbualan atau kumpulan
-      anda sebagai fail teks, muat naik di sini, dan <strong>beratus nombor terus
-      tersusun sebagai kontak</strong> — nombor berulang dibuang automatik, setiap
-      satu dilabel Customer 001, 002, dan seterusnya.
+      Berhenti menaip nombor pelanggan satu demi satu. Eksport <strong>kumpulan
+      WhatsApp</strong> anda sebagai fail teks — satu eksport memberi nombor semua
+      ahli sekali gus. Atau <strong>tampal terus</strong> senarai pesanan dari Excel,
+      nota, atau mesej. Nombor berulang dibuang automatik, dan anda pilih sendiri
+      nama labelnya.
     </p>
     <div class="cta">
       <a class="btn" href="simpan.html">Buka alat — percuma</a>
@@ -160,9 +172,9 @@
     <div class="grid two">
       <div class="box">
         <div class="ic">⚡</div>
-        <h3>Satu fail, beratus nombor</h3>
-        <p>Eksport satu kumpulan WhatsApp dan dapatkan nombor semua ahli sekali gus,
-           bukan seorang demi seorang.</p>
+        <h3>Satu kumpulan, beratus nombor</h3>
+        <p>Eksport satu kumpulan WhatsApp dan dapatkan nombor semua ahli sekali gus.
+           Boleh pilih beberapa kumpulan serentak.</p>
       </div>
       <div class="box">
         <div class="ic">🧹</div>
@@ -172,9 +184,9 @@
       </div>
       <div class="box">
         <div class="ic">🔢</div>
-        <h3>Label automatik</h3>
-        <p>Setiap kontak dilabel Customer 001, 002, 003 dan seterusnya supaya kemas
-           dan mudah dicari.</p>
+        <h3>Satu kumpulan, satu siri nama</h3>
+        <p>Taip nama sendiri untuk setiap kumpulan. Maherian 001–050 untuk kumpulan
+           pertama, Uitm 001–030 untuk kedua. Setiap nama ada penomboran sendiri.</p>
       </div>
       <div class="box">
         <div class="ic">🧠</div>
@@ -191,25 +203,30 @@
     <h2>Cara ia berfungsi — tiga langkah</h2>
     <ol class="steps">
       <li>
-        <b>Eksport perbualan anda</b>
-        <p>Dalam aplikasi chat: buka perbualan atau kumpulan → menu ⋮ → More →
-           Export chat → Without media. Anda akan dapat satu fail <code>.txt</code>.</p>
+        <b>Namakan label anda</b>
+        <p>Taip apa saja — Maherian, Bazar Ramadan, Nov24. Kontak akan jadi
+           Maherian 001, Maherian 002, dan seterusnya.</p>
       </li>
       <li>
-        <b>Muat naik fail itu di sini</b>
-        <p>Kami tapis semua nombor telefon di dalamnya, buang yang berulang, dan
-           tunjukkan senarai penuh untuk anda semak dahulu.</p>
+        <b>Beri nombor kepada kami — dua cara</b>
+        <p><strong>Eksport kumpulan:</strong> buka kumpulan WhatsApp → menu ⋮ → More →
+           Export chat → Without media. Boleh pilih beberapa fail serentak.<br>
+           <strong>Atau tampal teks:</strong> salin senarai pesanan dari Excel, nota,
+           atau mesej — kami cari nombor di dalamnya tanpa perlu eksport apa-apa.</p>
       </li>
       <li>
-        <b>Simpan ke kontak</b>
-        <p>Satu ketukan menghasilkan fail kontak. Buka fail itu di telefon anda dan
-           semua nombor masuk serentak.</p>
+        <b>Semak dan simpan</b>
+        <p>Kami tunjuk senarai penuh dahulu. Satu ketukan menghasilkan fail kontak —
+           buka fail itu dan semua nombor masuk serentak.</p>
       </li>
     </ol>
     <p class="muted">
-      Nota: aplikasi chat hanya memaparkan nombor bagi orang yang <strong>belum</strong>
-      tersimpan dalam telefon anda. Jadi alat ini secara semula jadi hanya menangkap
-      kenalan baharu — bukan menduakan yang sedia ada.
+      <strong>Berterus-terang tentang bila alat ini berbaloi:</strong> ia paling
+      berguna untuk <strong>kumpulan</strong> — satu eksport memberi ratusan nombor.
+      Untuk perbualan individu satu-satu, mengeksport setiap satu lebih lambat daripada
+      menyimpan terus; gunakan kotak tampal teks sebaliknya. Alat ini juga hanya
+      menangkap nombor orang yang <strong>belum</strong> tersimpan dalam telefon anda,
+      kerana aplikasi chat memaparkan nama bagi kenalan yang sudah ada.
     </p>
   </div>
 </section>
@@ -283,6 +300,24 @@
         menu Export chat, kemudian muat naik fail itu di sini. Semua nombor akan
         ditapis, yang berulang dibuang, dan disediakan sebagai satu fail kontak untuk
         diimport sekali gus.</div>
+    </details>
+
+    <details class="faq">
+      <summary>Perlukah saya eksport setiap perbualan satu demi satu?</summary>
+      <div class="a">Tidak. Alat ini paling berbaloi untuk kumpulan — satu eksport
+        kumpulan memberi nombor semua ahli sekali gus, dan anda boleh pilih beberapa
+        fail kumpulan serentak. Untuk nombor berselerak daripada perbualan individu,
+        gunakan kotak tampal teks: salin senarai pesanan atau mesej terus ke dalamnya
+        tanpa perlu mengeksport apa-apa.</div>
+    </details>
+
+    <details class="faq">
+      <summary>Boleh saya tukar nama label selain "Customer"?</summary>
+      <div class="a">Boleh. Taip apa saja dalam ruangan Nama kontak — nama kedai,
+        nama kempen, atau tarikh. Setiap nama mempunyai penomboran sendiri, jadi
+        kumpulan pertama boleh jadi Maherian 001 hingga 050, dan kumpulan kedua bermula
+        semula dari Uitm 001. Bila anda kembali kepada nama lama, penomboran menyambung
+        dari tempat terakhir.</div>
     </details>
 
     <details class="faq">
