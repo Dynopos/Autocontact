@@ -620,31 +620,8 @@
   function doReset(){ sDel(K_NUM); sDel(K_IDX); sDel(K_IMP); refreshMemo(); }
 
   // ---------- Pemasangan PWA ----------
-  var deferred = null;
-  window.addEventListener('beforeinstallprompt', function(e){
-    e.preventDefault(); deferred = e;
-    $('install').classList.add('show');
-  });
-  $('install').addEventListener('click', function(){
-    if(deferred){ deferred.prompt(); deferred = null; $('install').classList.remove('show'); }
-  });
-  window.addEventListener('appinstalled', function(){ $('install').classList.remove('show'); });
-
-  // iOS tiada beforeinstallprompt — tunjuk arahan manual
-  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-  var standalone = window.navigator.standalone === true ||
-                   (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
-  if(isIOS && !standalone){
-    var b = $('install');
-    b.querySelector('span').textContent = 'Pasang: tekan Kongsi ⬆ → "Add to Home Screen"';
-    b.classList.add('show');
-  }
-
-  if('serviceWorker' in navigator){
-    window.addEventListener('load', function(){
-      navigator.serviceWorker.register('sw.js').catch(function(){});
-    });
-  }
+  // Dikendalikan oleh pasang.js (dikongsi semua halaman); ia guna butang
+  // #install di atas jika ada.
 
   // ── Awalan nama: pratonton langsung + ingat pilihan pengguna ──
   var savedPrefix = sGet(K_PRE);
@@ -720,5 +697,6 @@
                   lastIndex:lastIndex, record:record };
 })();
 </script>
+<script src="pasang.js" defer></script>
 </body>
 </html>

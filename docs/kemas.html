@@ -451,11 +451,9 @@
   $('back').addEventListener('click', function(){ $('file').value=''; show(0); });
   $('again').addEventListener('click', function(){ $('file').value=''; contacts=[]; result=null; show(0); });
 
-  if('serviceWorker' in navigator){
-    window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
-  }
   window.__kemas = { get contacts(){return contacts;}, get result(){return result;}, build:updatePreview };
 })();
 </script>
+<script src="pasang.js" defer></script>
 </body>
 </html>
