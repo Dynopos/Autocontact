@@ -13,14 +13,14 @@
 <meta property="og:locale" content="ms_MY">
 <meta property="og:url" content="https://autocontact.dynopro.my/simpan.html">
 <meta property="og:title" content="Simpan Nombor Pukal ke Kontak Telefon — Dynopro Auto Contact">
-<meta property="og:description" content="Eksport kumpulan atau tampal teks — dapat semua nombor tersusun sebagai kontak. Percuma, tiada pemasangan.">
+<meta property="og:description" content="Tangkap skrin senarai chat, eksport kumpulan, atau tampal senarai — semua nombor tersusun sebagai kontak. Percuma.">
 <meta property="og:image" content="https://autocontact.dynopro.my/icons/og-simpan.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Dynopro Auto Contact — simpan nombor pukal ke kontak telefon">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Simpan Nombor Pukal ke Kontak Telefon">
-<meta name="twitter:description" content="Beratus nombor dalam satu ketukan. Percuma, jalan atas Android dan iPhone.">
+<meta name="twitter:description" content="Tangkap skrin senarai chat dan dapat nombornya terus. Percuma, jalan atas Android dan iPhone.">
 <meta name="twitter:image" content="https://autocontact.dynopro.my/icons/og-simpan.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/favicon-32.png" sizes="32x32">
@@ -107,6 +107,21 @@
     color:var(--ink);line-height:1.5}
   .pastebox textarea:focus{outline:none;border-color:var(--brand);
     box-shadow:0 0 0 3px rgba(139,47,214,.14)}
+
+  /* Baca tangkapan skrin */
+  .shot{border:2px dashed #b9a9cc;border-radius:20px;background:#fff;
+        padding:26px 18px;text-align:center;cursor:pointer;display:block;transition:.2s}
+  .shot:active{transform:scale(.985)}
+  .shot.hot{border-color:var(--brand);background:#f5edff}
+  .shot b{display:block;margin-top:10px;font-size:15.5px}
+  .shot span{display:block;margin-top:4px;font-size:12.5px;color:var(--muted)}
+  .shot b .badgenew{display:inline-block;width:auto;margin-top:0}
+  .badgenew{display:inline-block;background:#f0e4ff;color:#5B1094;font-size:10.5px;
+            font-weight:800;letter-spacing:.5px;padding:3px 9px;border-radius:20px;
+            vertical-align:middle;margin-left:7px}
+  .bar{height:8px;background:#e3d7f5;border-radius:5px;overflow:hidden;margin:16px 0 10px}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#9D4BE8,#5B1094);
+         width:0;transition:width .3s}
   .linkbtn{background:none;border:none;color:var(--muted);font-size:13px;padding:11px;
            width:100%;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
 
@@ -176,8 +191,9 @@
     </div>
 
     <div class="intro" id="intro">
-      Muat naik fail eksport perbualan — kami tapis semua nombor, buang yang berulang,
-      dan sediakan fail kontak untuk anda import sekali gus.
+      Tangkap skrin senarai chat, eksport kumpulan, atau tampal senarai — kami tapis
+      semua nombor, buang yang berulang, dan sediakan fail kontak untuk anda import
+      sekali gus.
     </div>
 
     <div class="memo" id="memo" style="display:none">
@@ -196,8 +212,9 @@
     <!-- PANEL 1 -->
     <section class="panel show" id="p0">
       <h2>Kumpul nombor</h2>
-      <p class="sub"><b>Paling berbaloi untuk kumpulan</b> — satu eksport kumpulan memberi
-        nombor semua ahli sekali gus. Untuk nombor berselerak, tampal teks di bawah.</p>
+      <p class="sub">Pilih mana-mana cara di bawah. <b>Paling mudah:</b> tangkap skrin
+        senarai chat anda — nombor pelanggan yang belum disimpan memang sudah terpapar
+        di situ.</p>
 
       <div class="namebox">
         <label for="prefix">Nama kontak</label>
@@ -225,6 +242,15 @@
         <button class="btn alt" id="pasteBtn" style="margin-top:10px">Tapis nombor dari teks ini</button>
       </div>
 
+      <div class="or">atau</div>
+
+      <label class="shot" id="shot">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#7C22CE" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 012-2h2l1.5-2h7L17 6h2a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
+        <b>Tangkapan skrin senarai chat<span class="badgenew">BARU</span></b>
+        <span>kami baca nombor terus dari gambar — boleh pilih banyak</span>
+        <input type="file" id="shotFile" accept="image/*" multiple hidden>
+      </label>
+
       <button class="btn alt" id="demo">✨ Cuba dengan contoh (demo)</button>
 
       <a href="kemas.html" class="btn alt" style="text-decoration:none;margin-top:9px">
@@ -237,6 +263,14 @@
         Set semula rekod
       </button>
       <div class="note">🔒 Fail diproses dalam telefon anda. Tiada data dihantar ke server.</div>
+    </section>
+
+    <!-- PANEL BACA GAMBAR -->
+    <section class="panel" id="pShot">
+      <h2>Membaca gambar…</h2>
+      <p class="sub" id="shotMsg">Menyediakan…</p>
+      <div class="bar"><i id="shotBar"></i></div>
+      <div class="note">🔒 Gambar diproses dalam telefon anda. Tiada imej dihantar ke mana-mana.</div>
     </section>
 
     <!-- PANEL 2 -->
@@ -302,6 +336,7 @@
   </div>
 </dialog>
 
+<script src="ocr.js" defer></script>
 <script>
 (function(){
   'use strict';
@@ -369,25 +404,37 @@
   // "RM 50 012-345 6789" tidak tersalah baca sebagai satu nombor panjang.
   // Ruang tak-putus (U+00A0 / U+202F) disokong kerana eksport iPhone guna ia.
   var RE = new RegExp(
-    '(?:^|[^\\d+])(' +
-      '\\+\\d[\\d \\u00a0\\u202f\\-()]{6,}\\d' +   // antarabangsa
-      '|' +
-      '0[1-9][\\d \\u00a0\\u202f\\-()]{6,}\\d' +   // tempatan Malaysia
-    ')', 'g');
+    '(?:^|[^\\d+])(\\+?\\d[\\d \\u00a0\\u202f\\-()]{6,}\\d)', 'g');
 
-  // Tukar kepada satu bentuk piawai. Pulangkan '' jika ia bukan nombor
-  // munasabah — ini yang menapis tarikh (01-08-2026), harga dan no. pesanan.
+  // Peraturan sebenar nombor mudah alih Malaysia:
+  //   011 dan 015   -> 10 digit selepas '60'  (011-1234 5678)
+  //   01X yang lain ->  9 digit selepas '60'  (012-345 6789)
+  // Ketepatan inilah yang membolehkan kita menolak tarikh dan cap masa
+  // yang tercantum dengan nombor, terutamanya dari bacaan tangkapan skrin.
+  function validMY(after60){
+    if(!/^\d+$/.test(after60)) return false;
+    if(after60.charAt(0) === '1'){
+      var p2 = after60.slice(0,2);
+      return after60.length === ((p2 === '11' || p2 === '15') ? 10 : 9);
+    }
+    return after60.length >= 8 && after60.length <= 9;   // talian tetap
+  }
+
+  // Tukar kepada satu bentuk piawai. Pulangkan '' jika bukan nombor munasabah.
   function toStd(raw){
     var d = raw.replace(/[^\d+]/g, '');
-    if(d.charAt(0) === '+'){
-      return (d.length >= 8 && d.length <= 16) ? d : '';
-    }
-    if(d.charAt(0) === '0'){
-      var rest = d.slice(1);
-      var mobile = rest.charAt(0) === '1' && (rest.length === 9 || rest.length === 10);
-      var fixed  = '23456789'.indexOf(rest.charAt(0)) > -1 &&
-                   (rest.length === 8 || rest.length === 9);
-      return (mobile || fixed) ? '+60' + rest : '';
+    var plus = d.charAt(0) === '+';
+    if(plus) d = d.slice(1);
+    else if(d.charAt(0) === '0') d = '60' + d.slice(1);
+    else return '';
+
+    // Potong digit berlebihan dari hujung sehingga menjadi nombor yang sah.
+    // Inilah yang memulihkan "+60 12-345 6789" daripada "+601234567891:52 PM".
+    for(var i = 0; i < 6; i++){
+      var t = d.slice(0, d.length - i);
+      if(t.indexOf('60') === 0 && validMY(t.slice(2))) return '+' + t;
+      // Nombor bukan-Malaysia diterima seadanya, tanpa pemotongan
+      if(plus && i === 0 && t.indexOf('60') !== 0 && t.length >= 8 && t.length <= 15) return '+' + t;
     }
     return '';
   }
@@ -444,9 +491,10 @@
   var cur = null, lastFile = null;
 
   function show(i){
-    ['p0','p1','p2'].forEach(function(p,n){ $(p).classList.toggle('show', n===i); });
+    ['p0','p1','p2','pShot'].forEach(function(p,n){ $(p).classList.toggle('show', n===i); });
     window.scrollTo(0,0);
   }
+  var SHOT = 3;   // indeks panel membaca gambar
 
   function refreshMemo(){
     var s = savedSet(), n = s.size;
@@ -611,6 +659,48 @@
     if(!$('prefix').value.trim()) $('prefix').value = 'Customer';
     syncPreview();
   });
+
+  // ── Tangkapan skrin: baca nombor terus dari gambar senarai chat ──
+  function shotProgress(msg, frac){
+    $('shotMsg').textContent = msg;
+    $('shotBar').style.width = Math.round(Math.max(0, Math.min(1, frac||0)) * 100) + '%';
+  }
+
+  $('shotFile').addEventListener('change', function(e){
+    var files = Array.prototype.slice.call(e.target.files || []);
+    if(!files.length) return;
+    $('shotFile').value = '';
+
+    window.DynoOCR.isCached().then(function(cached){
+      if(!cached){
+        var ok = confirm(
+          'Kali pertama sahaja: enjin pembaca (lebih kurang 7 MB) akan dimuat turun.\n\n' +
+          'Selepas ini ia tersimpan dalam telefon anda dan berfungsi tanpa internet.\n\n' +
+          'Disyorkan guna WiFi. Teruskan?');
+        if(!ok) return;
+      }
+      show(SHOT);
+      shotProgress('Menyediakan…', 0.02);
+      window.DynoOCR.readScreenshots(files, shotProgress)
+        .then(function(text){
+          if(!text || !text.trim()){
+            alert('Tiada teks dapat dibaca dari gambar itu.\n\nPastikan tangkapan skrin jelas dan tidak terlalu kecil.');
+            show(0); return;
+          }
+          process(text, files.length);
+        })
+        .catch(function(err){
+          alert('Maaf, gambar tidak dapat dibaca.\n\n' + (err && err.message ? err.message : err));
+          show(0);
+        });
+    });
+  });
+
+  var shot = $('shot');
+  ['dragenter','dragover'].forEach(function(ev){
+    shot.addEventListener(ev, function(e){ e.preventDefault(); shot.classList.add('hot'); }); });
+  ['dragleave','drop'].forEach(function(ev){
+    shot.addEventListener(ev, function(e){ e.preventDefault(); shot.classList.remove('hot'); }); });
 
   // ── Tampal teks: untuk nombor berselerak, tanpa perlu eksport ──
   $('pasteBtn').addEventListener('click', function(){
