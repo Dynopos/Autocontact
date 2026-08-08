@@ -276,6 +276,7 @@
   </div>
 </div>
 
+<script src="simpan-fail.js"></script>
 <script src="kemas-engine.js"></script>
 <script>
 (function(){
@@ -426,13 +427,8 @@
   });
   $('moreGroups').addEventListener('click', function(){ renderGroups(shownGroups+15); });
 
-  function download(name, data){
-    var blob=new Blob([data],{type:'text/vcard;charset=utf-8'});
-    var url=URL.createObjectURL(blob);
-    var a=document.createElement('a'); a.href=url; a.download=name;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(function(){ URL.revokeObjectURL(url); }, 4000);
-  }
+  // Lihat simpan-fail.js — iPhone perlu helaian Kongsi, bukan muat turun.
+  function download(name, data){ return window.DynoFail.hantar(name, data); }
 
   $('download').addEventListener('click', function(){
     var built=updatePreview();

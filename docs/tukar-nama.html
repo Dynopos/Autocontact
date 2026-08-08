@@ -233,6 +233,7 @@
   </div>
 </div>
 
+<script src="simpan-fail.js"></script>
 <script src="kemas-engine.js"></script>
 <script>
 (function(){
@@ -345,14 +346,8 @@
     setTimeout(function(){ $('baru').focus(); }, 260);
   }
 
-  function muatTurun(nama, data){
-    var b = new Blob([data], { type: 'text/vcard;charset=utf-8' });
-    var u = URL.createObjectURL(b);
-    var a = document.createElement('a');
-    a.href = u; a.download = nama;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    setTimeout(function(){ URL.revokeObjectURL(u); }, 1500);
-  }
+  // Lihat simpan-fail.js — iPhone perlu helaian Kongsi, bukan muat turun.
+  function muatTurun(nama, data){ return window.DynoFail.hantar(nama, data); }
 
   // ---------- Baca fail ----------
   var drop = $('drop');

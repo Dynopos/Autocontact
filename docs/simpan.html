@@ -353,7 +353,7 @@
 
         <div class="howto">
           <h3>Langkah terakhir</h3>
-          <ol>
+          <ol id="howtoList">
             <li>Buka fail <b>.vcf</b> yang baru dimuat turun</li>
             <li>Telefon akan tanya — pilih <b>Import</b> / <b>Add All Contacts</b></li>
             <li>Siap! Semua kontak masuk serentak</li>
@@ -381,6 +381,7 @@
   </div>
 </dialog>
 
+<script src="simpan-fail.js"></script>
 <script src="kemas-engine.js"></script>
 <script src="ocr.js" defer></script>
 <script>
@@ -545,14 +546,35 @@
               'TEL;TYPE=CELL:'+n,'END:VCARD'].join('\r\n');
     }).join('\r\n') + '\r\n';
   }
-  var lastBlobUrl = null;
-  function download(name, data){
-    var blob = new Blob([data], {type:'text/vcard;charset=utf-8'});
-    if(lastBlobUrl) URL.revokeObjectURL(lastBlobUrl);
-    lastBlobUrl = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = lastBlobUrl; a.download = name;
-    document.body.appendChild(a); a.click(); a.remove();
+  // Penghantaran fail dikendalikan oleh simpan-fail.js — lihat fail itu
+  // untuk sebab iPhone perlu jalan berlainan.
+  function isIOS(){ return window.DynoFail.isIOS(); }
+  function download(name, data){ return window.DynoFail.hantar(name, data); }
+
+  // Arahan berbeza mengikut telefon — pengguna iPhone tidak ada folder
+  // "Muat Turun" yang sama, jadi arahan Android hanya mengelirukan mereka.
+  function setHowto(cara){
+    var el = $('howtoList');
+    if(!el) return;
+    var langkah;
+    if(cara === 'kongsi'){
+      langkah = ['Dalam helaian Kongsi, pilih <b>Save to Files</b> → <b>Downloads</b>',
+                 'Buka app <b>Files</b>, ketuk fail <b>.vcf</b> itu',
+                 'Ketuk <b>Add All Contacts</b> — semua kontak masuk serentak'];
+    } else if(cara === 'tab'){
+      langkah = ['Safari akan papar bar <b>Download</b> di bawah — ketuk <b>Download</b>',
+                 'Buka app <b>Files</b> → <b>Downloads</b>, ketuk fail <b>.vcf</b> itu',
+                 'Ketuk <b>Add All Contacts</b> — semua kontak masuk serentak'];
+    } else if(isIOS()){
+      langkah = ['Ketuk ikon muat turun ⬇ di bar alamat Safari, atau buka app <b>Files</b> → <b>Downloads</b>',
+                 'Ketuk fail <b>.vcf</b> itu',
+                 'Ketuk <b>Add All Contacts</b> — semua kontak masuk serentak'];
+    } else {
+      langkah = ['Buka fail <b>.vcf</b> yang baru dimuat turun',
+                 'Telefon akan tanya — pilih <b>Import</b> / <b>Add All Contacts</b>',
+                 'Siap! Semua kontak masuk serentak'];
+    }
+    el.innerHTML = langkah.map(function(t){ return '<li>'+t+'</li>'; }).join('');
   }
 
   // ---------- UI ----------
@@ -710,7 +732,7 @@
     var safe = prefixVal().replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'') || 'Kontak';
     lastFile = { name: safe+'_'+cur.fresh.length+'_kontak.vcf',
                  data:buildVCF(cur.fresh, cur.start) };
-    download(lastFile.name, lastFile.data);
+    setHowto(download(lastFile.name, lastFile.data));
     record(cur.fresh, cur.start + cur.fresh.length - 1);
     $('doneBadge').textContent = cur.fresh.length + ' kontak dalam fail';
     refreshMemo();
@@ -718,7 +740,7 @@
   });
 
   $('redownload').addEventListener('click', function(){
-    if(lastFile) download(lastFile.name, lastFile.data);
+    if(lastFile) setHowto(download(lastFile.name, lastFile.data));
   });
 
   $('back').addEventListener('click', function(){ $('file').value=''; show(0); });
