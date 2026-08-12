@@ -113,6 +113,41 @@
   .mynum .hint.ok{color:#1e8e4a;font-weight:700}
   .shield.tegur{border-color:var(--brand);box-shadow:0 0 0 4px rgba(139,47,214,.16)}
 
+  /* Kuota percubaan & premium */
+  .kuota{display:flex;align-items:center;gap:10px;margin-top:14px;
+         background:rgba(255,255,255,.10);border-radius:13px;padding:11px 14px}
+  .kuota .kbar{flex:1;height:7px;background:rgba(255,255,255,.18);border-radius:5px;overflow:hidden}
+  .kuota .kbar i{display:block;height:100%;background:linear-gradient(90deg,#C77DFF,#9D4BE8);
+                 width:0;transition:width .4s}
+  .kuota .kt{font-size:12px;color:#e2d6f5;font-weight:700;white-space:nowrap}
+  .kuota.pro{background:linear-gradient(135deg,rgba(157,75,232,.34),rgba(91,16,148,.34));
+             border:1.5px solid rgba(199,125,255,.5)}
+  .kuota.pro .kt{color:#fff}
+
+  .pay{background:#fff;border-radius:20px;padding:24px 20px;text-align:center}
+  .pay .tag{display:inline-block;background:#f0e4ff;color:#5B1094;font-size:11px;
+            font-weight:800;letter-spacing:1.2px;padding:6px 13px;border-radius:20px}
+  .pay h3{font-size:21px;font-weight:900;margin:14px 0 8px;letter-spacing:-.4px}
+  .pay .sub2{font-size:14px;color:var(--muted);line-height:1.55}
+  .pay .harga{margin:20px 0 6px;font-size:44px;font-weight:900;color:#5B1094;letter-spacing:-1.5px}
+  .pay .sekali{font-size:13px;color:var(--muted);font-weight:700}
+  .pay ul{list-style:none;text-align:left;margin:20px 0 4px}
+  .pay li{font-size:14px;color:var(--ink);line-height:1.5;padding:9px 0;
+          display:flex;gap:10px;align-items:flex-start}
+  .pay li b{color:#5B1094}
+  .pay .tik{flex:none;color:#8B2FD6;font-weight:900}
+  .kodrow{display:flex;gap:8px;margin-top:14px}
+  .kodrow input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:12px;
+    padding:13px;font-size:16px;font-family:inherit;text-transform:uppercase;
+    letter-spacing:1px;color:var(--ink);background:#fff}
+  .kodrow input:focus{outline:none;border-color:var(--brand);
+    box-shadow:0 0 0 3px rgba(139,47,214,.14)}
+  .kodrow button{flex:none;border:none;border-radius:12px;padding:13px 18px;
+    background:#5B1094;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit}
+  .kodmsg{font-size:12.5px;margin-top:9px;line-height:1.45;color:var(--muted)}
+  .kodmsg.bad{color:#c0392b;font-weight:700}
+  .kodmsg.good{color:#1e8e4a;font-weight:700}
+
   /* Nama kontak boleh ubah */
   .namebox{background:#fff;border-radius:16px;padding:15px;margin-bottom:14px}
   .namebox>label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:8px}
@@ -234,6 +269,11 @@
       <div id="memoText"></div>
     </div>
 
+    <div class="kuota" id="kuota" style="display:none">
+      <div class="kbar"><i id="kbarFill"></i></div>
+      <div class="kt" id="kuotaTeks"></div>
+    </div>
+
     <button id="install">
       <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
       <span>Pasang ke skrin utama telefon</span>
@@ -241,6 +281,39 @@
   </header>
 
   <div class="sheet">
+
+    <!-- PANEL PREMIUM -->
+    <section class="panel" id="pPay">
+      <div class="pay">
+        <span class="tag">HAD PERCUMA TAMAT</span>
+        <h3>Anda sudah simpan 100 kontak</h3>
+        <p class="sub2">Percubaan percuma habis. Buka premium sekali sahaja,
+          guna selamanya — tiada bayaran bulanan, tiada pembaharuan.</p>
+
+        <div class="harga">RM14.90</div>
+        <div class="sekali">bayar sekali &middot; seumur hidup</div>
+
+        <ul>
+          <li><span class="tik">&#10003;</span><span>Kontak <b>tanpa had</b> — beribu pun boleh</span></li>
+          <li><span class="tik">&#10003;</span><span>Baca tangkapan skrin tanpa had</span></li>
+          <li><span class="tik">&#10003;</span><span>Perlindungan nama sedia ada kekal aktif</span></li>
+          <li><span class="tik">&#10003;</span><span>Kemas kontak pendua &amp; tukar nama pukal</span></li>
+        </ul>
+
+        <a class="btn" id="payBtn" href="#" style="text-decoration:none;margin-top:16px">
+          Buka premium &mdash; RM14.90
+        </a>
+
+        <div class="kodrow">
+          <input type="text" id="kodInput" placeholder="DYNO-XXXX-XXXX" autocomplete="off"
+                 spellcheck="false" maxlength="16">
+          <button id="kodBtn">Buka</button>
+        </div>
+        <div class="kodmsg" id="kodMsg">Sudah bayar? Masukkan kod yang anda terima.</div>
+
+        <button class="linkbtn" id="payBack" style="margin-top:10px">&larr; Kembali</button>
+      </div>
+    </section>
 
     <!-- PANEL 1 -->
     <section class="panel show" id="p0">
@@ -360,6 +433,7 @@
       <div class="foot">
         <button class="btn alt" id="includeOld" style="display:none;margin-top:0;margin-bottom:11px"></button>
         <button class="btn" id="goShield" style="display:none">🛡️ Muat naik kontak saya dahulu</button>
+        <button class="btn" id="goPay" style="display:none">✦ Buka premium — RM14.90</button>
         <button class="btn" id="save">💾 Simpan kontak baharu</button>
         <button class="linkbtn" id="back">← Pilih fail lain</button>
       </div>
@@ -404,6 +478,7 @@
   </div>
 </dialog>
 
+<script src="lesen.js"></script>
 <script src="simpan-fail.js"></script>
 <script src="kemas-engine.js"></script>
 <script src="ocr.js" defer></script>
@@ -618,10 +693,11 @@
   var cur = null, lastFile = null;
 
   function show(i){
-    ['p0','p1','p2','pShot'].forEach(function(p,n){ $(p).classList.toggle('show', n===i); });
+    ['p0','p1','p2','pShot','pPay'].forEach(function(p,n){ $(p).classList.toggle('show', n===i); });
     window.scrollTo(0,0);
   }
   var SHOT = 3;   // indeks panel membaca gambar
+  var PAY  = 4;   // indeks panel premium
 
   function refreshMemo(){
     var s = savedSet(), n = s.size;
@@ -720,8 +796,20 @@
     // tidak ada. Tiada dialog "OK teruskan", tiada jalan pintas — kerana
     // setiap kali ia dilepaskan, nama sebenar seseorang yang jadi mangsa.
     var dilindungi = addrCount() > 0;
-    $('save').style.display   = dilindungi ? 'flex' : 'none';
+    var baki = bakiKuota();
+    var kuotaHabis = (baki <= 0 && f.length > 0);
+
+    $('save').style.display     = (dilindungi && !kuotaHabis) ? 'flex' : 'none';
     $('goShield').style.display = (!dilindungi && f.length > 0) ? 'flex' : 'none';
+    $('goPay').style.display    = (dilindungi && kuotaHabis) ? 'flex' : 'none';
+
+    // Kuota tinggal sedikit — beritahu awal, jangan kejutkan mereka
+    // selepas mereka sudah kumpul nombor.
+    if(dilindungi && !kuotaHabis && baki !== Infinity && f.length > baki){
+      $('save').innerHTML = '\uD83D\uDCBE Simpan ' + baki + ' kontak (baki percuma)';
+    } else if(dilindungi && !kuotaHabis){
+      $('save').innerHTML = '\uD83D\uDCBE Simpan kontak baharu';
+    }
 
     var bolehTambah = cur.langkau.filter(function(x){ return x.jenis === 'rekod'; }).length;
     if(bolehTambah > 0){
@@ -785,6 +873,15 @@
     // memastikan tiada jalan masuk lain.
     if(addrCount() === 0){ show(0); tegurPerisai(); return; }
 
+    // Had percubaan. Kami potong kepada baki yang ada dan biarkan mereka
+    // simpan — lebih baik daripada menghalang terus selepas mereka
+    // sudah bersusah payah mengumpul nombor.
+    var baki = bakiKuota();
+    if(baki <= 0){ bukaPay(); return; }
+    if(baki !== Infinity && cur.fresh.length > baki){
+      cur.fresh = cur.fresh.slice(0, baki);
+    }
+
     var safe = prefixVal().replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'') || 'Kontak';
     lastFile = { name: safe+'_'+cur.fresh.length+'_kontak.vcf',
                  data:buildVCF(cur.fresh, cur.start) };
@@ -792,6 +889,7 @@
     record(cur.fresh, cur.start + cur.fresh.length - 1);
     $('doneBadge').textContent = cur.fresh.length + ' kontak dalam fail';
     refreshMemo();
+    refreshKuota();
     show(2);
   });
 
@@ -823,6 +921,48 @@
   $('rNo').addEventListener('click', function(){ dlg.close(); });
   $('rYes').addEventListener('click', function(){ dlg.close(); doReset(); });
   function doReset(){ sDel(K_NUM); sDel(K_IDX); sDel(K_IMP); refreshMemo(); }
+
+  // ---------- Percubaan & premium ----------
+  var L = window.DynoLesen;
+
+  function bakiKuota(){ return L.baki(savedSet().size); }
+
+  function refreshKuota(){
+    var box = $('kuota'), guna = savedSet().size;
+    box.style.display = 'flex';
+    if(L.premium()){
+      box.classList.add('pro');
+      $('kbarFill').style.width = '100%';
+      $('kuotaTeks').textContent = '\u2726 PREMIUM \u00b7 tanpa had';
+      return;
+    }
+    box.classList.remove('pro');
+    var pct = Math.min(100, Math.round(guna / L.HAD * 100));
+    $('kbarFill').style.width = pct + '%';
+    $('kuotaTeks').textContent = guna + ' / ' + L.HAD + ' percuma';
+  }
+
+  function bukaPay(){
+    var bayar = L.bayarUrl();
+    $('payBtn').setAttribute('href', bayar || L.waLink());
+    $('payBtn').setAttribute('target', '_blank');
+    $('payBtn').setAttribute('rel', 'noopener');
+    show(PAY);
+  }
+  $('payBack').addEventListener('click', function(){ show(cur && cur.fresh ? 1 : 0); });
+
+  $('kodBtn').addEventListener('click', function(){
+    var msg = $('kodMsg');
+    if(L.pasangKod($('kodInput').value)){
+      msg.className = 'kodmsg good';
+      msg.textContent = '\u2713 Premium dibuka. Terima kasih!';
+      refreshKuota(); refreshMemo();
+      setTimeout(function(){ if(cur && cur.fresh) render(); else show(0); }, 900);
+    } else {
+      msg.className = 'kodmsg bad';
+      msg.textContent = 'Kod itu tidak sah. Semak semula ejaannya.';
+    }
+  });
 
   // ---------- Pemulihan ----------
   // App merekod nombor sebagai "sudah disimpan" sebaik sahaja fail dijana.
@@ -863,6 +1003,7 @@
     setTimeout(function(){ box.classList.remove('tegur'); }, 2600);
   }
   $('goShield').addEventListener('click', function(){ show(0); tegurPerisai(); });
+  $('goPay').addEventListener('click', bukaPay);
 
   // Nombor sendiri — disimpan dalam bentuk piawai supaya padanan tidak
   // terlepas walau pengguna menaipnya dalam format berbeza.
@@ -1030,6 +1171,7 @@
   });
 
   syncPreview();
+  refreshKuota();
   refreshShield();
   refreshMemo();
 
