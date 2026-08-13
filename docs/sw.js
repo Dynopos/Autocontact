@@ -9,6 +9,7 @@ const SHELL = [
   './buang-kontak-pendua.html',
   './kemas.html',
   './tukar-nama.html',
+  './jual.html',
   './kemas-engine.js',
   './ocr.js',
   './simpan-fail.js',

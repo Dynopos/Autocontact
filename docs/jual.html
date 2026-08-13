@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Harga — 100 Kontak Percuma, Premium RM14.90 | Dynopro Auto Contact</title>
+<meta name="description" content="100 kontak pertama percuma tanpa pendaftaran. Premium RM14.90 dibayar sekali sahaja membuka kontak tanpa had — tiada langganan, tiada pembaharuan.">
+<link rel="canonical" href="https://autocontact.dynopro.my/jual.html">
+
+<meta name="theme-color" content="#ffffff">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="alternate" hreflang="ms-MY" href="https://autocontact.dynopro.my/jual.html">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Dynopro Auto Contact">
+<meta property="og:locale" content="ms_MY">
+<meta property="og:url" content="https://autocontact.dynopro.my/jual.html">
+<meta property="og:title" content="Harga — 100 Kontak Percuma, Premium RM14.90">
+<meta property="og:description" content="Bayar sekali RM14.90 untuk kontak tanpa had. Tiada langganan, tiada pembaharuan, tiada pendaftaran akaun.">
+<meta property="og:image" content="https://autocontact.dynopro.my/icons/og-simpan.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Harga Dynopro Auto Contact — 100 kontak percuma, premium RM14.90">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Harga — 100 Kontak Percuma, Premium RM14.90">
+<meta name="twitter:description" content="Bayar sekali RM14.90 untuk kontak tanpa had. Tiada langganan.">
+<meta name="twitter:image" content="https://autocontact.dynopro.my/icons/og-simpan.png">
+
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="seo.css">
+
+<style>
+  /* ── Halaman harga: latar putih, aksen warna-warni ──
+     Halaman lain menggunakan hero ungu gelap. Di sini kami mahu nada yang
+     lebih terbuka dan mesra, kerana inilah halaman tempat orang membuat
+     keputusan membelanjakan wang. */
+  :root{
+    --c1:#8B2FD6;   /* ungu jenama */
+    --c2:#E8447F;   /* merah jambu */
+    --c3:#0FA3A0;   /* biru kehijauan */
+    --c4:#F59E0B;   /* kuning kekuningan */
+    --c5:#16A34A;   /* hijau */
+  }
+  body{background:#fff}
+
+  /* Bar navigasi cerah, bukan hitam */
+  .nav{background:#fff;border-bottom:1px solid var(--line);padding:12px 0}
+  .nav .nm{color:var(--ink)}
+  .nav .nm span{color:var(--muted)}
+  .nav a.lnk{color:var(--brand-dk)}
+  .nav a.lnk:hover{background:#f4ecfd}
+
+  /* Hero putih dengan tajuk berwarna */
+  .hero{background:#fff;color:var(--ink);padding:44px 0 10px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:-140px -60px auto auto;
+    width:320px;height:320px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle,rgba(232,68,127,.16),rgba(139,47,214,0) 68%)}
+  .hero::after{content:"";position:absolute;inset:auto auto -170px -80px;
+    width:300px;height:300px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle,rgba(15,163,160,.16),rgba(15,163,160,0) 68%)}
+  .hero .wrap{position:relative}
+  .hero h1{color:var(--ink)}
+  .hero h1 em{font-style:normal;
+    background:linear-gradient(100deg,var(--c1),var(--c2) 55%,var(--c4));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero .lead{color:var(--ink-2)}
+  .pill{color:#fff;background:linear-gradient(100deg,var(--c1),var(--c2));font-weight:700}
+
+  /* Jalur warna nipis di bawah hero — pengganti hero gelap */
+  .rainbow{height:6px;
+    background:linear-gradient(90deg,var(--c1),var(--c2) 26%,var(--c4) 52%,var(--c5) 76%,var(--c3))}
+
+  section{padding:40px 0}
+  section.soft{background:#fbf9fe}
+
+  /* Kad harga */
+  .plans{display:grid;gap:18px;margin-top:26px}
+  @media(min-width:660px){.plans{grid-template-columns:1fr 1fr;align-items:start}}
+  .plan{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;
+        position:relative;overflow:hidden}
+  .plan::before{content:"";position:absolute;top:0;left:0;right:0;height:5px}
+  .plan.free::before{background:linear-gradient(90deg,var(--c3),var(--c5))}
+  .plan.pro::before{background:linear-gradient(90deg,var(--c1),var(--c2) 60%,var(--c4))}
+  .plan.pro{border:2px solid transparent;
+    background:
+      linear-gradient(#fff,#fff) padding-box,
+      linear-gradient(140deg,var(--c1),var(--c2) 55%,var(--c4)) border-box;
+    box-shadow:0 14px 38px rgba(139,47,214,.15)}
+  .plan .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.9px;font-weight:800}
+  .plan.free .lbl{color:var(--c3)}
+  .plan.pro .lbl{color:var(--c2)}
+  .plan .amt{font-size:44px;font-weight:900;letter-spacing:-1.5px;margin-top:10px;line-height:1.1}
+  .plan.free .amt{color:var(--c3)}
+  .plan.pro .amt{background:linear-gradient(100deg,var(--c1),var(--c2));
+    -webkit-background-clip:text;background-clip:text;color:transparent}
+  .plan .per{font-size:13.5px;color:var(--muted);font-weight:700;margin-top:2px}
+  .plan ul{list-style:none;margin-top:18px}
+  .plan li{font-size:14.5px;color:var(--ink-2);padding:8px 0;display:flex;gap:10px;align-items:flex-start}
+  .plan li b{color:var(--ink)}
+  .tik{flex:none;font-weight:900}
+  .plan.free .tik{color:var(--c5)}
+  .plan.pro  .tik{color:var(--c1)}
+  /* Kekhususan mesti melebihi `.plan.free .tik` di atas, jika tidak
+     tanda silang mewarisi hijau dan kelihatan seperti ciri yang ada. */
+  .plan .tik.off{color:#c2bbcf}
+  .plan .btn{width:100%;margin-top:20px}
+  .btn.warna{background:linear-gradient(120deg,var(--c1),var(--c2) 62%,var(--c4));
+             box-shadow:0 10px 26px rgba(232,68,127,.34)}
+  .btn.tepi{background:#fff;color:var(--c3);border:1.5px solid #bfe6e5;box-shadow:none}
+  .btn.tepi:hover{background:#f0fbfa;filter:none}
+
+  /* Kotak kod */
+  .kodbox{background:#fff;border:1px solid var(--line);border-radius:20px;
+          padding:22px;margin-top:26px;position:relative;overflow:hidden}
+  .kodbox::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;
+    background:linear-gradient(90deg,var(--c4),var(--c2))}
+  .kodrow{display:flex;gap:9px;margin-top:14px;flex-wrap:wrap}
+  .kodrow input{flex:1;min-width:190px;border:1.5px solid var(--line);border-radius:13px;
+    padding:14px;font-size:16px;font-family:inherit;text-transform:uppercase;
+    letter-spacing:1.4px;color:var(--ink);background:#fff}
+  .kodrow input:focus{outline:none;border-color:var(--c2);
+    box-shadow:0 0 0 3px rgba(232,68,127,.16)}
+  .kodrow button{flex:none;min-height:52px;border:none;border-radius:13px;padding:14px 26px;
+    background:linear-gradient(120deg,var(--c1),var(--c2));color:#fff;font-size:15px;
+    font-weight:800;cursor:pointer;font-family:inherit}
+  .kodmsg{font-size:13.5px;margin-top:11px;line-height:1.5;color:var(--muted)}
+  .kodmsg.bad{color:#c0392b;font-weight:700}
+  .kodmsg.good{color:var(--c5);font-weight:700}
+
+  /* Status semasa pengguna */
+  .status{display:none;align-items:center;gap:13px;background:#fff;
+          border:1px solid var(--line);border-radius:15px;padding:15px 18px;margin-top:22px}
+  .status.show{display:flex}
+  .status .bar{flex:1;height:9px;background:#eee9f4;border-radius:6px;overflow:hidden;min-width:90px}
+  .status .bar i{display:block;height:100%;width:0;
+    background:linear-gradient(90deg,var(--c3),var(--c4) 55%,var(--c2))}
+  .status .t{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap}
+  .status.pro{border-color:#e9c9f5;background:#fdf6ff}
+
+  /* Kotak ciri berwarna */
+  .box{border-radius:18px;position:relative;overflow:hidden}
+  .box::before{content:"";position:absolute;top:0;left:0;right:0;height:4px}
+  .box.hijau::before{background:linear-gradient(90deg,var(--c5),var(--c3))}
+  .box.ungu::before{background:linear-gradient(90deg,var(--c1),var(--c2))}
+  .box.hijau h3{color:var(--c5)}
+  .box.ungu h3{color:var(--c1)}
+
+  details.faq summary::before{color:var(--c2)}
+
+  .note{background:#fffaf0;border:1px solid #f6dfb0;border-radius:16px;
+        padding:15px 17px;margin-top:22px;font-size:14px;color:#7a4f00;line-height:1.6}
+  .note b{color:#5c3b00}
+
+  /* Jalur ajakan tetap berwarna — ia satu-satunya blok gelap di halaman ini */
+  .strip{background:linear-gradient(120deg,#5B1094,#8B2FD6 42%,#E8447F)}
+</style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Dynopro Auto Contact — Premium",
+  "url": "https://autocontact.dynopro.my/jual.html",
+  "image": "https://autocontact.dynopro.my/icons/og-simpan.png",
+  "description": "Membuka had kontak dalam Dynopro Auto Contact. 100 kontak pertama percuma; premium dibayar sekali sahaja untuk kontak tanpa had.",
+  "brand": { "@type": "Brand", "name": "Dynopro" },
+  "offers": {
+    "@type": "Offer",
+    "price": "14.90",
+    "priceCurrency": "MYR",
+    "availability": "https://schema.org/InStock",
+    "url": "https://autocontact.dynopro.my/jual.html",
+    "description": "Bayaran sekali seumur hidup. Tiada langganan dan tiada pembaharuan."
+  }
+}
+</script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <img src="icons/logo-mark.png" alt="Logo Dynopro" width="38" height="38">
+    <div class="nm">Dynopro<span>Auto Contact</span></div>
+    <div class="sp"></div>
+    <a class="lnk" href="index.html">Utama</a>
+    <a class="lnk" href="simpan.html">Buka Alat</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="pill">💜 Bayar sekali · Tiada langganan</span>
+    <h1>100 kontak <em>percuma</em>. Selepas itu <em>RM14.90</em>, sekali sahaja.</h1>
+    <p class="lead">
+      Tiada pendaftaran akaun, tiada bayaran bulanan, tiada pembaharuan tahunan.
+      Anda bayar sekali, dan alat ini kekal terbuka selama-lamanya pada telefon itu.
+    </p>
+  </div>
+</header>
+<div class="rainbow"></div>
+
+<section>
+  <div class="wrap">
+
+    <!-- Status pengguna semasa; dipapar hanya jika mereka sudah mula guna -->
+    <div class="status" id="status">
+      <div class="bar"><i id="bar"></i></div>
+      <div class="t" id="statusT"></div>
+    </div>
+
+    <div class="plans">
+
+      <div class="plan free">
+        <div class="lbl">Percuma</div>
+        <div class="amt">RM0</div>
+        <div class="per">100 kontak pertama</div>
+        <ul>
+          <li><span class="tik">✓</span><span>Simpan sehingga <b>100 kontak</b></span></li>
+          <li><span class="tik">✓</span><span>Baca nombor dari <b>tangkapan skrin</b></span></li>
+          <li><span class="tik">✓</span><span>Eksport chat, tampal teks, pilih dari kontak telefon</span></li>
+          <li><span class="tik">✓</span><span>Perlindungan nama sedia ada</span></li>
+          <li><span class="tik">✓</span><span>Kemas kontak pendua &amp; tukar nama pukal</span></li>
+          <li><span class="tik off">✗</span><span>Kontak melebihi 100</span></li>
+        </ul>
+        <a class="btn tepi" href="simpan.html">Mula percuma</a>
+      </div>
+
+      <div class="plan pro">
+        <div class="lbl">Premium</div>
+        <div class="amt">RM14.90</div>
+        <div class="per">bayar sekali · seumur hidup</div>
+        <ul>
+          <li><span class="tik">✓</span><span>Kontak <b>tanpa had</b> — beribu pun boleh</span></li>
+          <li><span class="tik">✓</span><span>Semua yang ada dalam versi percuma, kekal</span></li>
+          <li><span class="tik">✓</span><span><b>Tiada langganan</b> dan tiada pembaharuan</span></li>
+          <li><span class="tik">✓</span><span>Tiada akaun perlu didaftar</span></li>
+        </ul>
+        <a class="btn warna" id="beli" href="#" rel="noopener">Beli premium — RM14.90</a>
+      </div>
+
+    </div>
+
+    <div class="kodbox">
+      <h3>Sudah bayar? Masukkan kod anda</h3>
+      <p style="margin-top:6px;font-size:14.5px">Kod berbentuk
+        <b>DYNO-XXXX-XXXX</b> dan dihantar kepada anda selepas pembayaran disahkan.</p>
+      <div class="kodrow">
+        <input type="text" id="kod" placeholder="DYNO-XXXX-XXXX" autocomplete="off"
+               spellcheck="false" maxlength="16" aria-label="Kod premium">
+        <button id="kodBtn">Buka premium</button>
+      </div>
+      <div class="kodmsg" id="kodMsg"></div>
+    </div>
+
+    <!-- Nota ini wujud kerana kunci lesen berjalan dalam pelayar pengguna.
+         Menjanjikan lebih daripada apa yang kod ini benar-benar buat akan
+         menjadi masalah pada hari pertama seseorang menyedarinya. -->
+    <div class="note">
+      <b>Bagaimana kod disimpan:</b> premium diingat oleh pelayar pada telefon
+      yang anda masukkan kod itu. Jika anda menukar telefon, memadam data pelayar,
+      atau menggunakan mod menyamar, masukkan semula kod yang sama — ia kekal sah.
+      Simpan kod itu di tempat yang selamat.
+    </div>
+
+  </div>
+</section>
+
+<section class="soft">
+  <div class="wrap">
+    <h2>Apa sebenarnya yang premium buka</h2>
+    <p class="big">Satu perkara sahaja: <b>had kontak</b>. Kami tidak menyorok ciri
+      di belakang bayaran, dan tidak melumpuhkan apa-apa yang anda sudah biasa guna.</p>
+
+    <div class="grid two">
+      <div class="box hijau">
+        <h3>Kekal percuma untuk semua</h3>
+        <p>Baca tangkapan skrin, eksport chat, tampal teks, pilih terus dari kontak
+          telefon, perlindungan nama sedia ada, <b>Kemas Kontak</b> (buang pendua)
+          dan <b>Tukar Nama Pukal</b> — semuanya tanpa had, tanpa bayaran.</p>
+      </div>
+      <div class="box ungu">
+        <h3>Yang berubah selepas bayar</h3>
+        <p>Kaunter 100 kontak dibuang. Itu sahaja. Alat berkelakuan sama seperti
+          sebelumnya, cuma butang simpan tidak lagi berhenti pada kontak ke-100.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>Soalan lazim</h2>
+
+    <details class="faq">
+      <summary>Kenapa bayar sekali, bukan langganan?</summary>
+      <div class="a">Alat ini berjalan sepenuhnya dalam telefon anda dan kami tiada
+        pelayan yang perlu dibayar setiap bulan. Mengenakan bayaran bulanan untuk
+        sesuatu yang tidak menelan kos berulang tidak masuk akal, jadi kami tidak
+        buat begitu.</div>
+    </details>
+
+    <details class="faq">
+      <summary>Apa jadi kepada 100 kontak yang saya sudah simpan?</summary>
+      <div class="a">Kekal seperti biasa. Kontak itu sudah berada dalam telefon anda —
+        alat ini cuma menyediakan failnya. Premium menyambung dari tempat anda
+        berhenti, bukan bermula semula.</div>
+    </details>
+
+    <details class="faq">
+      <summary>Saya tukar telefon. Perlu bayar lagi?</summary>
+      <div class="a">Tidak. Masukkan kod yang sama pada telefon baharu. Kod itu tidak
+        luput dan tidak terikat pada satu peranti. Sebab itu kami minta anda
+        menyimpannya.</div>
+    </details>
+
+    <details class="faq">
+      <summary>Adakah nombor pelanggan saya dihantar ke mana-mana?</summary>
+      <div class="a">Tidak pernah. Semua pemprosesan — termasuk membaca tangkapan
+        skrin — berlaku dalam pelayar telefon anda. Kami tiada pelayan yang menerima
+        nombor anda. Baca <a href="privacy-policy.html">Dasar Privasi</a>.</div>
+    </details>
+
+    <details class="faq">
+      <summary>Boleh saya cuba dahulu sebelum bayar?</summary>
+      <div class="a">Itulah tujuan 100 kontak percuma — cukup untuk mencuba dengan
+        pelanggan sebenar, bukan sekadar demo. Kalau ia tidak sesuai untuk perniagaan
+        anda, anda tidak perlu bayar apa-apa.</div>
+    </details>
+
+    <details class="faq">
+      <summary>Saya guna iPhone. Boleh?</summary>
+      <div class="a">Alat ini berjalan pada iPhone dan pembacaan nombor berfungsi,
+        tetapi langkah terakhir — menyimpan fail kontak ke dalam telefon — masih
+        belum lancar pada sesetengah iPhone. Kami belum menyokong iPhone secara
+        rasmi. <b>Sila cuba versi percuma dahulu</b> dan pastikan ia berjaya sampai
+        ke akhir sebelum anda membayar.</div>
+    </details>
+  </div>
+</section>
+
+<section class="strip">
+  <div class="wrap">
+    <h2>Cuba dahulu — 100 kontak percuma</h2>
+    <p>Tiada pendaftaran, tiada kad kredit. Bayar hanya jika ia benar-benar
+       menjimatkan masa anda.</p>
+    <p style="margin-top:24px"><a class="btn" href="simpan.html">Buka alat sekarang</a></p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="row">
+      <a href="index.html">Utama</a>
+      <a href="simpan.html">Simpan Nombor</a>
+      <a href="buang-kontak-pendua.html">Buang Kontak Pendua</a>
+      <a href="privacy-policy.html">Dasar Privasi</a>
+    </div>
+    <div>© 2026 Dynopro. Alat ini tiada kaitan rasmi dengan WhatsApp atau Meta
+      Platforms, Inc.</div>
+  </div>
+</footer>
+
+<script src="lesen.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var L = window.DynoLesen;
+
+  function guna(){
+    try { return JSON.parse(localStorage.getItem('dyno_nombor') || '[]').length; }
+    catch(e){ return 0; }
+  }
+
+  // Butang beli: pautan pembayaran jika ada, jika tidak WhatsApp.
+  $('beli').setAttribute('href', L.bayarUrl() || L.waLink());
+  $('beli').setAttribute('target', '_blank');
+
+  function papar(){
+    var box = $('status'), n = guna();
+
+    if(L.premium()){
+      box.className = 'status show pro';
+      $('bar').style.width = '100%';
+      $('statusT').textContent = '✦ Premium aktif — kontak tanpa had';
+      $('beli').textContent = 'Premium sudah aktif ✓';
+      $('beli').removeAttribute('href');
+      $('beli').style.opacity = '.55';
+      $('beli').style.pointerEvents = 'none';
+      return;
+    }
+
+    // Sembunyikan bar sepenuhnya bagi pelawat baharu — memaparkan "0 / 100"
+    // kepada orang yang belum mula hanya menimbulkan persoalan yang tidak perlu.
+    if(n === 0){ box.className = 'status'; return; }
+
+    box.className = 'status show';
+    $('bar').style.width = Math.min(100, Math.round(n / L.HAD * 100)) + '%';
+    $('statusT').textContent = n >= L.HAD
+      ? 'Had percuma tamat — ' + n + ' kontak digunakan'
+      : n + ' / ' + L.HAD + ' kontak percuma digunakan';
+  }
+
+  $('kodBtn').addEventListener('click', function(){
+    var m = $('kodMsg');
+    if(L.pasangKod($('kod').value)){
+      m.className = 'kodmsg good';
+      m.textContent = '✓ Premium dibuka pada telefon ini. Terima kasih!';
+      papar();
+    } else {
+      m.className = 'kodmsg bad';
+      m.textContent = 'Kod itu tidak sah. Semak semula ejaannya — bentuknya DYNO-XXXX-XXXX.';
+    }
+  });
+  $('kod').addEventListener('keydown', function(e){
+    if(e.key === 'Enter') $('kodBtn').click();
+  });
+
+  papar();
+})();
+</script>
+<script src="pasang.js" defer></script>
+</body>
+</html>
