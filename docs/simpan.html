@@ -100,6 +100,9 @@
          border:1.5px solid #dcc6f5;border-radius:12px;padding:12px;font-size:13.5px;
          font-weight:700;cursor:pointer}
   .shbtn:active{transform:translateY(1px)}
+  .shbtn.prime{background:linear-gradient(135deg,#9D4BE8,#5B1094);color:#fff;
+    border-color:transparent;box-shadow:0 8px 20px rgba(139,47,214,.32);width:100%;
+    font-family:inherit;font-size:14px}
   .shclear{display:block;width:100%;margin-top:8px;background:none;border:none;
            color:var(--muted);font-size:12px;padding:7px;cursor:pointer;font-family:inherit}
 
@@ -341,6 +344,10 @@
               ditimpa dengan Customer 001.</span>
           </div>
         </div>
+        <button class="shbtn prime" id="pickBtn" style="display:none">
+          📇 Pilih terus dari kontak telefon
+        </button>
+
         <label class="shbtn" id="shPick">
           <span id="shBtnTxt">Muat naik kontak saya (.vcf / .csv)</span>
           <input type="file" id="addrFile" accept=".vcf,.vcard,.csv,text/vcard,text/csv" hidden>
@@ -1035,6 +1042,44 @@
       hint.textContent = 'Nombor itu belum sah. Contoh: 013-999 1504 atau +60139991504.';
     }
   }
+  // Pemilih kontak asli (Chrome pada Android). Ini jauh lebih mudah daripada
+  // eksport: pengguna ketuk sekali, pilih semua dalam senarai telefon sendiri,
+  // dan tiada fail langsung terlibat. Tidak wujud pada iPhone/Safari — di situ
+  // muat naik fail kekal satu-satunya jalan.
+  var adaPicker = !!(navigator.contacts && navigator.contacts.select &&
+                     window.ContactsManager);
+  if(adaPicker) $('pickBtn').style.display = 'block';
+
+  $('pickBtn').addEventListener('click', function(){
+    navigator.contacts.select(['tel'], { multiple: true })
+      .then(function(senarai){
+        if(!senarai || !senarai.length) return;      // pengguna batal
+        // Gabung dengan yang sedia ada — pemilih mungkin separa, jadi
+        // jangan buang perlindungan yang pengguna sudah ada.
+        var set = addrSet(), tambah = 0;
+        senarai.forEach(function(c){
+          (c.tel || []).forEach(function(t){
+            var a = toStd(t);
+            if(a && !set.has(a)){ set.add(a); tambah++; }
+            var b = window.KemasEngine.normPhone(t);
+            if(b) set.add(b);
+          });
+        });
+        if(!set.size){
+          alert('Kontak yang dipilih tiada nombor telefon.');
+          return;
+        }
+        sSet(K_ADR, JSON.stringify(Array.from(set)));
+        refreshShield();
+        alert(tambah + ' nombor ditambah ke senarai perlindungan.\n\n' +
+              'Jumlah kini ' + addrCount() + ' nombor dilindungi.');
+      })
+      .catch(function(){
+        alert('Tidak dapat membuka kontak telefon.\n\n' +
+              'Guna "Muat naik kontak saya" di bawah sebagai ganti.');
+      });
+  });
+
   $('myNum').addEventListener('input', syncMyNum);
   $('myNum').addEventListener('blur', syncMyNum);
 
