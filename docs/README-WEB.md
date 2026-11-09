@@ -11,18 +11,19 @@ tiada yuran. Berfungsi atas **Android dan iPhone**.
 |---|---|
 | Repo | `Dynopos/Autocontact` |
 | Sumber Pages | branch `main`, folder `/docs` |
-| Custom domain | `autocontact.dynopro.my` |
+| Custom domain | `minicrm.my` |
 
 Alamat sebenar setiap halaman:
 
 | Halaman | URL |
 |---|---|
-| Halaman jualan utama | <https://autocontact.dynopro.my/> |
-| Halaman jualan kedua | <https://autocontact.dynopro.my/buang-kontak-pendua.html> |
-| Alat simpan nombor | <https://autocontact.dynopro.my/simpan.html> |
-| Alat kemas kontak | <https://autocontact.dynopro.my/kemas.html> |
-| Privacy policy | <https://autocontact.dynopro.my/privacy-policy.html> |
-| Sitemap | <https://autocontact.dynopro.my/sitemap.xml> |
+| Halaman jualan utama | <https://minicrm.my/> |
+| Halaman jualan kedua | <https://minicrm.my/buang-kontak-pendua.html> |
+| Alat simpan nombor | <https://minicrm.my/simpan.html> |
+| Alat kemas kontak | <https://minicrm.my/kemas.html> |
+| Mini CRM | <https://minicrm.my/crm.html> |
+| Privacy policy | <https://minicrm.my/privacy-policy.html> |
+| Sitemap | <https://minicrm.my/sitemap.xml> |
 
 ### Cara ia disiapkan (rujukan jika perlu diulang)
 
@@ -32,8 +33,9 @@ Alamat sebenar setiap halaman:
 
 Custom domain dikawal oleh fail **`docs/CNAME`** — bukan melalui borang di Settings.
 GitHub Pages hanya membaca `CNAME` dari folder sumber penerbitan, jadi meletakkannya
-di root repo tidak berfungsi. Di sebelah DNS, satu rekod `CNAME` diperlukan:
-host `autocontact` → nilai `dynopos.github.io`.
+di root repo tidak berfungsi. `minicrm.my` ialah domain utama (apex), jadi di sebelah
+DNS ia perlukan empat rekod `A` GitHub Pages: `185.199.108.153`, `185.199.109.153`,
+`185.199.110.153`, `185.199.111.153` — dan pilihan rekod `CNAME` host `www` → `dynopos.github.io`.
 
 ---
 
@@ -113,7 +115,7 @@ docs/
 ├── privacy-policy.html        # Privacy policy (wajib jika ke Play Store)
 ├── sitemap.xml                # Sitemap untuk enjin carian
 ├── robots.txt                 # Arahan crawler
-├── CNAME                      # Custom domain: autocontact.dynopro.my
+├── CNAME                      # Custom domain: minicrm.my
 ├── .nojekyll                  # Matikan pemprosesan Jekyll
 ├── PANDUAN-PLAY-STORE.md      # Panduan Play Store
 ├── JUSTIFIKASI-CONTACTS.md    # Justifikasi kebenaran
