@@ -2,7 +2,11 @@
 //
 // Pengesahan (salah satu):
 //   Authorization: Bearer dyno_<kunci API>   — integrasi pelayan-ke-pelayan (Zapier, Make, sistem lain)
-//   Authorization: Bearer <JWT pengguna>     — app Dyno (Auto Contact, kongsi manual)
+//   Authorization: Bearer dyno_<kunci peranti> — app Android Dyno Auto Contact (notifikasi WhatsApp Business)
+//   Authorization: Bearer <JWT pengguna>     — app web Dyno (Auto Contact, kongsi manual)
+//
+// Pengenal (sekurang-kurangnya satu, kecuali lead "nama sahaja" dari Android):
+//   phone_number, whatsapp_username, whatsapp_business_user_id (hanya dari API rasmi — ditolak dari Android/app)
 //
 // Badan: satu lead, atau { "leads": [ ... ] } (maksimum 200)
 //   { "phone_number": "+60123456789", "contact_name": "Ahmad", "lead_source": "whatsapp",
@@ -15,7 +19,7 @@
 
 import { keE164 } from "../_shared/telefon.ts";
 import {
-  jawab, kepala, penggunaJwt, RalatSementara, rpc, sha256Hex, SUMBER, type Sumber, tangkap, tokenBearer,
+  jawab, kepala, normUsername, penggunaJwt, RalatSementara, rpc, sha256Hex, SUMBER, type Sumber, tangkap, tokenBearer,
 } from "../_shared/lead.ts";
 
 const HAD_LEAD = 200;
@@ -43,14 +47,14 @@ export async function handler(req: Request): Promise<Response> {
 
   // ---- Siapa? ----
   const token = tokenBearer(req);
-  let owner: string, integrasi: string | null = null, kaedah: "api" | "manual";
+  let owner: string, integrasi: string | null = null, kaedah: "api" | "manual" | "android";
   if (token.startsWith("dyno_")) {
-    const baris = await rpc<{ id: string; owner_id: string; aktif: boolean }[]>("cari_kunci_api", { p_hash: await sha256Hex(token) })
+    const baris = await rpc<{ id: string; owner_id: string; aktif: boolean; jenis: string }[]>("cari_kunci_api", { p_hash: await sha256Hex(token) })
       .catch(() => null);
     if (baris === null) return j(503, { ralat: "sementara" });
     const k = baris[0];
     if (!k || !k.aktif) return j(401, { ralat: "kunci_tidak_sah" });
-    owner = k.owner_id; integrasi = k.id; kaedah = "api";
+    owner = k.owner_id; integrasi = k.id; kaedah = k.jenis === "android" ? "android" : "api";
   } else {
     const u = await penggunaJwt(token);
     if (!u) return j(401, { ralat: "perlu_log_masuk" });
@@ -73,30 +77,37 @@ export async function handler(req: Request): Promise<Response> {
   let sementara = false;
   for (const l of senarai) {
     if (!l || typeof l !== "object") { keputusan.push({ external_lead_id: null, status: "ditolak", sebab: "format_tidak_sah" }); continue; }
-    const sumberMasuk = teks(l.lead_source, 20) || (kaedah === "api" ? "api" : "manual");
+    // Peranti Android hanya membaca notifikasi WhatsApp: tiada metadata iklan yang boleh dipercayai,
+    // jadi sumber sentiasa "whatsapp" (bukan Facebook Ads).
+    const sumberMasuk = kaedah === "android" ? "whatsapp" : teks(l.lead_source, 20) || (kaedah === "api" ? "api" : "manual");
     const sumber = sumberMasuk as Sumber;
     if (!(SUMBER as readonly string[]).includes(sumber) || (kaedah === "manual" && !SUMBER_APP.includes(sumber))) {
       keputusan.push({ external_lead_id: teks(l.external_lead_id, 200) || null, status: "ditolak", sebab: "lead_source_tidak_sah" });
       continue;
     }
     const telefon = keE164(l.phone_number);
+    const username = normUsername(l.whatsapp_username);
+    // ID berskop perniagaan hanya diterima dari integrasi API rasmi, bukan dari notifikasi Android atau app
+    const bsuid = kaedah === "api" ? teks(l.whatsapp_business_user_id, 128) || null : null;
     // Integrasi API mesti memberi ID event untuk idempotensi. App boleh
     // meninggalkannya: satu nombor dari sumber yang sama dianggap satu event.
     let eventId = teks(l.external_lead_id, 200);
     if (!eventId) {
-      if (kaedah === "api") { keputusan.push({ external_lead_id: null, status: "ditolak", sebab: "external_lead_id_diperlukan" }); continue; }
-      if (!telefon) { keputusan.push({ external_lead_id: null, status: "ditolak", sebab: "nombor_tidak_sah" }); continue; }
-      eventId = `${sumber}:${telefon}`;
+      if (kaedah !== "manual") { keputusan.push({ external_lead_id: null, status: "ditolak", sebab: "external_lead_id_diperlukan" }); continue; }
+      if (!telefon && !username) { keputusan.push({ external_lead_id: null, status: "ditolak", sebab: "nombor_tidak_sah" }); continue; }
+      eventId = `${sumber}:${telefon ?? "@" + username}`;
     }
     if (sementara) { keputusan.push({ external_lead_id: eventId, status: "belum_diproses" }); continue; }
     try {
       const h = await tangkap({
-        owner, sumber, eventId, telefon,
+        owner, sumber, eventId, telefon, username, bsuid,
         nama: teks(l.contact_name, 120),
         mesej: teks(l.first_message, 1000),
         diterima: masa(l.received_at),
         integrasi, kaedah,
         asas: teks(l.consent_basis, 60) || (sumber === "whatsapp" ? "whatsapp_inbound" : sumber),
+        peranti: kaedah === "android" ? teks(l.device_id, 80) || null : null,
+        tersembunyi: l.preview_hidden === true,
       });
       keputusan.push({ external_lead_id: eventId, ...h });
     } catch (e) {

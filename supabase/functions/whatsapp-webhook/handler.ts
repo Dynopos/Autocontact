@@ -69,15 +69,16 @@ export async function handler(req: Request): Promise<Response> {
       for (const m of v.messages) {
         if (!m.id || !m.from) continue;
         const nama = v.contacts?.find((c) => c.wa_id === m.from)?.profile?.name ?? "";
-        const iklan = m.referral?.source_type === "ad" ? " (dari iklan Click-to-WhatsApp)" : "";
+        // Metadata rujukan iklan Click-to-WhatsApp (rasmi) -> Facebook Ads; selain itu WhatsApp
+        const dariIklan = m.referral?.source_type === "ad";
         try {
           await tangkap({
             owner: integ.owner_id,
-            sumber: "whatsapp",
+            sumber: dariIklan ? "facebook_ads" : "whatsapp",
             eventId: m.id,
             telefon: keE164(m.from),
             nama,
-            mesej: isiMesej(m) + iklan,
+            mesej: isiMesej(m) + (dariIklan && m.referral?.headline ? ` (iklan: ${m.referral.headline})` : ""),
             diterima: m.timestamp ? new Date(Number(m.timestamp) * 1000) : new Date(),
             integrasi: integ.id,
             kaedah: "webhook",

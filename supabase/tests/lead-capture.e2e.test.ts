@@ -227,6 +227,63 @@ semak("Nombor WhatsApp tidak berdaftar -> diabaikan (200), tiada kenalan", res.s
 r = await post(cap, "jwt-A", { leads: [{ phone_number: "019-222 3333", contact_name: "Dari Simpan", lead_source: "auto_contact" }, { phone_number: "019-222 3333", lead_source: "auto_contact" }] });
 semak("Auto Contact (JWT) -> dicipta, kali kedua duplikat", r.body.keputusan[0].status === "dicipta" && r.body.keputusan[1].status === "duplikat_event", r.body);
 
+// ================= Android: notifikasi WhatsApp Business =================
+const kodPeranti = async (nama: string) => {
+  const r = await post(integ, "jwt-A", { tindakan: "peranti_android", nama });
+  const json = JSON.parse(atob(r.body.kod.replace(/-/g, "+").replace(/_/g, "/")));
+  return json as { v: number; u: string; k: string };
+};
+const telA = await kodPeranti("Telefon kaunter");
+const telB = await kodPeranti("Telefon bos");
+semak("Kod sambungan peranti mengandungi URL lead-capture + kunci", telA.u.endsWith("/functions/v1/lead-capture") && /^dyno_[0-9a-f]{48}$/.test(telA.k));
+const android = (k: string, l: Record<string, unknown>) => post(cap, k, { leads: [l] });
+const ev = (n: string) => "and-" + n;
+
+r = await android(telA.k, { phone_number: "+60 13-700 1111", contact_name: "Farid", first_message: "Salam, nak harga", external_lead_id: ev("A"), device_id: "pixel-7", lead_source: "facebook_ads" });
+k = await kenalanA("+60137001111");
+semak("ANDROID TEST A: nombor kelihatan -> kenalan dicipta automatik", r.body.keputusan[0].status === "dicipta" && k.length === 1, r.body);
+semak("ANDROID: sumber WhatsApp (bukan Facebook Ads walaupun diminta)", k[0]?.sumber_lead === "whatsapp" && k[0]?.sumber === "WhatsApp");
+r = await android(telA.k, { whatsapp_username: "@Nurul.Bakery", contact_name: "Nurul", first_message: "Ada kek coklat?", external_lead_id: ev("B"), device_id: "pixel-7" });
+const kn = await q("select * from contacts where owner_id=$1 and whatsapp_username='nurul.bakery'", [A]);
+semak("ANDROID TEST B: username sahaja -> kenalan username dicipta (tiada nombor diteka)", r.body.keputusan[0].status === "dicipta" && kn.length === 1 && kn[0].telefon === null, r.body);
+r = await android(telA.k, { phone_number: "0137001111", contact_name: "Farid", first_message: "Lagi", external_lead_id: ev("C"), device_id: "pixel-7" });
+semak("ANDROID TEST C: kenalan sedia ada -> dikemas kini, tiada pendua", r.body.keputusan[0].status === "dikemas_kini" && (await kenalanA("+60137001111")).length === 1);
+const sebelumD = (await q("select count(*)::int n from contacts where owner_id=$1", [A]))[0].n;
+r = await android(telA.k, { contact_name: "Kak Ani Butik", first_message: "Boleh pos ke Sabah?", external_lead_id: ev("D"), device_id: "pixel-7" });
+const evD = await q("select keputusan, telefon, whatsapp_username from lead_events where external_event_id=$1", [ev("D")]);
+semak("ANDROID TEST D: nama sahaja -> belum_disahkan, tiada kenalan, tiada pengenal diteka",
+  r.body.keputusan[0].status === "belum_disahkan" && (await q("select count(*)::int n from contacts where owner_id=$1", [A]))[0].n === sebelumD
+  && evD[0].keputusan === "belum_disahkan" && evD[0].telefon === null && evD[0].whatsapp_username === null, { r: r.body, evD });
+const e1 = await android(telA.k, { phone_number: "+60137002222", contact_name: "Gopal", external_lead_id: ev("E"), device_id: "pixel-7" });
+const e2 = await android(telA.k, { phone_number: "+60137002222", contact_name: "Gopal", external_lead_id: ev("E"), device_id: "pixel-7" });
+const e3 = await android(telB.k, { phone_number: "+60137002222", contact_name: "Gopal", external_lead_id: ev("E"), device_id: "galaxy-s23" });
+semak("ANDROID TEST E: event sama 3x (termasuk dari peranti lain) -> satu kenalan, satu event",
+  e1.body.keputusan[0].status === "dicipta" && e2.body.keputusan[0].status === "duplikat_event" && e3.body.keputusan[0].status === "duplikat_event"
+  && (await kenalanA("+60137002222")).length === 1 && (await q("select count(*)::int n from lead_events where external_event_id=$1", [ev("E")]))[0].n === 1);
+r = await android(telB.k, { phone_number: "+60137002222", contact_name: "Gopal", first_message: "mesej lain", external_lead_id: ev("E2"), device_id: "galaxy-s23" });
+semak("ANDROID: peranti kedua, mesej baharu -> kenalan sama dikemas kini", r.body.keputusan[0].status === "dikemas_kini" && (await kenalanA("+60137002222")).length === 1);
+r = await android(telA.k, { whatsapp_username: "gopal.trading", whatsapp_business_user_id: "MY.123456", contact_name: "Gopal", external_lead_id: ev("F"), device_id: "pixel-7" });
+semak("ANDROID: ID berskop perniagaan diabaikan dari notifikasi; nama sama tidak digabung", r.body.keputusan[0].status === "dicipta"
+  && (await q("select count(*)::int n from contacts where owner_id=$1 and whatsapp_bsuid is not null", [A]))[0].n === 0
+  && (await q("select count(*)::int n from contacts where owner_id=$1 and nama='Gopal'", [A]))[0].n === 2);
+r = await android(telA.k, { phone_number: "+60137001111", contact_name: "Farid" });
+semak("ANDROID: tanpa external_lead_id ditolak", r.body.keputusan[0].sebab === "external_lead_id_diperlukan");
+semak("ANDROID: peranti direkodkan pada event", (await q("select peranti from lead_events where external_event_id=$1", [ev("E2")]))[0].peranti === "galaxy-s23");
+await q("update integrations set aktif=false where kunci_awalan=$1", [telB.k.slice(0, 13)]);
+r = await android(telB.k, { phone_number: "+60137003333", external_lead_id: ev("G") });
+semak("ANDROID: peranti yang dimatikan -> 401", r.status === 401);
+// Cloud API: rujukan iklan rasmi -> Facebook Ads
+const ad = waMsg("wamid.AD1", "60137004444", "Iklan", "Saya lihat iklan anda");
+(ad.entry[0].changes[0].value.messages[0] as Record<string, unknown>).referral = { source_type: "ad", source_id: "120200", headline: "Promo POS" };
+res = await webhook(wa, ad);
+k = await kenalanA("+60137004444");
+semak("Cloud API dengan metadata iklan rasmi -> sumber Facebook Ads", res.status === 200 && k[0]?.sumber_lead === "facebook_ads" && k[0]?.sumber === "Facebook Ads", k[0]);
+// Pengesahan manual oleh pengguna (RPC sahkan_lead melalui RLS)
+await db.query("set role authenticated"); await db.query(`select set_config('request.jwt.claim.sub', '${A}', false)`);
+const sah = await db.query("select sahkan_lead(id, '013-700 5555', null) r from lead_events where external_event_id=$1", [ev("D")]);
+await db.query("reset role");
+semak("Lead nama sahaja disahkan manual -> kenalan dengan nombor yang pengguna sahkan", sah.rows[0].r.status === "dicipta" && (await kenalanA("+60137005555"))[0]?.nama === "Kak Ani Butik");
+
 console.log(gagal ? `\n${gagal} GAGAL` : "\nSEMUA LULUS");
 await db.end();
 Deno.exit(gagal ? 1 : 0);

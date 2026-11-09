@@ -40,6 +40,21 @@ export async function handler(req: Request): Promise<Response> {
       return j(200, { id, kunci });
     }
 
+    // Peranti Android Dyno Auto Contact: kunci per peranti (boleh dibatalkan satu-satu)
+    if (b.tindakan === "peranti_android") {
+      const rawak = crypto.getRandomValues(new Uint8Array(24));
+      const kunci = "dyno_" + Array.from(rawak, (x) => x.toString(16).padStart(2, "0")).join("");
+      const id = await rpc<string>("daftar_integrasi", {
+        p_owner: u.id, p_jenis: "android", p_nama: nama || "Telefon Android", p_external_id: null,
+        p_kunci_hash: await sha256Hex(kunci), p_kunci_awalan: kunci.slice(0, 13), p_token: null,
+      });
+      const base = (Deno.env.get("PUBLIC_FUNCTIONS_URL") ?? `${Deno.env.get("SUPABASE_URL")}/functions/v1`).replace(/\/$/, "");
+      // Kod sambungan = base64url(JSON) — ditampal sekali dalam app Android
+      const kod = btoa(JSON.stringify({ v: 1, u: `${base}/lead-capture`, k: kunci }))
+        .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+      return j(200, { id, kod });
+    }
+
     if (b.tindakan === "meta_page") {
       const pageId = String(b.page_id ?? "").trim(), token = String(b.page_token ?? "").trim();
       if (!ID.test(pageId) || token.length < 20) return j(400, { ralat: "input_tidak_sah", mesej: "Page ID atau token tidak sah." });

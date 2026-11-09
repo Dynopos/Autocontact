@@ -135,6 +135,22 @@
 
       <h3>Sambung sumber baharu</h3>
 
+      <details class="sambung" open>
+        <summary><span class="ikon i-kongsi">📱</span><span><b>Telefon Android — WhatsApp Business app</b><span>App Dyno Auto Contact membaca notifikasi WhatsApp Business (dengan izin anda)</span></span><i>›</i></summary>
+        <div class="isi">
+          <div class="langkah"><ol>
+            <li>Pasang app <b>Dyno Auto Contact</b> (Android) pada telefon yang menerima chat WhatsApp Business.</li>
+            <li>Cipta kod sambungan di bawah, kemudian tampal dalam app. Setiap telefon dapat kod sendiri — boleh diputuskan satu-satu.</li>
+            <li>Dalam app, benarkan <b>akses notifikasi</b>. App hanya membaca notifikasi dari WhatsApp Business, dan hanya
+              menghantar nombor atau username yang benar-benar dipaparkan. Jika notifikasi hanya ada nama, ia masuk ke
+              <b>Lead belum disahkan</b> dalam Mini CRM.</li>
+          </ol></div>
+          <div class="f"><label for="anNama">Nama telefon</label><input id="anNama" maxlength="80" placeholder="cth. Telefon kaunter"></div>
+          <button class="btn" type="button" id="anBtn">Cipta kod sambungan</button>
+          <div id="anHasil"></div>
+        </div>
+      </details>
+
       <details class="sambung">
         <summary><span class="ikon i-wa">🟢</span><span><b>WhatsApp Business Platform</b><span>Cloud API rasmi — setiap mesej masuk jadi lead</span></span><i>›</i></summary>
         <div class="isi">
@@ -217,9 +233,10 @@ Authorization: Bearer dyno_…
   'use strict';
   var $ = function(id){ return document.getElementById(id); };
   var A = window.DynoAwan;
-  var JENIS = { whatsapp:{ ikon:'🟢', c:'i-wa', t:'WhatsApp Business Platform' }, meta_lead_ads:{ ikon:'Ⓜ️', c:'i-meta', t:'Meta Lead Ads' }, api:{ ikon:'🔑', c:'i-api', t:'Kunci API' } };
-  var SRC = { whatsapp:'WhatsApp', meta_lead_ads:'Meta Ads', auto_contact:'Auto Contact', manual:'Manual', import:'Import', api:'API' };
-  var KEP = { dicipta:['Kenalan baharu','c-ok'], dikemas_kini:['Kenalan sedia ada','c-mati'], ditolak:['Ditolak','c-bad'] };
+  var JENIS = { android:{ ikon:'📱', c:'i-kongsi', t:'Telefon Android (WhatsApp Business)' }, whatsapp:{ ikon:'🟢', c:'i-wa', t:'WhatsApp Business Platform' }, meta_lead_ads:{ ikon:'Ⓜ️', c:'i-meta', t:'Meta Lead Ads' }, api:{ ikon:'🔑', c:'i-api', t:'Kunci API' } };
+  var SRC = { whatsapp:'WhatsApp', facebook_ads:'Facebook Ads', meta_lead_ads:'Meta Ads', auto_contact:'Auto Contact', manual:'Manual', import:'Import', api:'API' };
+  var KEP = { dicipta:['Kenalan baharu','c-ok'], dikemas_kini:['Kenalan sedia ada','c-mati'], ditolak:['Ditolak','c-bad'],
+              belum_disahkan:['Nama sahaja — perlu disahkan','c-warn'], disahkan_manual:['Disahkan manual','c-ok'], diabaikan:['Diabaikan','c-mati'] };
   var SEBAB = { nombor_tidak_sah:'Tiada nombor telefon yang sah' };
 
   function esc(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -266,7 +283,7 @@ Authorization: Bearer dyno_…
       if(!r.length){ $('senaraiInteg').innerHTML = '<div class="empty">Belum ada integrasi. Sambung sumber di bawah.</div>'; return; }
       $('senaraiInteg').innerHTML = r.map(function(i){
         var j = JENIS[i.jenis], k = kesihatan(i);
-        var id = i.jenis === 'api' ? esc(i.kunci_awalan || '') + '…' : 'ID ' + esc(i.external_id);
+        var id = (i.jenis === 'api' || i.jenis === 'android') ? esc(i.kunci_awalan || '') + '…' : 'ID ' + esc(i.external_id);
         return '<div class="integ" data-id="'+i.id+'"><div class="atas"><span class="ikon '+j.c+'">'+j.ikon+'</span>'+
           '<div class="t"><b>'+esc(i.nama || j.t)+'</b><span>'+j.t+' · '+id+'</span></div><span class="chip '+k[1]+'">'+k[0]+'</span></div>'+
           '<div class="stat3"><div><b>'+i.jumlah_event+'</b>event diterima</div><div><b>'+bila(i.last_event_at)+'</b>event terakhir</div><div><b>'+bila(i.last_success_at)+'</b>berjaya terakhir</div></div>'+
@@ -308,6 +325,14 @@ Authorization: Bearer dyno_…
     if(!id || tok.length < 20){ $('mMsg').innerHTML = '<div class="err">Isi Page ID dan Page access token.</div>'; return; }
     hantar(this, $('mMsg'), { tindakan:'meta_page', page_id:id, page_token:tok },
       function(r){ $('mTok').value=''; return 'Disambung: ' + r.nama + '. Lead borang baharu akan masuk ke CRM.'; });
+  });
+  $('anBtn').addEventListener('click', function(){
+    var btn = this; btn.disabled = true;
+    A.fungsi('integrasi', { tindakan:'peranti_android', nama:$('anNama').value.trim() || 'Telefon Android' }).then(function(r){
+      $('anHasil').innerHTML = '<div class="kunci"><b>Tampal kod ini dalam app Dyno Auto Contact (Android). Ia tidak akan dipaparkan lagi.</b>'+
+        '<div class="salin"><code id="kodAndroid">'+esc(r.kod)+'</code><button class="btn alt kecil" type="button" data-salin="kodAndroid">Salin</button></div></div>';
+      segar();
+    }, function(e){ $('anHasil').innerHTML = '<div class="err">'+esc(e.message)+'</div>'; }).then(function(){ btn.disabled = false; });
   });
   $('kBtn').addEventListener('click', function(){
     var btn = this; btn.disabled = true;

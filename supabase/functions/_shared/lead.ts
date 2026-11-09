@@ -1,7 +1,7 @@
 // Teras penangkapan lead — dikongsi oleh semua Edge Function lead.
 import { createClient, type SupabaseClient } from "npm:@supabase/supabase-js@2.118.0";
 
-export const SUMBER = ["whatsapp", "meta_lead_ads", "auto_contact", "manual", "import", "api"] as const;
+export const SUMBER = ["whatsapp", "facebook_ads", "meta_lead_ads", "auto_contact", "manual", "import", "api"] as const;
 export type Sumber = (typeof SUMBER)[number];
 
 let _admin: SupabaseClient | null = null;
@@ -51,31 +51,40 @@ export type Tangkap = {
   sumber: Sumber;
   eventId: string;
   telefon: string | null;
+  username?: string | null;
+  bsuid?: string | null;
   nama?: string;
   mesej?: string;
   diterima?: Date;
   integrasi?: string | null;
-  kaedah?: "webhook" | "api" | "manual";
+  kaedah?: "webhook" | "api" | "manual" | "android";
   asas?: string;
+  peranti?: string | null;
+  tersembunyi?: boolean;
 };
 export type HasilTangkap = {
-  status: "dicipta" | "dikemas_kini" | "ditolak" | "duplikat_event";
+  status: "dicipta" | "dikemas_kini" | "ditolak" | "duplikat_event" | "belum_disahkan";
   contact_id?: string;
   sebab?: string;
+  konflik?: string | null;
 };
 
 export function tangkap(t: Tangkap): Promise<HasilTangkap> {
-  return rpc<HasilTangkap>("capture_lead", {
+  return rpc<HasilTangkap>("capture_identity", {
     p_owner: t.owner,
     p_sumber: t.sumber,
     p_event_id: t.eventId.slice(0, 200),
     p_telefon: t.telefon,
+    p_username: t.username ?? null,
+    p_bsuid: t.bsuid ?? null,
     p_nama: (t.nama ?? "").slice(0, 120),
     p_mesej: (t.mesej ?? "").slice(0, 1000),
     p_diterima: (t.diterima ?? new Date()).toISOString(),
     p_integration: t.integrasi ?? null,
     p_kaedah: t.kaedah ?? "webhook",
     p_asas: t.asas ?? "",
+    p_peranti: t.peranti ?? null,
+    p_tersembunyi: t.tersembunyi ?? false,
   });
 }
 
@@ -126,4 +135,12 @@ export async function penggunaJwt(token: string): Promise<{ id: string; email?: 
 
 export function tokenBearer(req: Request): string {
   return (req.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "").trim();
+}
+
+/* Username WhatsApp: huruf kecil, tanpa '@', 3–35 aksara a-z 0-9 . _ dengan sekurang-kurangnya satu huruf.
+   Pulangkan null jika tidak sah — tidak sekali-kali diteka atau ditukar dari nombor/nama. */
+export function normUsername(v: unknown): string | null {
+  if (typeof v !== "string") return null;
+  const u = v.trim().replace(/^@/, "").toLowerCase();
+  return /^[a-z0-9._]{3,35}$/.test(u) && /[a-z]/.test(u) ? u : null;
 }

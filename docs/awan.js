@@ -76,7 +76,7 @@
   }
 
   // ---------- Kenalan ----------
-  var LAJUR = 'id,telefon,nama,emel,produk,status,sumber,kumpulan,susulan,nota,kategori,kategori_disahkan,kategori_disahkan_at,ringkasan,tindakan,keyakinan,created_at,updated_at,sumber_lead,mesej_pertama,last_contact_at';
+  var LAJUR = 'id,telefon,nama,emel,produk,status,sumber,kumpulan,susulan,nota,kategori,kategori_disahkan,kategori_disahkan_at,ringkasan,tindakan,keyakinan,created_at,updated_at,sumber_lead,mesej_pertama,last_contact_at,whatsapp_username,first_seen_at';
 
   function senaraiKenalan() {
     var semua = [], saiz = 1000;
@@ -96,11 +96,15 @@
      tiada id dicipta (atau digabung jika nombor sudah wujud). */
   function simpanKenalan(rows, abaikanPendua) {
     var lama = rows.filter(function (r) { return r.id; });
-    var baru = rows.filter(function (r) { return !r.id; }).map(function (r) {
+    var baru = rows.filter(function (r) { return !r.id && r.telefon; }).map(function (r) {
       var x = Object.assign({}, r); delete x.id; x.owner_id = pengguna.id; return x;
     });
     var kerja = [];
     if (lama.length) kerja.push(sb.from('contacts').upsert(lama, { onConflict: 'id' }).select(LAJUR));
+    var tanpaTel = rows.filter(function (r) { return !r.id && !r.telefon; }).map(function (r) {
+      var x = Object.assign({}, r); delete x.id; x.owner_id = pengguna.id; return x;
+    });
+    if (tanpaTel.length) kerja.push(sb.from('contacts').insert(tanpaTel).select(LAJUR));
     for (var i = 0; i < baru.length; i += 500) {
       kerja.push(sb.from('contacts')
         .upsert(baru.slice(i, i + 500), { onConflict: 'owner_id,telefon', ignoreDuplicates: !!abaikanPendua })
@@ -215,6 +219,19 @@
   function abaikanRalat(id) {
     return sb.from('integration_errors').update({ selesai: true }).eq('id', id).then(function (r) { semak(r, 'Tidak dapat dikemas kini'); });
   }
+  function senaraiBelumDisahkan() {
+    return sb.from('lead_events').select('id,nama,mesej,diterima_at,peranti,pratonton_tersembunyi,sumber_lead')
+      .eq('keputusan', 'belum_disahkan').order('diterima_at', { ascending: false }).limit(100)
+      .then(function (r) { return semak(r, 'Lead belum disahkan tidak dapat dibaca'); });
+  }
+  function sahkanLead(id, telefon, username) {
+    return sb.rpc('sahkan_lead', { p_event: id, p_telefon: telefon, p_username: username })
+      .then(function (r) { return semak(r, 'Tidak dapat disahkan'); });
+  }
+  function abaikanLead(id) {
+    return sb.from('lead_events').update({ keputusan: 'diabaikan' }).eq('id', id)
+      .then(function (r) { semak(r, 'Tidak dapat dikemas kini'); });
+  }
   function urlFungsi(nama) { return cfg.supabaseUrl.replace(/\/$/, '') + '/functions/v1/' + nama; }
 
   function penggunaan() {
@@ -278,6 +295,7 @@
     klasifikasi: klasifikasi, penggunaan: penggunaan, paparLogin: paparLogin,
     fungsi: fungsi, tangkapLead: tangkapLead, senaraiIntegrasi: senaraiIntegrasi, kemasIntegrasi: kemasIntegrasi,
     padamIntegrasi: padamIntegrasi, senaraiLeadEvent: senaraiLeadEvent, senaraiRalat: senaraiRalat,
-    abaikanRalat: abaikanRalat, urlFungsi: urlFungsi
+    abaikanRalat: abaikanRalat, urlFungsi: urlFungsi,
+    senaraiBelumDisahkan: senaraiBelumDisahkan, sahkanLead: sahkanLead, abaikanLead: abaikanLead
   };
 })(window);
