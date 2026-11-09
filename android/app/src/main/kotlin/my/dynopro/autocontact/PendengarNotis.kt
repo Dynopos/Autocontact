@@ -1,5 +1,6 @@
 package my.dynopro.autocontact
 
+import android.annotation.TargetApi
 import android.app.Notification
 import android.app.Person
 import android.content.ComponentName
@@ -79,17 +80,16 @@ class PendengarNotis : NotificationListenerService() {
             val arr: Array<Parcelable>? = e.getParcelableArray(Notification.EXTRA_MESSAGES)
             arr?.forEach { item ->
                 val b = item as? Bundle ?: return@forEach
-                val orang: Person? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) b.getParcelable("sender_person") else null
-                val pengirim = orang?.name?.toString() ?: b.getCharSequence("sender")?.toString()
+                val (namaOrang, uriOrang) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) Api28.pengirim(b) else (null to null)
                 mesej += MesejNotis(
                     teks = b.getCharSequence("text")?.toString(),
                     masa = b.getLong("time"),
-                    pengirim = pengirim,
-                    pengirimUri = orang?.uri,
+                    pengirim = namaOrang ?: b.getCharSequence("sender")?.toString(),
+                    pengirimUri = uriOrang,
                 )
             }
             val orangUri: List<String> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                e.getParcelableArrayList<Person>(Notification.EXTRA_PEOPLE_LIST)?.mapNotNull { it.uri } ?: emptyList()
+                Api28.uriOrang(e)
             } else {
                 e.getStringArray(Notification.EXTRA_PEOPLE)?.toList() ?: emptyList()
             }
@@ -110,4 +110,18 @@ class PendengarNotis : NotificationListenerService() {
             )
         }
     }
+}
+
+/** android.app.Person hanya wujud pada Android 9 (API 28)+; dipanggil hanya selepas semakan versi. */
+@TargetApi(Build.VERSION_CODES.P)
+private object Api28 {
+    @Suppress("DEPRECATION")
+    fun pengirim(b: Bundle): Pair<String?, String?> {
+        val p: Person? = b.getParcelable("sender_person")
+        return p?.name?.toString() to p?.uri
+    }
+
+    @Suppress("DEPRECATION")
+    fun uriOrang(e: Bundle): List<String> =
+        e.getParcelableArrayList<Person>(Notification.EXTRA_PEOPLE_LIST)?.mapNotNull { it.uri } ?: emptyList()
 }
