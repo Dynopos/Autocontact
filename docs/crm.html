@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Mini CRM — Dynopro Auto Contact</title>
+<meta name="description" content="Urus pelanggan dari nombor yang anda simpan: status Lead hingga Customer, tarikh follow-up, nota dan WhatsApp terus. Semua disimpan dalam telefon anda.">
+<meta name="theme-color" content="#2A0550">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Dynopro Auto Contact">
+<meta property="og:locale" content="ms_MY">
+<meta property="og:url" content="https://autocontact.dynopro.my/crm.html">
+<meta property="og:title" content="Mini CRM — Dynopro Auto Contact">
+<meta property="og:description" content="Susun pelanggan, tetapkan tarikh follow-up dan WhatsApp terus. Semua dalam telefon anda.">
+<meta property="og:image" content="https://autocontact.dynopro.my/icons/og-simpan.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Dynopro Auto Contact">
+<link rel="canonical" href="https://autocontact.dynopro.my/crm.html">
+<style>
+  :root{
+    --brand:#8B2FD6; --brand-dk:#5B1094; --deep:#2A0550; --ink:#14091f;
+    --muted:#6b6480; --line:#eae7f0; --glow:rgba(139,47,214,.40);
+    --s-lead:#2f62c9; --s-prospek:#b26a00; --s-followup:#c4472f;
+    --s-customer:#1e8e4a; --s-tidak:#7a7489; --wa:#128c4a;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:linear-gradient(170deg,#12021f 0%,#22043f 46%,#2E0757 100%);
+    background-attachment:fixed;color:var(--ink);display:flex;justify-content:center}
+  .app{width:100%;max-width:460px;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+  button,input,select,textarea{font-family:inherit}
+
+  header{padding:calc(env(safe-area-inset-top) + 20px) 20px 12px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:54px;height:54px;flex:none;filter:drop-shadow(0 6px 16px rgba(157,75,232,.55))}
+  .logo img{width:100%;height:100%;display:block}
+  .brand h1{color:#fff;font-size:21px;font-weight:800;letter-spacing:-.3px}
+  .brand p{color:#c9b3e8;font-size:12.5px;margin-top:2px}
+  .backlink{display:inline-block;margin-top:13px;color:#c9b3e8;font-size:13px;
+            font-weight:700;text-decoration:none}
+  .backlink + .backlink{margin-left:14px}
+
+  .sheet{background:#f0f2f5;margin-top:18px;border-radius:28px 28px 0 0;flex:1;
+    padding:22px 20px calc(env(safe-area-inset-bottom) + 26px);
+    box-shadow:0 -10px 40px rgba(0,0,0,.25);display:flex;flex-direction:column}
+  .panel{display:none;animation:rise .4s cubic-bezier(.2,.8,.2,1);flex:1;flex-direction:column}
+  .panel.show{display:flex}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.panel{animation:none}}
+
+  h2{font-size:19px;font-weight:800;margin-bottom:6px}
+  .sub{font-size:14px;color:var(--muted);line-height:1.55;margin-bottom:16px}
+
+  .btn{width:100%;border:none;border-radius:16px;padding:15px;font-size:15.5px;font-weight:700;
+    color:#fff;background:linear-gradient(135deg,#9D4BE8,#5B1094);cursor:pointer;
+    box-shadow:0 9px 24px var(--glow);transition:.18s;text-decoration:none;
+    display:flex;align-items:center;justify-content:center;gap:9px}
+  .btn:active{transform:translateY(2px);box-shadow:0 4px 12px var(--glow)}
+  .btn:disabled{opacity:.45;pointer-events:none;box-shadow:none}
+  .btn.alt{background:#fff;color:#5B1094;box-shadow:none;border:1.5px solid #dcc6f5;
+    font-size:14.5px;padding:13px}
+  .btn.danger{background:#fff;color:#c0392b;box-shadow:none;border:1.5px solid #f3c6c6;font-size:14.5px;padding:13px}
+  .btn.danger.solid{background:#c0392b;color:#fff;border-color:#c0392b}
+  .linkbtn{background:none;border:none;color:var(--muted);font-size:13px;padding:11px;
+    width:100%;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px}
+  :focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+
+  .topacts{display:flex;gap:9px;margin-bottom:14px}
+  .topacts .btn{padding:13px 10px;font-size:14.5px}
+  .topacts .btn.alt{flex:0 0 auto;width:auto;padding:13px 16px}
+
+  /* Ringkasan — setiap petak juga penapis */
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+  .stat{background:#fff;border:1.5px solid transparent;border-radius:16px;padding:12px 13px;
+    text-align:left;cursor:pointer;display:block;color:var(--ink)}
+  .stat b{display:block;font-size:24px;font-weight:900;line-height:1.15;color:var(--k,var(--brand-dk));
+    font-variant-numeric:tabular-nums}
+  .stat span{display:block;font-size:10.5px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+  .stat small{display:block;font-size:11.5px;font-weight:700;color:var(--k,var(--muted));margin-top:3px;min-height:1.2em}
+  .stat[aria-pressed="true"]{border-color:var(--k,var(--brand))}
+
+  .search{position:relative;margin-bottom:10px}
+  .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#9a93ad;pointer-events:none}
+  .search input{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:12px 13px 12px 40px;
+    font-size:16px;color:var(--ink);background:#fff}
+  .search input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(139,47,214,.14)}
+
+  .chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:8px;scrollbar-width:none}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:none;border:1.5px solid #ddd6ea;background:#fff;border-radius:20px;padding:6px 12px;
+    font-size:12.5px;font-weight:700;color:var(--muted);cursor:pointer}
+  .chip[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+  .chip i{font-style:normal;opacity:.65;margin-left:4px;font-variant-numeric:tabular-nums}
+
+  .sortrow{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;
+    font-size:12px;color:var(--muted);font-weight:700}
+  .sortrow select{border:none;background:none;color:var(--brand-dk);font-weight:800;font-size:12.5px;cursor:pointer}
+
+  .list{background:#fff;border-radius:18px;overflow:hidden}
+  .row{display:flex;align-items:center;gap:10px;padding:11px 12px 11px 14px;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}
+  .rmain{flex:1;min-width:0;display:flex;align-items:center;gap:12px;background:none;border:none;
+    text-align:left;cursor:pointer;color:inherit;padding:0}
+  .av{width:42px;height:42px;border-radius:50%;flex:none;display:grid;place-items:center;
+    color:#fff;font-weight:800;font-size:13px;background:var(--k)}
+  .who{flex:1;min-width:0}
+  .nm{display:block;font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .nm.kosong{color:#8a8496;font-weight:600;font-style:italic}
+  .ph{display:block;font-size:12.5px;color:var(--muted);margin-top:1px;font-variant-numeric:tabular-nums;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tags{display:flex;gap:6px;align-items:center;margin-top:4px;flex-wrap:wrap}
+  .pill{font-size:10.5px;font-weight:800;letter-spacing:.3px;padding:2px 8px;border-radius:20px;
+    color:var(--k);background:#f4f2f8;border:1px solid currentColor}
+  .due{font-size:11px;font-weight:800;color:var(--muted)}
+  .due.lewat{color:var(--s-followup)}
+  .wa{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
+    color:var(--wa);background:#e9f7ef;border:1px solid #bfe6c8;text-decoration:none}
+  .k-lead{--k:var(--s-lead)} .k-prospek{--k:var(--s-prospek)} .k-followup{--k:var(--s-followup)}
+  .k-customer{--k:var(--s-customer)} .k-tidak{--k:var(--s-tidak)}
+  .empty{padding:30px 22px;text-align:center;color:var(--muted);font-size:14px;line-height:1.6}
+  .empty b{color:var(--ink);display:block;font-size:15.5px;margin-bottom:6px}
+  .empty .btn{margin-top:14px}
+  .note{font-size:11.5px;color:#8a969c;text-align:center;margin-top:12px;line-height:1.5}
+
+  /* Borang */
+  .card{background:#fff;border-radius:16px;padding:15px;margin-bottom:12px;display:grid;gap:13px}
+  .f>label,.f>.lbl{display:block;font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:7px}
+  .f input,.f select,.f textarea{width:100%;border:1.5px solid var(--line);border-radius:11px;
+    padding:11px 12px;font-size:16px;color:var(--ink);background:#fff}
+  .f textarea{resize:vertical;min-height:84px;line-height:1.5}
+  .f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--brand);
+    box-shadow:0 0 0 3px rgba(139,47,214,.14)}
+  .f .hint{font-size:11.5px;margin-top:6px;line-height:1.45;color:var(--muted)}
+  .f .err{font-size:12px;margin-top:6px;color:#c0392b;font-weight:700}
+  .seg{display:flex;flex-wrap:wrap;gap:6px}
+  .seg button{border:1.5px solid #ddd6ea;background:#fff;border-radius:20px;padding:7px 12px;
+    font-size:13px;font-weight:700;color:var(--muted);cursor:pointer}
+  .seg button[aria-pressed="true"]{color:#fff;background:var(--k);border-color:var(--k)}
+  .quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .quick button{border:1px dashed #cfc6de;background:none;border-radius:9px;padding:5px 9px;
+    font-size:12px;font-weight:700;color:var(--muted);cursor:pointer}
+  .stamp{font-size:11.5px;color:var(--muted);text-align:center;margin:2px 0 12px}
+  .acts{display:grid;gap:9px}
+  .confirm{background:#fff3f3;border:1px solid #f3c6c6;border-radius:14px;padding:13px;display:grid;gap:9px}
+  .confirm p{font-size:13.5px;color:#7a1f16;font-weight:700}
+  .confirm .two{display:flex;gap:8px}
+
+  /* Import */
+  .drop{border:2px dashed #b9a9cc;border-radius:16px;padding:16px;text-align:center;cursor:pointer;display:block;background:#fbf9fe}
+  .drop.hot{border-color:var(--brand);background:#f5edff}
+  .drop b{display:block;font-size:14.5px}
+  .drop span{display:block;margin-top:3px;font-size:12px;color:var(--muted)}
+  .preview{background:#f5edff;border:1px solid #dcc6f5;border-radius:14px;padding:12px 14px;
+    font-size:13px;color:#5B1094;line-height:1.55}
+  .preview b{font-weight:900}
+  .preview small{display:block;margin-top:4px;color:var(--muted);font-size:12px}
+  .bar{height:8px;background:#e3d7f5;border-radius:5px;overflow:hidden}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#9D4BE8,#5B1094);width:0;transition:width .3s}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:360px){.two-col{grid-template-columns:1fr}}
+
+  .toast{position:fixed;left:50%;transform:translateX(-50%);
+    bottom:calc(env(safe-area-inset-bottom) + 18px);z-index:50;max-width:calc(100% - 32px);
+    background:var(--deep);color:#fff;border-radius:13px;padding:12px 16px;font-size:13.5px;
+    font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header>
+    <div class="brand">
+      <div class="logo"><img src="icons/logo-mark.png" alt="Logo Dynopro" width="54" height="54"></div>
+      <div>
+        <h1>Mini CRM</h1>
+        <p>Auto Contact — urus pelanggan &amp; follow-up</p>
+      </div>
+    </div>
+    <a class="backlink" href="simpan.html">← Simpan nombor baharu</a><a class="backlink" href="kemas.html">🧹 Kemas kontak</a>
+  </header>
+
+  <div class="sheet">
+
+    <!-- PANEL SENARAI -->
+    <section class="panel show" id="pList">
+      <div class="topacts">
+        <button class="btn" id="addBtn" type="button">＋ Tambah pelanggan</button>
+        <button class="btn alt" id="impBtn" type="button">Import</button>
+      </div>
+
+      <div class="stats" id="stats">
+        <button class="stat" type="button" data-f="semua" aria-pressed="true"><b id="stSemua">0</b><span>Contacts</span><small id="stLead"></small></button>
+        <button class="stat k-prospek" type="button" data-f="prospek" aria-pressed="false"><b id="stProspek">0</b><span>Prospek</span><small></small></button>
+        <button class="stat k-followup" type="button" data-f="hubungi" aria-pressed="false"><b id="stFollow">0</b><span>Follow-up</span><small id="stDue"></small></button>
+        <button class="stat k-customer" type="button" data-f="customer" aria-pressed="false"><b id="stCustomer">0</b><span>Customer</span><small></small></button>
+      </div>
+
+      <div class="search">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input type="search" id="q" placeholder="Cari nama, nombor, produk, nota…" autocomplete="off" aria-label="Cari pelanggan">
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Tapis status"></div>
+      <div class="sortrow">
+        <span id="countLbl">0 pelanggan</span>
+        <label>Susun:
+          <select id="sort" aria-label="Susunan">
+            <option value="dikemas">Terkini dikemas kini</option>
+            <option value="susulan">Tarikh follow-up</option>
+            <option value="nama">Nama A–Z</option>
+            <option value="dibuat">Terbaru ditambah</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="list" id="list"></div>
+      <button class="btn alt" id="moreBtn" type="button" style="display:none;margin-top:10px"></button>
+
+      <button class="btn alt" id="expCsv" type="button" style="margin-top:14px">⤓ Eksport CSV (Google Sheets / Excel)</button>
+      <button class="btn alt" id="expVcf" type="button" style="margin-top:9px">📇 Simpan senarai ini ke kontak telefon (.vcf)</button>
+      <div class="note">🔒 Rekod CRM disimpan dalam pelayar telefon ini sahaja. Tiada data dihantar ke server. Eksport CSV secara berkala sebagai sandaran.</div>
+    </section>
+
+    <!-- PANEL BORANG -->
+    <section class="panel" id="pForm">
+      <h2 id="fTitle">Pelanggan baharu</h2>
+      <p class="sub" id="fSub">Isi apa yang anda tahu. Hanya nombor telefon yang wajib.</p>
+      <form id="form" novalidate>
+        <div class="card">
+          <div class="f"><label for="fNama">Nama</label><input id="fNama" maxlength="80" autocomplete="off" placeholder="cth. Kak Nik Kuih"></div>
+          <div class="f"><label for="fTel">No. telefon / WhatsApp</label><input id="fTel" type="tel" inputmode="tel" autocomplete="off" placeholder="012-345 6789"><div class="err" id="fTelErr" hidden></div></div>
+          <div class="f"><span class="lbl">Status</span><div class="seg" id="fStatus" role="group" aria-label="Status"></div></div>
+          <div class="f"><label for="fSusulan">Tarikh follow-up</label><input id="fSusulan" type="date">
+            <div class="quick" id="quick"><button type="button" data-d="0">Hari ini</button><button type="button" data-d="1">Esok</button><button type="button" data-d="3">+3 hari</button><button type="button" data-d="7">+1 minggu</button><button type="button" data-d="-1">Kosongkan</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="f"><label for="fProduk">Produk / minat</label><input id="fProduk" list="produkList" maxlength="60" autocomplete="off" placeholder="cth. Kek lapis 1kg"></div>
+          <div class="two-col">
+            <div class="f"><label for="fSumber">Sumber</label><select id="fSumber"></select></div>
+            <div class="f"><label for="fKumpulan">Kumpulan</label><input id="fKumpulan" list="kumpulanList" maxlength="40" autocomplete="off" placeholder="cth. Bazar"></div>
+          </div>
+          <div class="f"><label for="fEmel">Emel</label><input id="fEmel" type="email" maxlength="120" autocomplete="off" placeholder="pilihan"></div>
+          <div class="f"><label for="fNota">Nota</label><textarea id="fNota" maxlength="2000" placeholder="cth. Tanya harga borong, nak order raya"></textarea></div>
+        </div>
+        <div class="stamp" id="fStamp"></div>
+        <div class="acts">
+          <button class="btn" type="submit" id="fSave">Simpan</button>
+          <a class="btn alt" id="fWa" target="_blank" rel="noopener" style="display:none">💬 WhatsApp pelanggan ini</a>
+          <div id="delArea"></div>
+          <button class="linkbtn" type="button" id="fBack">← Kembali ke senarai</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- PANEL IMPORT -->
+    <section class="panel" id="pImp">
+      <h2>Import pelanggan</h2>
+      <p class="sub">Tampal senarai atau pilih fail. Nombor yang sudah ada dalam CRM akan dilangkau.</p>
+
+      <button class="btn alt" id="pullBtn" type="button" style="margin-bottom:12px"></button>
+
+      <div class="card">
+        <label class="drop" id="drop">
+          <b>Pilih fail .csv, .vcf atau .txt</b>
+          <span>Eksport Google Sheets, Google Contacts, atau eksport chat</span>
+          <input type="file" id="impFile" accept=".csv,.vcf,.vcard,.txt,text/csv,text/vcard,text/plain" hidden>
+        </label>
+        <div class="f"><label for="impText">atau tampal di sini</label>
+          <textarea id="impText" rows="5" placeholder="Satu pelanggan sebaris, contohnya:&#10;Kak Nik, 012-345 6789&#10;0198872231&#10;&#10;Atau CSV dengan tajuk: Nama, Telefon, Produk, Status"></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="two-col">
+          <div class="f"><label for="impStatus">Status</label><select id="impStatus"></select></div>
+          <div class="f"><label for="impSumber">Sumber</label><select id="impSumber"></select></div>
+        </div>
+        <div class="two-col">
+          <div class="f"><label for="impKumpulan">Kumpulan</label><input id="impKumpulan" list="kumpulanList" maxlength="40" autocomplete="off" placeholder="pilihan"></div>
+          <div class="f"><label for="impProduk">Produk</label><input id="impProduk" list="produkList" maxlength="60" autocomplete="off" placeholder="pilihan"></div>
+        </div>
+        <div class="f"><div class="hint">Digunakan bila fail tiada lajur status, produk atau kumpulan.</div></div>
+      </div>
+
+      <div class="preview" id="impPrev">Pilih fail atau tampal senarai untuk lihat pratonton.</div>
+      <div class="acts" style="margin-top:12px">
+        <button class="btn" id="impGo" type="button" disabled>Import</button>
+        <button class="linkbtn" type="button" id="impBack">← Kembali ke senarai</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<datalist id="produkList"></datalist>
+<datalist id="kumpulanList"></datalist>
+<div class="toast" id="toast" hidden></div>
+
+<script src="kemas-engine.js"></script>
+<script src="simpan-fail.js"></script>
+<script src="crm-store.js"></script>
+<script>
+(function(){
+  'use strict';
+
+  var $ = function(id){ return document.getElementById(id); };
+  var E = window.KemasEngine, C = window.DynoCRM;
+  var STATUS = C.STATUS;
+  var SLABEL = {}; STATUS.forEach(function(s){ SLABEL[s.id] = s.label; });
+  var SUMBER = ['Auto Contact','Manual','WhatsApp','Facebook','Instagram','TikTok','Shopee','Walk-in','Rujukan','Import','Lain-lain'];
+  var HALAMAN = 50;
+
+  var db = C.semua();
+  var view = { q:'', f:'semua', sort:'dikemas', shown:HALAMAN };
+  var editing = null;      // kunci rekod yang sedang diedit, atau null
+
+  // ---------- Bantuan ----------
+  function esc(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function tarikh(d){ var x = new Date(d.getTime() - d.getTimezoneOffset()*60000); return x.toISOString().slice(0,10); }
+  function hariIni(){ return tarikh(new Date()); }
+  function tambahHari(n){ var d = new Date(); d.setDate(d.getDate()+n); return tarikh(d); }
+  function bezaHari(a,b){ return Math.round((Date.parse(b) - Date.parse(a)) / 86400000); }
+  function papar(iso){
+    if(!iso) return '';
+    try { return new Date(iso.length === 10 ? iso+'T00:00:00' : iso)
+      .toLocaleDateString('ms-MY', { day:'numeric', month:'short', year:'numeric' }); }
+    catch(e){ return iso.slice(0,10); }
+  }
+  function initials(n){
+    var w = String(n||'').trim().split(/\s+/).filter(Boolean);
+    if(!w.length) return '#';
+    // "Customer 012" -> "012": nombor lebih berguna daripada "C0"
+    var akhir = w[w.length-1];
+    if(w.length > 1 && /^\d+$/.test(akhir)) return akhir.slice(-3);
+    return (w[0].charAt(0) + (w[1] ? w[1].charAt(0) : '')).toUpperCase();
+  }
+  function waUrl(k){ return 'https://wa.me/' + k.replace(/\D/g,''); }
+  function perluHubungi(r){ return !!r.susulan && r.susulan <= hariIni() && r.status !== 'tidak' && r.status !== 'customer'; }
+  function teksSusulan(s){
+    if(!s) return null;
+    var n = bezaHari(hariIni(), s);
+    if(n < 0) return { t:'Lewat ' + (-n) + ' hari', lewat:true };
+    if(n === 0) return { t:'Hari ini', lewat:true };
+    if(n === 1) return { t:'Esok', lewat:false };
+    return { t:papar(s), lewat:false };
+  }
+  var toastT;
+  function toast(m){ var t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(function(){ t.hidden = true; }, 2800); }
+  function simpanDb(){
+    if(!C.tulis(db)){
+      toast('Storan telefon penuh atau disekat — perubahan mungkin hilang. Eksport CSV sekarang.');
+      return false;
+    }
+    return true;
+  }
+  function show(id){
+    ['pList','pForm','pImp'].forEach(function(p){ $(p).classList.toggle('show', p === id); });
+    window.scrollTo(0,0);
+  }
+
+  // ---------- UI statik ----------
+  function isiPilihan(sel, list, nilai){
+    list.forEach(function(x){ var o = document.createElement('option'); o.value = x.id || x; o.textContent = x.label || x; sel.appendChild(o); });
+    if(nilai) sel.value = nilai;
+  }
+  isiPilihan($('fSumber'), SUMBER, 'Manual');
+  isiPilihan($('impSumber'), SUMBER, 'Import');
+  isiPilihan($('impStatus'), STATUS, 'lead');
+
+  var CHIPS = [{ id:'semua', label:'Semua' }, { id:'hubungi', label:'Perlu dihubungi' }].concat(STATUS);
+  $('chips').innerHTML = CHIPS.map(function(c){
+    return '<button class="chip" type="button" data-f="'+c.id+'" aria-pressed="false">'+esc(c.label)+'<i></i></button>';
+  }).join('');
+
+  $('fStatus').innerHTML = STATUS.map(function(s){
+    return '<button type="button" class="k-'+s.id+'" data-s="'+s.id+'" aria-pressed="false">'+esc(s.label)+'</button>';
+  }).join('');
+  function setStatus(v){
+    $('fStatus').dataset.v = v;
+    Array.prototype.forEach.call($('fStatus').children, function(b){ b.setAttribute('aria-pressed', b.dataset.s === v); });
+  }
+  $('fStatus').addEventListener('click', function(e){ var b = e.target.closest('button'); if(b) setStatus(b.dataset.s); });
+
+  function isiDatalist(){
+    var produk = {}, kumpulan = {};
+    Object.keys(db).forEach(function(k){ var r = db[k]; if(r.produk) produk[r.produk] = 1; if(r.kumpulan) kumpulan[r.kumpulan] = 1; });
+    $('produkList').innerHTML = Object.keys(produk).sort().map(function(p){ return '<option value="'+esc(p)+'">'; }).join('');
+    $('kumpulanList').innerHTML = Object.keys(kumpulan).sort().map(function(p){ return '<option value="'+esc(p)+'">'; }).join('');
+  }
+
+  // ---------- Senarai ----------
+  function senaraiTapis(){
+    var q = view.q, qd = q.replace(/\D/g,'');
+    var rows = Object.keys(db).map(function(k){ var r = db[k]; return { k:k, r:r }; }).filter(function(x){
+      var r = x.r;
+      if(view.f === 'hubungi'){ if(!perluHubungi(r)) return false; }
+      else if(view.f !== 'semua' && r.status !== view.f) return false;
+      if(q){
+        var hay = [r.nama, r.emel, r.produk, r.nota, r.sumber, r.kumpulan, E.prettyPhone(x.k)].join(' ').toLowerCase();
+        var tel = x.k.replace(/\D/g,''), tempatan = tel.indexOf('60') === 0 ? '0' + tel.slice(2) : tel;
+        if(hay.indexOf(q) < 0 && !(qd.length >= 3 && (tel.indexOf(qd) > -1 || tempatan.indexOf(qd) > -1))) return false;
+      }
+      return true;
+    });
+    var s = view.sort;
+    rows.sort(function(a,b){
+      if(s === 'nama') return (a.r.nama || '￿').localeCompare(b.r.nama || '￿', 'ms', { numeric:true });
+      if(s === 'susulan'){ var x = a.r.susulan || '9999', y = b.r.susulan || '9999'; return x < y ? -1 : x > y ? 1 : 0; }
+      if(s === 'dibuat') return (b.r.dibuat || '').localeCompare(a.r.dibuat || '');
+      return (b.r.dikemas || '').localeCompare(a.r.dikemas || '');
+    });
+    return rows;
+  }
+
+  var WA_SVG = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4.2A8.5 8.5 0 1 1 8 19.4z"/><path d="M9 9.2c.3 2.4 2.4 4.6 5 5.2l1.2-1.2 2 1-.3 1.4c-3.8.6-8.6-3.6-8.6-7.6l1.4-.4 1 2z"/></svg>';
+
+  function render(){
+    var keys = Object.keys(db);
+    var kira = { semua:keys.length, hubungi:0 };
+    STATUS.forEach(function(s){ kira[s.id] = 0; });
+    keys.forEach(function(k){ var r = db[k]; kira[r.status] = (kira[r.status] || 0) + 1; if(perluHubungi(r)) kira.hubungi++; });
+
+    $('stSemua').textContent = kira.semua;
+    $('stProspek').textContent = kira.prospek;
+    $('stFollow').textContent = kira.hubungi;
+    $('stCustomer').textContent = kira.customer;
+    $('stLead').textContent = kira.lead ? kira.lead + ' lead baharu' : '';
+    $('stDue').textContent = kira.hubungi ? 'perlu dihubungi' : 'Tiada tertunggak';
+    Array.prototype.forEach.call(document.querySelectorAll('.stat'), function(b){ b.setAttribute('aria-pressed', b.dataset.f === view.f); });
+    Array.prototype.forEach.call(document.querySelectorAll('.chip'), function(b){
+      b.setAttribute('aria-pressed', b.dataset.f === view.f);
+      b.querySelector('i').textContent = kira[b.dataset.f] || 0;
+    });
+
+    var rows = senaraiTapis();
+    $('countLbl').textContent = rows.length + ' pelanggan';
+    var list = $('list');
+
+    if(!keys.length){
+      list.innerHTML = '<div class="empty"><b>Belum ada pelanggan</b>Setiap kali anda simpan nombor baharu dengan Auto Contact, ' +
+        'nombor itu masuk ke sini sebagai Lead. Anda juga boleh tambah sendiri atau import senarai.' +
+        (bilRekodLama() ? '<button class="btn" type="button" id="emptyPull">⤓ Masukkan ' + bilRekodLama() + ' nombor yang pernah disimpan</button>' : '') +
+        '</div>';
+      var ep = $('emptyPull'); if(ep) ep.addEventListener('click', tarikRekod);
+    } else if(!rows.length){
+      list.innerHTML = '<div class="empty"><b>Tiada padanan</b>Cuba kata carian lain atau tukar tapisan.</div>';
+    } else {
+      list.innerHTML = rows.slice(0, view.shown).map(function(x){
+        var r = x.r, st = r.status || 'lead', d = teksSusulan(r.susulan);
+        var meta = E.prettyPhone(x.k) + (r.produk ? ' · ' + r.produk : '') + (r.kumpulan ? ' · ' + r.kumpulan : '');
+        return '<div class="row k-'+st+'">' +
+          '<button class="rmain" type="button" data-k="'+esc(x.k)+'">' +
+            '<span class="av">'+esc(initials(r.nama))+'</span>' +
+            '<span class="who"><span class="nm'+(r.nama?'':' kosong')+'">'+esc(r.nama || 'Tanpa nama')+'</span>' +
+            '<span class="ph">'+esc(meta)+'</span>' +
+            '<span class="tags"><span class="pill">'+esc(SLABEL[st] || 'Lead')+'</span>' +
+            (d && st !== 'tidak' ? '<span class="due'+(d.lewat?' lewat':'')+'">'+esc(d.t)+'</span>' : '') +
+            '</span></span></button>' +
+          '<a class="wa" href="'+waUrl(x.k)+'" target="_blank" rel="noopener" aria-label="WhatsApp '+esc(r.nama || E.prettyPhone(x.k))+'">'+WA_SVG+'</a>' +
+        '</div>';
+      }).join('');
+    }
+    var baki = rows.length - view.shown;
+    $('moreBtn').style.display = baki > 0 ? 'flex' : 'none';
+    $('moreBtn').textContent = 'Tunjuk lagi (' + baki + ')';
+  }
+
+  $('list').addEventListener('click', function(e){ var b = e.target.closest('.rmain'); if(b) bukaBorang(b.dataset.k); });
+  $('chips').addEventListener('click', function(e){ var b = e.target.closest('.chip'); if(b){ view.f = b.dataset.f; view.shown = HALAMAN; render(); } });
+  $('stats').addEventListener('click', function(e){
+    var b = e.target.closest('.stat'); if(!b) return;
+    view.f = (view.f === b.dataset.f) ? 'semua' : b.dataset.f; view.shown = HALAMAN; render();
+  });
+  var qT;
+  $('q').addEventListener('input', function(){ clearTimeout(qT); var v = this.value; qT = setTimeout(function(){ view.q = v.trim().toLowerCase(); view.shown = HALAMAN; render(); }, 120); });
+  $('sort').addEventListener('change', function(){ view.sort = this.value; render(); });
+  $('moreBtn').addEventListener('click', function(){ view.shown += HALAMAN; render(); });
+
+  // ---------- Borang ----------
+  function bukaBorang(k){
+    editing = k || null;
+    var r = k ? db[k] : {};
+    $('fTitle').textContent = k ? (r.nama || 'Tanpa nama') : 'Pelanggan baharu';
+    $('fSub').textContent = k ? E.prettyPhone(k) : 'Isi apa yang anda tahu. Hanya nombor telefon yang wajib.';
+    $('fNama').value = r.nama || '';
+    $('fTel').value = k ? E.prettyPhone(k) : '';
+    $('fEmel').value = r.emel || '';
+    $('fProduk').value = r.produk || '';
+    $('fSumber').value = SUMBER.indexOf(r.sumber) > -1 ? r.sumber : (k ? 'Lain-lain' : 'Manual');
+    $('fKumpulan').value = r.kumpulan || '';
+    $('fSusulan').value = r.susulan || '';
+    $('fNota').value = r.nota || '';
+    setStatus(r.status || 'lead');
+    $('fTelErr').hidden = true;
+    $('fStamp').textContent = k ? 'Ditambah ' + papar(r.dibuat) + (r.dikemas && r.dikemas !== r.dibuat ? ' · dikemas kini ' + papar(r.dikemas) : '') : '';
+    $('fWa').style.display = k ? 'flex' : 'none';
+    if(k) $('fWa').href = waUrl(k);
+    paparPadam(false);
+    isiDatalist();
+    show('pForm');
+  }
+
+  function paparPadam(sah){
+    var a = $('delArea');
+    if(!editing){ a.innerHTML = ''; return; }
+    if(!sah){
+      a.innerHTML = '<button class="btn danger" type="button" id="delAsk">Padam pelanggan ini</button>';
+      $('delAsk').addEventListener('click', function(){ paparPadam(true); });
+      return;
+    }
+    a.innerHTML = '<div class="confirm"><p>Padam rekod CRM ini? Kontak dalam telefon anda tidak terjejas.</p>' +
+      '<div class="two"><button class="btn danger solid" type="button" id="delYes">Ya, padam</button>' +
+      '<button class="btn alt" type="button" id="delNo">Batal</button></div></div>';
+    $('delNo').addEventListener('click', function(){ paparPadam(false); });
+    $('delYes').addEventListener('click', function(){
+      delete db[editing];
+      simpanDb(); editing = null; render(); show('pList'); toast('Pelanggan dipadam');
+    });
+  }
+
+  $('quick').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    var n = parseInt(b.dataset.d, 10);
+    $('fSusulan').value = n < 0 ? '' : tambahHari(n);
+    if(n >= 0 && $('fStatus').dataset.v === 'lead') setStatus('followup');
+  });
+
+  $('form').addEventListener('submit', function(e){
+    e.preventDefault();
+    var k = C.kunci($('fTel').value), err = $('fTelErr');
+    if(!k){ err.textContent = 'Nombor itu belum sah. Contoh: 012-345 6789 atau +60123456789.'; err.hidden = false; $('fTel').focus(); return; }
+    if(k !== editing && db[k]){ err.textContent = 'Nombor ini sudah ada: ' + (db[k].nama || E.prettyPhone(k)) + '.'; err.hidden = false; return; }
+    err.hidden = true;
+    var t = new Date().toISOString(), lama = editing ? db[editing] : null;
+    var rec = {
+      nama: $('fNama').value.trim(), emel: $('fEmel').value.trim(), produk: $('fProduk').value.trim(),
+      status: $('fStatus').dataset.v || 'lead', sumber: $('fSumber').value, kumpulan: $('fKumpulan').value.trim(),
+      susulan: $('fSusulan').value || '', nota: $('fNota').value.trim(),
+      dibuat: lama ? lama.dibuat : t, dikemas: t
+    };
+    if(editing && editing !== k) delete db[editing];
+    db[k] = rec;
+    simpanDb();
+    var baru = !editing;
+    editing = null; render(); show('pList');
+    toast(baru ? 'Pelanggan ditambah' : 'Disimpan');
+  });
+  $('fBack').addEventListener('click', function(){ editing = null; show('pList'); });
+  $('addBtn').addEventListener('click', function(){ bukaBorang(null); setTimeout(function(){ $('fNama').focus(); }, 50); });
+
+  // ---------- Import ----------
+  // Rekod nombor dari alat Simpan (simpan.html) — untuk nombor yang
+  // disimpan sebelum Mini CRM wujud. Nama asalnya tidak direkodkan,
+  // jadi ia masuk tanpa nama; pengguna boleh lengkapkan kemudian.
+  function rekodLama(){
+    var s;
+    try { s = JSON.parse(localStorage.getItem('dyno_nombor') || '[]'); } catch(e){ s = []; }
+    return (Array.isArray(s) ? s : []).map(function(n){ return C.kunci(n); }).filter(function(k){ return k && !db[k]; });
+  }
+  function bilRekodLama(){ return rekodLama().length; }
+  function tarikRekod(){
+    var ks = rekodLama(); if(!ks.length) return;
+    var t = new Date().toISOString();
+    ks.forEach(function(k){ db[k] = { nama:'', emel:'', produk:'', status:'lead', sumber:'Auto Contact', kumpulan:'', susulan:'', nota:'', dibuat:t, dikemas:t }; });
+    simpanDb(); render(); show('pList');
+    toast(ks.length + ' nombor dimasukkan sebagai Lead');
+  }
+
+  function parseCsvRows(text, d){
+    var out = [], row = [], cur = '', q = false, i, ch;
+    for(i = 0; i < text.length; i++){
+      ch = text.charAt(i);
+      if(q){
+        if(ch === '"'){ if(text.charAt(i+1) === '"'){ cur += '"'; i++; } else q = false; }
+        else cur += ch;
+      }
+      else if(ch === '"' && cur === '') q = true;
+      else if(ch === d){ row.push(cur); cur = ''; }
+      else if(ch === '\n' || ch === '\r'){ if(ch === '\r' && text.charAt(i+1) === '\n') i++; row.push(cur); out.push(row); row = []; cur = ''; }
+      else cur += ch;
+    }
+    if(cur !== '' || row.length){ row.push(cur); out.push(row); }
+    return out.filter(function(r){ return r.some(function(c){ return c.trim(); }); });
+  }
+  var TAJUK = [
+    ['emel', /e-?mail|emel/], ['telefon', /phone|telefon|\btel\b|\bhp\b|whatsapp|\bwa\b|nombor|number|mobile|^no\.?$|no\.? ?(tel|hp)/],
+    ['produk', /produk|product/], ['status', /status/], ['sumber', /source|sumber/], ['kumpulan', /kumpulan|group|label|tag/],
+    ['nota', /note|nota|catatan|remark/], ['susulan', /follow|susulan/], ['nama', /nam/]
+  ];
+  function petaTajuk(cells){
+    var m = {};
+    cells.forEach(function(c, i){
+      var t = c.trim().toLowerCase();
+      if(!t || /contact id|^id$|dibuat|created|updated|dikemas/.test(t)) return;
+      for(var j = 0; j < TAJUK.length; j++){
+        if(m[TAJUK[j][0]] === undefined && TAJUK[j][1].test(t)){ m[TAJUK[j][0]] = i; break; }
+      }
+    });
+    return m;
+  }
+  function petaStatus(t){
+    t = String(t||'').toLowerCase();
+    if(/prospe/.test(t)) return 'prospek';
+    if(/customer|pelanggan/.test(t)) return 'customer';
+    if(/follow|susulan/.test(t)) return 'followup';
+    if(/inactive|tidak/.test(t)) return 'tidak';
+    if(/lead/.test(t)) return 'lead';
+    return '';
+  }
+  var RE_NOMBOR = /\+?\d[\d   \-().]{6,}\d/g;
+
+  /* Pulangkan [{ telefon, nama, emel, produk, status, sumber, kumpulan, nota, susulan }] */
+  function hurai(text, namaFail){
+    text = String(text || '').replace(/^﻿/, '');
+    if(!text.trim()) return [];
+    if(/BEGIN:VCARD/i.test(text)){
+      return E.parseVCF(text).map(function(c){
+        return { telefon:(c.phones || [])[0] || '', nama:c.name || '', emel:(c.emails || [])[0] || '', nota:c.note || '' };
+      });
+    }
+    var baris1 = (text.split(/\r?\n/).filter(function(l){ return l.trim(); })[0]) || '';
+    // Eksport CSV Google Contacts — biar enjin Kemas yang mengendalikannya
+    if(/phone 1 - value/i.test(baris1)){
+      return E.parseCSV(text).map(function(c){
+        return { telefon:(c.phones || [])[0] || '', nama:c.name || '', emel:(c.emails || [])[0] || '', nota:c.note || '' };
+      });
+    }
+    var kira = function(ch){ return baris1.split(ch).length - 1; };
+    var d = ['\t', ';', ','].reduce(function(a, b){ return kira(b) > kira(a) ? b : a; }, ',');
+    if(kira(d) > 0){
+      var rows = parseCsvRows(text, d), m = petaTajuk(rows[0]);
+      if(m.telefon !== undefined){
+        var g = function(r, k){ return m[k] === undefined ? '' : String(r[m[k]] || '').trim(); };
+        return rows.slice(1).map(function(r){
+          var s = g(r, 'susulan');
+          return { telefon:g(r,'telefon'), nama:g(r,'nama'), emel:g(r,'emel'), produk:g(r,'produk'),
+                   status:petaStatus(g(r,'status')), sumber:g(r,'sumber'), kumpulan:g(r,'kumpulan'),
+                   nota:g(r,'nota'), susulan:/^\d{4}-\d{2}-\d{2}$/.test(s) ? s : '' };
+        });
+      }
+    }
+    // Teks bebas: satu baris boleh ada nama dan nombor ("Kak Nik, 012-345 6789").
+    // Baris eksport chat ("[1/8/2026, 1:50 PM] +60 12-…: Salam") tidak diberi
+    // nama, kerana teks selepas nombor itu mesej, bukan nama.
+    var out = [];
+    text.split(/\r?\n/).forEach(function(l){
+      var jumpa = l.match(RE_NOMBOR);
+      if(!jumpa) return;
+      var baki = l.replace(RE_NOMBOR, ' ').replace(/[,;|\t]+/g, ' ').replace(/\s+/g, ' ').trim();
+      var nama = (/[\[\]:]/.test(l) || /\d/.test(baki) || baki.length > 40) ? '' : baki.replace(/^[-–—\s]+|[-–—\s]+$/g, '');
+      jumpa.forEach(function(n){ out.push({ telefon:n, nama:nama }); });
+    });
+    return out;
+  }
+
+  var parsed = { baru:[], ada:0, rosak:0, jumlah:0 };
+  function pratonton(){
+    var rows = hurai($('impText').value, '');
+    var seen = {}, baru = [], ada = 0, rosak = 0;
+    rows.forEach(function(r){
+      var k = C.kunci(r.telefon);
+      if(!k){ rosak++; return; }
+      if(seen[k] || db[k]){ ada++; seen[k] = 1; return; }
+      seen[k] = 1; r.k = k; baru.push(r);
+    });
+    parsed = { baru:baru, ada:ada, rosak:rosak, jumlah:rows.length };
+    var p = $('impPrev');
+    if(!rows.length){ p.textContent = 'Pilih fail atau tampal senarai untuk lihat pratonton.'; }
+    else {
+      p.innerHTML = 'Jumpa <b>' + rows.length + '</b> baris: <b>' + baru.length + '</b> pelanggan baharu, <b>' + ada +
+        '</b> sudah ada atau berulang, <b>' + rosak + '</b> tanpa nombor sah.' +
+        (baru.length ? '<small>Contoh: ' + esc(baru.slice(0, 3).map(function(r){ return (r.nama ? r.nama + ' ' : '') + E.prettyPhone(r.k); }).join(' · ')) + '</small>' : '');
+    }
+    $('impGo').disabled = !baru.length;
+    $('impGo').textContent = baru.length ? 'Import ' + baru.length + ' pelanggan' : 'Import';
+  }
+  function bukaImport(){
+    var n = bilRekodLama();
+    $('pullBtn').style.display = n ? 'flex' : 'none';
+    $('pullBtn').textContent = '⤓ Masukkan ' + n + ' nombor yang pernah disimpan dengan Auto Contact';
+    isiDatalist(); pratonton(); show('pImp');
+  }
+  $('impBtn').addEventListener('click', bukaImport);
+  $('impBack').addEventListener('click', function(){ show('pList'); });
+  $('pullBtn').addEventListener('click', tarikRekod);
+  var pT;
+  $('impText').addEventListener('input', function(){ clearTimeout(pT); pT = setTimeout(pratonton, 200); });
+  function bacaFail(f){
+    if(!f) return;
+    var r = new FileReader();
+    r.onload = function(){ $('impText').value = String(r.result || ''); $('impFile').value = ''; pratonton(); };
+    r.onerror = function(){ toast('Fail tidak dapat dibaca.'); };
+    r.readAsText(f);
+  }
+  $('impFile').addEventListener('change', function(){ bacaFail(this.files && this.files[0]); });
+  var drop = $('drop');
+  ['dragenter','dragover'].forEach(function(ev){ drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add('hot'); }); });
+  ['dragleave','drop'].forEach(function(ev){ drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove('hot'); }); });
+  drop.addEventListener('drop', function(e){ if(e.dataTransfer && e.dataTransfer.files.length) bacaFail(e.dataTransfer.files[0]); });
+
+  $('impGo').addEventListener('click', function(){
+    if(!parsed.baru.length) return;
+    var t = new Date().toISOString();
+    var st = $('impStatus').value, sb = $('impSumber').value, kp = $('impKumpulan').value.trim(), pr = $('impProduk').value.trim();
+    parsed.baru.forEach(function(r){
+      db[r.k] = { nama:r.nama || '', emel:r.emel || '', produk:r.produk || pr, status:r.status || st,
+                  sumber:r.sumber || sb, kumpulan:r.kumpulan || kp, susulan:r.susulan || '', nota:r.nota || '',
+                  dibuat:t, dikemas:t };
+    });
+    var n = parsed.baru.length;
+    if(simpanDb()) toast(n + ' pelanggan diimport');
+    $('impText').value = ''; render(); show('pList');
+  });
+
+  // ---------- Eksport ----------
+  function selCsv(v){
+    v = v == null ? '' : String(v);
+    if(/^[=+\-@]/.test(v)) v = "'" + v;            // elak formula disuntik dalam Sheets/Excel
+    return /[",\r\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+  }
+  function namaFail(ext){ return 'dyno-crm-' + hariIni() + '.' + ext; }
+  $('expCsv').addEventListener('click', function(){
+    var keys = Object.keys(db);
+    if(!keys.length){ toast('Belum ada pelanggan untuk dieksport.'); return; }
+    var head = ['Contact ID','Name','Phone','Email','Product','Status','Source','Group','Follow-up Date','Notes','Created','Updated'];
+    var lines = [head.join(',')];
+    keys.sort(function(a, b){ return (db[a].nama || '').localeCompare(db[b].nama || '', 'ms', { numeric:true }); }).forEach(function(k){
+      var r = db[k], tel = k.replace(/\D/g, '');
+      lines.push([tel, r.nama, tel, r.emel, r.produk, SLABEL[r.status] || r.status, r.sumber, r.kumpulan, r.susulan, r.nota,
+        (r.dibuat || '').slice(0, 10), (r.dikemas || '').slice(0, 10)].map(selCsv).join(','));
+    });
+    window.DynoFail.hantar(namaFail('csv'), '﻿' + lines.join('\r\n'), 'text/csv');
+  });
+  $('expVcf').addEventListener('click', function(){
+    var rows = senaraiTapis().filter(function(x){ return x.r.nama; });
+    if(!rows.length){ toast('Tiada pelanggan bernama dalam senarai ini untuk disimpan ke telefon.'); return; }
+    var vcf = rows.map(function(x){
+      var nm = x.r.nama.replace(/[\\;,]/g, function(c){ return '\\' + c; }).replace(/[\r\n]+/g, ' ');
+      var l = ['BEGIN:VCARD', 'VERSION:3.0', 'N:;' + nm + ';;;', 'FN:' + nm, 'TEL;TYPE=CELL:' + x.k];
+      if(x.r.emel) l.push('EMAIL:' + x.r.emel.replace(/[\r\n]+/g, ''));
+      l.push('END:VCARD');
+      return l.join('\r\n');
+    }).join('\r\n') + '\r\n';
+    window.DynoFail.hantar('dyno-crm-' + rows.length + '-kontak.vcf', vcf);
+    toast(rows.length + ' kontak dalam fail. Buka fail itu untuk import ke telefon.');
+  });
+
+  // Kemas kini bila tab lain (cth. simpan.html) menulis rekod baharu
+  window.addEventListener('storage', function(e){
+    if(e.key === 'dyno_crm'){ db = C.semua(); if($('pList').classList.contains('show')) render(); }
+  });
+
+  render();
+
+  window.__dynoCrm = { hurai:hurai, kunci:C.kunci };
+})();
+</script>
+<script src="pasang.js" defer></script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 /* Dynopro Auto Contact — Service Worker
    Membolehkan app dipasang ke skrin utama dan berfungsi tanpa internet. */
 
-const CACHE = 'dynopro-auto-contact-v18';
+const CACHE = 'dynopro-auto-contact-v19';
 const SHELL = [
   './',
   './index.html',
@@ -10,9 +10,11 @@ const SHELL = [
   './kemas.html',
   './tukar-nama.html',
   './jual.html',
+  './crm.html',
   './kemas-engine.js',
   './ocr.js',
   './simpan-fail.js',
+  './crm-store.js',
   './pasang.js',
   './lesen.js',
   './manifest.webmanifest',

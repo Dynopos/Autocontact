@@ -31,6 +31,19 @@ Muat naik eksport `.vcf` atau `.csv` dari Google Contacts untuk mencari:
 
 Hasilnya satu fail kontak bersih untuk diimport semula.
 
+**3. Mini CRM** — [`docs/crm.html`](docs/crm.html)
+
+Setiap nombor baharu yang disimpan masuk ke Mini CRM sebagai **Lead**, dengan
+nama yang sama seperti dalam telefon. Dari situ pengguna boleh:
+
+- Tukar status: Lead → Prospek → Follow-up → Customer (atau Tidak aktif)
+- Tetapkan **tarikh follow-up** — yang sudah sampai tarikh ditanda *Perlu dihubungi*
+- Simpan produk, kumpulan, emel dan nota; **WhatsApp terus** dengan satu ketukan
+- Import CSV / vCard / senarai tampal, dan eksport CSV untuk Google Sheets
+
+Rekod disimpan dalam `localStorage` (kunci `dyno_crm`) melalui
+[`docs/crm-store.js`](docs/crm-store.js) — sama seperti rekod lain, tiada server.
+
 ---
 
 ## 🔒 Privasi
@@ -85,6 +98,8 @@ dynopro-auto-contact/
 │   ├── index.html                 # Simpan nombor baharu
 │   ├── kemas.html                 # Kemas kontak sedia ada
 │   ├── kemas-engine.js            # Enjin pendua & normalisasi nombor
+│   ├── crm.html                   # Mini CRM — status, follow-up, nota
+│   ├── crm-store.js               # Storan rekod Mini CRM (localStorage)
 │   ├── manifest.webmanifest       # Maklumat pemasangan PWA
 │   ├── sw.js                      # Service worker (offline)
 │   ├── icons/                     # Ikon Dynopro

@@ -407,6 +407,10 @@
         ✏️ Tersalah nama? Tukar nama pukal
       </a>
 
+      <a href="crm.html" class="btn alt" style="text-decoration:none;margin-top:9px">
+        📋 Mini CRM — urus pelanggan &amp; follow-up
+      </a>
+
       <button class="btn alt" id="recover" style="display:none">
         ⤓ Muat turun semula nombor tersimpan
       </button>
@@ -472,7 +476,10 @@
           </ol>
         </div>
 
-        <button class="btn" id="again" style="margin-top:20px">➕ Import fail lain</button>
+        <a href="crm.html" class="btn alt" id="toCrm" style="text-decoration:none;margin-top:20px">
+          📋 Urus pelanggan ini dalam Mini CRM
+        </a>
+        <button class="btn" id="again" style="margin-top:12px">➕ Import fail lain</button>
         <button class="linkbtn" id="redownload">Muat turun semula fail .vcf</button>
       </div>
     </section>
@@ -496,6 +503,7 @@
 <script src="lesen.js"></script>
 <script src="simpan-fail.js"></script>
 <script src="kemas-engine.js"></script>
+<script src="crm-store.js"></script>
 <script src="ocr.js" defer></script>
 <script>
 (function(){
@@ -902,7 +910,17 @@
                  data:buildVCF(cur.fresh, cur.start) };
     setHowto(download(lastFile.name, lastFile.data));
     record(cur.fresh, cur.start + cur.fresh.length - 1);
-    $('doneBadge').textContent = cur.fresh.length + ' kontak dalam fail';
+    // Setiap nombor baharu juga masuk Mini CRM sebagai Lead, dengan nama
+    // yang sama seperti dalam telefon — supaya pengguna boleh terus buat
+    // susulan tanpa menaip semula apa-apa.
+    var keCrm = 0;
+    if(window.DynoCRM){
+      keCrm = window.DynoCRM.tambahDariSimpan(cur.fresh.map(function(n, i){
+        return { telefon:n, nama:label(cur.start + i) };
+      }), prefixVal() === 'Customer' ? '' : prefixVal());
+    }
+    $('doneBadge').textContent = cur.fresh.length + ' kontak dalam fail' +
+      (keCrm ? ' \u00b7 ' + keCrm + ' masuk Mini CRM' : '');
     refreshMemo();
     refreshKuota();
     show(2);
