@@ -11,6 +11,13 @@ pluginManagement {
         mavenCentral()
         google { content { includeGroupByRegex("com\\.android.*|androidx.*|com\\.google\\.android.*|com\\.google\\.testing.*") } }
     }
+    // Versi sahaja — setiap modul memuat plugin yang ia perlukan (AGP + Kotlin Android dalam
+    // pemuat kelas yang sama untuk :app; Kotlin JVM untuk :core).
+    plugins {
+        id("com.android.application") version "8.7.3"
+        id("org.jetbrains.kotlin.android") version "2.0.21"
+        id("org.jetbrains.kotlin.jvm") version "2.0.21"
+    }
 }
 dependencyResolutionManagement {
     repositories {
