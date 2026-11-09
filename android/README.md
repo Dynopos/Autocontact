@@ -93,3 +93,22 @@ setiap push ke `android/`. APK dimuat naik sebagai artifak **dyno-auto-contact-d
 - **Play Store**: app yang membaca notifikasi app lain perlu penjelasan yang jelas dalam penyenaraian dan dasar
   privasi; versi ini untuk pengedaran terus (APK) dan ujian dahulu.
 - Username WhatsApp adalah ciri yang agak baharu; format paparannya dalam notifikasi belum disahkan.
+
+## Senarai semak ujian pada telefon sebenar
+
+Belum dijalankan. Tangkapan automatik **tidak boleh dianggap berfungsi** sehingga semua yang berkaitan lulus pada
+telefon sebenar dengan WhatsApp Business sebenar. Gunakan nombor ujian anda sendiri (bukan pelanggan).
+
+| # | Langkah | Jangkaan | Lulus? |
+|---|---|---|---|
+| A | Dari nombor yang **tidak disimpan** dalam Kenalan, hantar mesej ke WhatsApp Business | Log app: "nombor (jid/tajuk)"; kenalan muncul dalam Mini CRM sebagai New Lead dengan nombor | |
+| B | Dari akaun yang menggunakan **username** dan menyembunyikan nombor, hantar mesej | Log: "username"; kenalan dengan @username, tiada nombor | |
+| C | Nombor dari A hantar mesej kedua | Kenalan yang sama dikemas kini; tiada pendua | |
+| D | Dari nombor yang **disimpan dalam Kenalan** (nama sahaja dipaparkan) | Jika log menunjukkan "nama sahaja": masuk *Lead belum disahkan*, tiada kenalan dicipta | |
+| E | Matikan & hidupkan semula akses notifikasi ketika notifikasi masih ada | Tiada event/kenalan berganda | |
+| F | WhatsApp → Tetapan → Notifikasi → matikan *pratonton* / skrin kunci tersembunyi | Lead masih ditangkap jika pengenal ada; mesej kosong, ditanda pratonton disembunyikan | |
+| G | Mod kapal terbang, terima mesej (Wi-Fi sahaja untuk WhatsApp tidak mungkin — gunakan data mati selepas notifikasi) | Lead kekal dalam "Menunggu dihantar", dihantar bila internet kembali | |
+| H | Pasang app pada **dua telefon** (WhatsApp Business peranti utama + peranti dipautkan) | Satu kenalan; idealnya satu event | |
+| I | Biarkan telefon semalaman dengan pengoptimuman bateri **aktif** | Semak "Pendengar disambung" & lead yang terlepas; ulang dengan bateri dikecualikan | |
+| J | Chat kumpulan, panggilan WhatsApp, mesej status | Tiada lead | |
+| K | Notifikasi dari app lain (SMS, Telegram) | Tiada lead | |
