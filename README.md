@@ -44,6 +44,18 @@ nama yang sama seperti dalam telefon. Dari situ pengguna boleh:
 Rekod disimpan dalam `localStorage` (kunci `dyno_crm`) melalui
 [`docs/crm-store.js`](docs/crm-store.js) — sama seperti rekod lain, tiada server.
 
+Pilihan **akaun awan** (Supabase): selepas log masuk dengan kod emel, rekod disimpan dalam akaun
+pengguna dengan Row Level Security, dan rekod dalam telefon boleh dipindahkan dengan satu butang.
+
+**4. Smart WhatsApp Classification** — [`docs/klasifikasi.html`](docs/klasifikasi.html)
+
+Muat naik beberapa fail *Export Chat* WhatsApp (.txt / .zip) serentak. Telefon menghurai mesej,
+memadankan pelanggan dengan CRM (yang tidak pasti masuk *Semakan manual*), membuang data peribadi,
+dan Claude mencadangkan kategori (Prospek – Tanya harga / Berminat / Hampir membeli, Support,
+Customer – Perlu semakan pembelian, Tidak diketahui), produk, ringkasan, tindakan susulan dan tahap
+keyakinan. Pengguna menyemak dan mengesahkan sebelum apa-apa disimpan; Customer hanya ditanda selepas
+pembelian disahkan. Pemasangan pelayan: [`supabase/README.md`](supabase/README.md).
+
 ---
 
 ## 🔒 Privasi
@@ -100,6 +112,9 @@ dynopro-auto-contact/
 │   ├── kemas-engine.js            # Enjin pendua & normalisasi nombor
 │   ├── crm.html                   # Mini CRM — status, follow-up, nota
 │   ├── crm-store.js               # Storan rekod Mini CRM (localStorage)
+│   ├── klasifikasi.html           # Smart WhatsApp Classification
+│   ├── wa-klasifikasi.js          # Hurai chat WhatsApp, pemadanan, buang data peribadi
+│   ├── awan.js / config.js        # Sambungan Supabase (kosong = mod telefon sahaja)
 │   ├── manifest.webmanifest       # Maklumat pemasangan PWA
 │   ├── sw.js                      # Service worker (offline)
 │   ├── icons/                     # Ikon Dynopro
@@ -107,6 +122,8 @@ dynopro-auto-contact/
 │   ├── README-WEB.md              # 🚀 Panduan lancar web
 │   ├── PANDUAN-PLAY-STORE.md      # Untuk kemudian
 │   └── JUSTIFIKASI-CONTACTS.md    # Untuk kemudian
+├── supabase/                      # Pangkalan data, RLS, Edge Function classify-chat
+├── tests/                         # Ujian pembaca chat
 ├── lib/main.dart                  # Versi Android native (direhatkan)
 ├── pubspec.yaml
 ├── .github/workflows/build.yml    # Bina APK — manual sahaja

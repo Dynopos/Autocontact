@@ -30,6 +30,7 @@
     --s-customer:#1e8e4a; --s-tidak:#7a7489; --wa:#128c4a;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+  [hidden]{display:none!important}
   html,body{min-height:100%}
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
     background:linear-gradient(170deg,#12021f 0%,#22043f 46%,#2E0757 100%);
@@ -122,6 +123,19 @@
   .due.lewat{color:var(--s-followup)}
   .wa{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;
     color:var(--wa);background:#e9f7ef;border:1px solid #bfe6c8;text-decoration:none}
+  .pill.ai{--k:#a3159f;background:#fdeefc}
+  .akaun{margin-top:10px;color:#a996c8;font-size:12px;line-height:1.5}
+  .akaun button{background:none;border:none;color:#e5b8ff;font-weight:700;cursor:pointer;font-size:12px;padding:0}
+  .smart{display:flex;gap:12px;align-items:center;text-decoration:none;color:var(--ink);background:linear-gradient(135deg,#fdf4ff,#f4f5f8);
+    border:1.5px solid #ecc6f3;border-radius:16px;padding:12px 14px;margin-bottom:14px}
+  .smart b{display:block;font-size:14.5px;color:#7a167a}
+  .smart span{display:block;font-size:12px;color:var(--muted);margin-top:2px;line-height:1.4}
+  .smart i{font-style:normal;margin-left:auto;color:#a3159f;font-weight:900;font-size:18px}
+  .banner{background:#fff8ea;border:1px solid #f1d6a4;border-radius:14px;padding:12px 14px;font-size:13px;color:#7a4a00;
+    line-height:1.5;margin-bottom:14px;display:grid;gap:10px}
+  .aibox{background:linear-gradient(135deg,#fdf4ff,#f4f5f8);border:1px solid #ecc6f3;border-radius:16px;padding:13px 15px;
+    margin-bottom:12px;font-size:13px;line-height:1.5;color:#3b1a44;display:grid;gap:6px}
+  .aibox b{color:#7a167a}
   .k-lead{--k:var(--s-lead)} .k-prospek{--k:var(--s-prospek)} .k-followup{--k:var(--s-followup)}
   .k-customer{--k:var(--s-customer)} .k-tidak{--k:var(--s-tidak)}
   .empty{padding:30px 22px;text-align:center;color:var(--muted);font-size:14px;line-height:1.6}
@@ -184,12 +198,19 @@
       </div>
     </div>
     <a class="backlink" href="simpan.html">← Simpan nombor baharu</a><a class="backlink" href="kemas.html">🧹 Kemas kontak</a>
+    <div class="akaun" id="akaun" hidden></div>
   </header>
 
   <div class="sheet">
 
     <!-- PANEL SENARAI -->
     <section class="panel show" id="pList">
+      <div id="banner"></div>
+      <a class="smart" id="smartLink" href="klasifikasi.html" hidden>
+        <span style="font-size:26px">🤖</span>
+        <span><b>Smart WhatsApp Classification</b><span>Muat naik chat WhatsApp — AI cadang kategori, produk dan tindakan susulan</span></span>
+        <i>›</i>
+      </a>
       <div class="topacts">
         <button class="btn" id="addBtn" type="button">＋ Tambah pelanggan</button>
         <button class="btn alt" id="impBtn" type="button">Import</button>
@@ -232,6 +253,7 @@
       <h2 id="fTitle">Pelanggan baharu</h2>
       <p class="sub" id="fSub">Isi apa yang anda tahu. Hanya nombor telefon yang wajib.</p>
       <form id="form" novalidate>
+        <div class="aibox" id="fAi" hidden></div>
         <div class="card">
           <div class="f"><label for="fNama">Nama</label><input id="fNama" maxlength="80" autocomplete="off" placeholder="cth. Kak Nik Kuih"></div>
           <div class="f"><label for="fTel">No. telefon / WhatsApp</label><input id="fTel" type="tel" inputmode="tel" autocomplete="off" placeholder="012-345 6789"><div class="err" id="fTelErr" hidden></div></div>
@@ -257,6 +279,15 @@
           <button class="linkbtn" type="button" id="fBack">← Kembali ke senarai</button>
         </div>
       </form>
+    </section>
+
+    <!-- PANEL AKAUN -->
+    <section class="panel" id="pAkaun">
+      <h2>Simpan di awan</h2>
+      <p class="sub">Log masuk untuk menyimpan pelanggan dalam akaun anda — selamat walaupun telefon hilang, boleh dibuka
+        dari telefon lain, dan diperlukan untuk Smart WhatsApp Classification. Hanya anda boleh melihat data akaun anda.</p>
+      <div id="loginBox"></div>
+      <button class="linkbtn" type="button" id="akaunBack">← Kembali ke senarai</button>
     </section>
 
     <!-- PANEL IMPORT -->
@@ -303,9 +334,11 @@
 <datalist id="kumpulanList"></datalist>
 <div class="toast" id="toast" hidden></div>
 
+<script src="config.js"></script>
 <script src="kemas-engine.js"></script>
 <script src="simpan-fail.js"></script>
 <script src="crm-store.js"></script>
+<script src="awan.js"></script>
 <script>
 (function(){
   'use strict';
@@ -360,8 +393,96 @@
     }
     return true;
   }
+
+  // ---------- Mod awan (Supabase) ----------
+  // Tanpa log masuk: rekod dalam telefon ini sahaja (localStorage), seperti dahulu.
+  // Selepas log masuk: rekod dalam akaun awan pengguna; db di sini cache sahaja.
+  var awan = window.DynoAwan, modAwan = false;
+  var KAT = { prospek_harga:'Tanya harga', prospek_berminat:'Berminat', prospek_hampir:'Hampir membeli',
+              support_pelanggan:'Support', customer_semak:'Semak pembelian', tidak_diketahui:'Tidak diketahui' };
+  var KAT_PENUH = { prospek_harga:'Prospek – Tanya harga', prospek_berminat:'Prospek – Berminat', prospek_hampir:'Prospek – Hampir membeli',
+              support_pelanggan:'Support – Kemungkinan pelanggan', customer_semak:'Customer – Perlu semakan pembelian', tidak_diketahui:'Tidak diketahui' };
+
+  function dariAwan(r){
+    return { id:r.id, nama:r.nama || '', emel:r.emel || '', produk:r.produk || '', status:r.status || 'lead',
+             sumber:r.sumber || '', kumpulan:r.kumpulan || '', susulan:r.susulan || '', nota:r.nota || '',
+             dibuat:r.created_at, dikemas:r.updated_at, kategori:r.kategori || '', kategori_disahkan:!!r.kategori_disahkan,
+             ringkasan:r.ringkasan || '', tindakan:r.tindakan || '', keyakinan:r.keyakinan };
+  }
+  function keAwan(k, r){
+    var x = { telefon:k, nama:(r.nama || '').slice(0,120), emel:(r.emel || '').slice(0,160), produk:(r.produk || '').slice(0,120),
+              status:r.status || 'lead', sumber:(r.sumber || '').slice(0,40), kumpulan:(r.kumpulan || '').slice(0,60),
+              susulan:r.susulan || null, nota:(r.nota || '').slice(0,4000) };
+    if(r.id) x.id = r.id;
+    return x;
+  }
+  function muatAwan(){
+    return awan.senaraiKenalan().then(function(rows){
+      var baru = {}; rows.forEach(function(r){ baru[r.telefon] = dariAwan(r); });
+      db = baru; render(); paparBanner();
+    }, function(e){ toast(e.message); });
+  }
+  /* Simpan rekod yang berubah. keys: kunci rekod dalam db; buangId: id awan untuk dipadam. */
+  function simpan(keys, buangId){
+    if(!modAwan) return simpanDb();
+    var rows = keys.filter(function(k){ return db[k]; }).map(function(k){ return keAwan(k, db[k]); });
+    var p = (buangId && buangId.length) ? awan.padamKenalan(buangId) : Promise.resolve();
+    p.then(function(){ return rows.length ? awan.simpanKenalan(rows) : []; }).then(function(hasil){
+      hasil.forEach(function(r){ db[r.telefon] = dariAwan(r); });
+    }).catch(function(e){
+      toast('Gagal simpan ke awan: ' + e.message);
+      muatAwan();
+    });
+    return true;
+  }
+
+  function paparAkaun(){
+    var el = $('akaun');
+    if(!awan || !awan.siap()){ el.hidden = true; return; }
+    el.hidden = false;
+    var u = awan.pengguna();
+    $('smartLink').hidden = false;
+    if(u){
+      el.innerHTML = '☁︎ Disimpan di awan · ' + esc(u.email || '') + ' · <button type="button" id="keluarBtn">Log keluar</button>';
+      $('keluarBtn').addEventListener('click', function(){
+        awan.logKeluar().then(function(){ modAwan = false; db = C.semua(); paparAkaun(); paparBanner(); render(); toast('Log keluar. Kini menunjukkan rekod dalam telefon ini.'); });
+      });
+    } else {
+      el.innerHTML = '📱 Disimpan dalam telefon ini sahaja · <button type="button" id="masukBtn">Log masuk untuk simpan di awan</button>';
+      $('masukBtn').addEventListener('click', bukaAkaun);
+    }
+  }
+  function bukaAkaun(){
+    awan.mula().then(function(){
+      awan.paparLogin($('loginBox'), function(){ mulaAwan().then(function(){ show('pList'); toast('Log masuk berjaya'); }); });
+      show('pAkaun');
+    }, function(e){ toast(e.message); });
+  }
+  function mulaAwan(){
+    modAwan = true; paparAkaun();
+    return muatAwan();
+  }
+  // Rekod dalam telefon ini yang belum ada dalam akaun (cth. dari alat Simpan Nombor)
+  function rekodBelumPindah(){
+    if(!modAwan) return [];
+    var lokal = C.semua();
+    return Object.keys(lokal).filter(function(k){ return !db[k]; });
+  }
+  function paparBanner(){
+    var ks = rekodBelumPindah(), el = $('banner');
+    if(!ks.length){ el.innerHTML = ''; return; }
+    el.innerHTML = '<div class="banner"><span><b>' + ks.length + ' pelanggan</b> dalam telefon ini belum ada dalam akaun anda ' +
+      '(termasuk nombor baharu dari Simpan Nombor).</span><button class="btn" type="button" id="pindahBtn">Pindahkan ke akaun</button></div>';
+    $('pindahBtn').addEventListener('click', function(){
+      var b = this; b.disabled = true; b.textContent = 'Memindahkan…';
+      var lokal = C.semua();
+      awan.simpanKenalan(ks.map(function(k){ var r = Object.assign({}, lokal[k]); delete r.id; return keAwan(k, r); }), true)
+        .then(function(){ toast(ks.length + ' pelanggan dipindahkan ke akaun'); return muatAwan(); },
+              function(e){ toast('Gagal memindahkan: ' + e.message); b.disabled = false; b.textContent = 'Cuba lagi'; });
+    });
+  }
   function show(id){
-    ['pList','pForm','pImp'].forEach(function(p){ $(p).classList.toggle('show', p === id); });
+    ['pList','pForm','pImp','pAkaun'].forEach(function(p){ $(p).classList.toggle('show', p === id); });
     window.scrollTo(0,0);
   }
 
@@ -461,6 +582,7 @@
             '<span class="who"><span class="nm'+(r.nama?'':' kosong')+'">'+esc(r.nama || 'Tanpa nama')+'</span>' +
             '<span class="ph">'+esc(meta)+'</span>' +
             '<span class="tags"><span class="pill">'+esc(SLABEL[st] || 'Lead')+'</span>' +
+            (r.kategori ? '<span class="pill ai">🤖 '+esc(KAT[r.kategori] || '')+'</span>' : '') +
             (d && st !== 'tidak' ? '<span class="due'+(d.lewat?' lewat':'')+'">'+esc(d.t)+'</span>' : '') +
             '</span></span></button>' +
           '<a class="wa" href="'+waUrl(x.k)+'" target="_blank" rel="noopener" aria-label="WhatsApp '+esc(r.nama || E.prettyPhone(x.k))+'">'+WA_SVG+'</a>' +
@@ -500,6 +622,13 @@
     setStatus(r.status || 'lead');
     $('fTelErr').hidden = true;
     $('fStamp').textContent = k ? 'Ditambah ' + papar(r.dibuat) + (r.dikemas && r.dikemas !== r.dibuat ? ' · dikemas kini ' + papar(r.dikemas) : '') : '';
+    var ai = $('fAi');
+    if(k && r.kategori){
+      ai.hidden = false;
+      ai.innerHTML = '<div>🤖 <b>' + esc(KAT_PENUH[r.kategori] || '') + '</b>' + (r.kategori_disahkan ? ' · disahkan' : '') + '</div>' +
+        (r.ringkasan ? '<div>' + esc(r.ringkasan) + '</div>' : '') +
+        (r.tindakan ? '<div><b>Tindakan:</b> ' + esc(r.tindakan) + '</div>' : '');
+    } else { ai.hidden = true; ai.innerHTML = ''; }
     $('fWa').style.display = k ? 'flex' : 'none';
     if(k) $('fWa').href = waUrl(k);
     paparPadam(false);
@@ -520,8 +649,10 @@
       '<button class="btn alt" type="button" id="delNo">Batal</button></div></div>';
     $('delNo').addEventListener('click', function(){ paparPadam(false); });
     $('delYes').addEventListener('click', function(){
+      var id = db[editing] && db[editing].id;
       delete db[editing];
-      simpanDb(); editing = null; render(); show('pList'); toast('Pelanggan dipadam');
+      if(modAwan){ if(id) simpan([], [id]); } else simpanDb();
+      editing = null; render(); show('pList'); toast('Pelanggan dipadam');
     });
   }
 
@@ -545,9 +676,11 @@
       susulan: $('fSusulan').value || '', nota: $('fNota').value.trim(),
       dibuat: lama ? lama.dibuat : t, dikemas: t
     };
+    // Kekalkan medan awan (id, keputusan klasifikasi) — borang ini tidak mengubahnya
+    if(lama) ['id','kategori','kategori_disahkan','ringkasan','tindakan','keyakinan'].forEach(function(f){ if(lama[f] !== undefined) rec[f] = lama[f]; });
     if(editing && editing !== k) delete db[editing];
     db[k] = rec;
-    simpanDb();
+    simpan([k]);
     var baru = !editing;
     editing = null; render(); show('pList');
     toast(baru ? 'Pelanggan ditambah' : 'Disimpan');
@@ -569,7 +702,7 @@
     var ks = rekodLama(); if(!ks.length) return;
     var t = new Date().toISOString();
     ks.forEach(function(k){ db[k] = { nama:'', emel:'', produk:'', status:'lead', sumber:'Auto Contact', kumpulan:'', susulan:'', nota:'', dibuat:t, dikemas:t }; });
-    simpanDb(); render(); show('pList');
+    simpan(ks); render(); show('pList');
     toast(ks.length + ' nombor dimasukkan sebagai Lead');
   }
 
@@ -715,7 +848,7 @@
                   dibuat:t, dikemas:t };
     });
     var n = parsed.baru.length;
-    if(simpanDb()) toast(n + ' pelanggan diimport');
+    if(simpan(parsed.baru.map(function(r){ return r.k; }))) toast(n + ' pelanggan diimport');
     $('impText').value = ''; render(); show('pList');
   });
 
@@ -729,12 +862,12 @@
   $('expCsv').addEventListener('click', function(){
     var keys = Object.keys(db);
     if(!keys.length){ toast('Belum ada pelanggan untuk dieksport.'); return; }
-    var head = ['Contact ID','Name','Phone','Email','Product','Status','Source','Group','Follow-up Date','Notes','Created','Updated'];
+    var head = ['Contact ID','Name','Phone','Email','Product','Status','Source','Group','Follow-up Date','Notes','Created','Updated','AI Category','Summary','Next Action'];
     var lines = [head.join(',')];
     keys.sort(function(a, b){ return (db[a].nama || '').localeCompare(db[b].nama || '', 'ms', { numeric:true }); }).forEach(function(k){
       var r = db[k], tel = k.replace(/\D/g, '');
       lines.push([tel, r.nama, tel, r.emel, r.produk, SLABEL[r.status] || r.status, r.sumber, r.kumpulan, r.susulan, r.nota,
-        (r.dibuat || '').slice(0, 10), (r.dikemas || '').slice(0, 10)].map(selCsv).join(','));
+        (r.dibuat || '').slice(0, 10), (r.dikemas || '').slice(0, 10), KAT_PENUH[r.kategori] || '', r.ringkasan || '', r.tindakan || ''].map(selCsv).join(','));
     });
     window.DynoFail.hantar(namaFail('csv'), '﻿' + lines.join('\r\n'), 'text/csv');
   });
@@ -754,10 +887,17 @@
 
   // Kemas kini bila tab lain (cth. simpan.html) menulis rekod baharu
   window.addEventListener('storage', function(e){
-    if(e.key === 'dyno_crm'){ db = C.semua(); if($('pList').classList.contains('show')) render(); }
+    if(e.key !== 'dyno_crm') return;
+    if(modAwan){ paparBanner(); return; }
+    db = C.semua(); if($('pList').classList.contains('show')) render();
   });
+  $('akaunBack').addEventListener('click', function(){ show('pList'); });
 
   render();
+  if(awan && awan.siap()){
+    paparAkaun();
+    awan.mula().then(function(u){ if(u) mulaAwan(); else paparAkaun(); }, function(){ paparAkaun(); });
+  }
 
   window.__dynoCrm = { hurai:hurai, kunci:C.kunci };
 })();

@@ -1,7 +1,7 @@
 /* Dynopro Auto Contact — Service Worker
    Membolehkan app dipasang ke skrin utama dan berfungsi tanpa internet. */
 
-const CACHE = 'dynopro-auto-contact-v21';
+const CACHE = 'dynopro-auto-contact-v22';
 const SHELL = [
   './',
   './index.html',
@@ -15,6 +15,10 @@ const SHELL = [
   './ocr.js',
   './simpan-fail.js',
   './crm-store.js',
+  './config.js',
+  './awan.js',
+  './wa-klasifikasi.js',
+  './klasifikasi.html',
   './pasang.js',
   './lesen.js',
   './manifest.webmanifest',
@@ -59,6 +63,25 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
+
+  // Data awan (Supabase API, log masuk, Edge Function) TIDAK PERNAH dicache:
+  // ia mesti sentiasa terkini dan peribadi. Hanya fail app sendiri dan
+  // pustaka Supabase dari CDN (versi tetap) disimpan untuk luar talian.
+  const url = new URL(req.url);
+  const cdn = url.origin === 'https://cdn.jsdelivr.net' && url.pathname.startsWith('/npm/@supabase/supabase-js@');
+  if (url.origin !== self.location.origin && !cdn) return;
+
+  // config.js: rangkaian dahulu, supaya tetapan baharu sampai tanpa tukar versi cache
+  if (url.origin === self.location.origin && url.pathname.endsWith('/config.js')) {
+    e.respondWith(
+      fetch(req).then((res) => {
+        const copy = res.clone();
+        caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
+        return res;
+      }).catch(() => caches.match(req))
+    );
+    return;
+  }
 
   // Rangkaian dahulu untuk dokumen (supaya kemas kini sampai segera),
   // jatuh balik ke cache bila luar talian.
