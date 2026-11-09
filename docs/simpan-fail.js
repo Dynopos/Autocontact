@@ -1,5 +1,5 @@
-/* Dynopro Auto Contact — penghantar fail vCard
-   Satu tempat sahaja untuk menyerahkan fail .vcf kepada pengguna.
+/* Dynopro Auto Contact — penghantar fail vCard (dan CSV Mini CRM)
+   Satu tempat sahaja untuk menyerahkan fail .vcf / .csv kepada pengguna.
 
    Sebab fail ini wujud: pada iPhone dan iPad, Safari MENGABAIKAN atribut
    `download` bagi URL blob. Fail tidak pernah muncul dalam senarai Muat
@@ -42,14 +42,16 @@
        'kongsi' — helaian Kongsi iOS
        'tab'    — dibuka dalam tab (sandaran iOS)
        'muat'   — muat turun biasa (Android / desktop)
-     Pemanggil guna nilai ini untuk memaparkan arahan yang betul. */
-  function hantar(name, data) {
-    var blob = new Blob([data], { type: 'text/vcard;charset=utf-8' });
+     Pemanggil guna nilai ini untuk memaparkan arahan yang betul.
+     `jenis` pilihan — lalai 'text/vcard'; Mini CRM guna 'text/csv'. */
+  function hantar(name, data, jenis) {
+    jenis = jenis || 'text/vcard';
+    var blob = new Blob([data], { type: jenis + ';charset=utf-8' });
 
     if (isIOS()) {
       if (navigator.canShare && navigator.share) {
         try {
-          var file = new File([blob], name, { type: 'text/vcard' });
+          var file = new File([blob], name, { type: jenis });
           if (navigator.canShare({ files: [file] })) {
             navigator.share({ files: [file], title: name })
               .catch(function (err) {
