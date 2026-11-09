@@ -64,6 +64,13 @@ Simpan Nombor dan kunci API masuk terus ke Mini CRM sebagai *New Lead*. Nombor d
 lead hari ini/minggu ini, mengikut sumber dan yang perlu di-follow-up. Untuk app WhatsApp Business biasa,
 pengguna kongsi kenalan/mesej ke app. Butiran: [`supabase/README.md`](supabase/README.md#lead-automatik-whatsapp-business-platform--meta-lead-ads).
 
+**6. App Android — WhatsApp Business biasa** — [`android/`](android/README.md)
+
+*"Setiap Lead Berharga. Jangan Biar Ia Hilang."* App Android natif yang membaca notifikasi WhatsApp Business
+(dengan kebenaran pengguna) dan menghantar nombor atau username pelanggan — hanya bila benar-benar dipaparkan —
+terus ke Mini CRM. Notifikasi yang hanya ada nama masuk ke *Lead belum disahkan*. Had teknikal dan senarai semak
+ujian telefon: [`android/README.md`](android/README.md).
+
 ---
 
 ## 🔒 Privasi
@@ -134,9 +141,8 @@ dynopro-auto-contact/
 │   └── JUSTIFIKASI-CONTACTS.md    # Untuk kemudian
 ├── supabase/                      # Pangkalan data, RLS, Edge Function classify-chat
 ├── tests/                         # Ujian pembaca chat
-├── lib/main.dart                  # Versi Android native (direhatkan)
-├── pubspec.yaml
-├── .github/workflows/build.yml    # Bina APK — manual sahaja
+├── android/                       # App Android natif (Kotlin): tangkap lead dari notifikasi WhatsApp Business
+├── .github/workflows/android.yml  # Ujian + bina APK debug pada setiap perubahan android/
 └── README.md
 ```
 

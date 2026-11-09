@@ -214,3 +214,31 @@ Fungsi Edge sebenar + Postgres sebenar; gerbang Supabase dan Graph API Meta disi
   pelanggan) belum dibina, dan app Meta perlu lulus App Review untuk pelanggan luar.
 - **Satu akaun = satu syarikat.** Berbilang pengguna dalam satu syarikat (pasukan) belum disokong.
 - Token Page boleh tamat; status integrasi menunjukkan ralat dan pelanggan perlu menyambung semula.
+
+---
+
+# Identiti WhatsApp: nombor, username & lead belum disahkan
+
+Migrasi `20261111000000_whatsapp_identity.sql`:
+
+| Medan (`contacts`) | Maksud |
+|---|---|
+| `telefon` (kini boleh kosong) | Nombor E.164 yang disahkan |
+| `whatsapp_username` | Username WhatsApp (huruf kecil, tanpa `@`) |
+| `whatsapp_bsuid` | ID pengguna berskop perniagaan — **hanya** dari API rasmi (kunci API), tidak dari Android |
+| `first_seen_at` / `last_seen_at` | Kali pertama / terakhir dilihat (`last_seen_at` = `last_contact_at`) |
+| `status` lalai `lead` (New Lead), `sumber_lead` `whatsapp` atau `facebook_ads` (hanya dengan rujukan iklan rasmi) |
+
+Peraturan `capture_identity`:
+- Padanan mengikut **BSUID → nombor → username**. Setiap pengenal unik dalam akaun.
+- **Tiada gabungan berdasarkan nama.** Nombor dan username hanya disatukan bila datang dalam **event yang sama**
+  dan tiada kenalan lain memilikinya; jika bercanggah, kenalan tidak digabung dan event ditanda `konflik_*`.
+- Tiada pengenal + ada nama (dari Android) → `lead_events.keputusan = 'belum_disahkan'`; pengguna mengesahkan
+  dengan `sahkan_lead(event, telefon, username)` dari Mini CRM.
+
+Peranti Android: `integrasi` → `{ "tindakan": "peranti_android", "nama": "..." }` memulangkan **kod sambungan**
+(URL + kunci peranti) sekali sahaja. Kunci peranti hanya boleh menghantar ke `lead-capture`, sumbernya dipaksa
+`whatsapp`, dan boleh dimatikan/diputuskan satu-satu dalam `integrasi.html`.
+
+Ujian: `supabase/tests/identity.test.sql` (TEST A–E di peringkat pangkalan data) dan senario Android dalam
+`supabase/tests/lead-capture.e2e.test.ts`.
