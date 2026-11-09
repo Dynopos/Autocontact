@@ -1,0 +1,26 @@
+# Tetapan Supabase CLI untuk Edge Function Dyno Mini CRM.
+#
+# Webhook Meta dan kunci API tidak menghantar JWT Supabase, jadi gerbang JWT
+# dimatikan untuk fungsi tersebut. Setiap fungsi mengesahkan permintaan sendiri:
+#   whatsapp-webhook / meta-leads-webhook : tandatangan X-Hub-Signature-256
+#   lead-capture                          : kunci API "dyno_..." atau JWT pengguna
+#   lead-retry                            : CRON_SECRET atau JWT pengguna
+#   integrasi, classify-chat              : JWT pengguna
+
+[functions.classify-chat]
+verify_jwt = true
+
+[functions.integrasi]
+verify_jwt = true
+
+[functions.lead-capture]
+verify_jwt = false
+
+[functions.lead-retry]
+verify_jwt = false
+
+[functions.whatsapp-webhook]
+verify_jwt = false
+
+[functions.meta-leads-webhook]
+verify_jwt = false

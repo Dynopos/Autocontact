@@ -56,6 +56,14 @@ Customer – Perlu semakan pembelian, Tidak diketahui), produk, ringkasan, tinda
 keyakinan. Pengguna menyemak dan mengesahkan sebelum apa-apa disimpan; Customer hanya ditanda selepas
 pembelian disahkan. Pemasangan pelayan: [`supabase/README.md`](supabase/README.md).
 
+**5. Lead automatik** — [`docs/integrasi.html`](docs/integrasi.html), [`docs/kongsi.html`](docs/kongsi.html)
+
+Lead baharu dari **WhatsApp Business Platform (Cloud API)**, **Meta Lead Ads** (Facebook/Instagram), alat
+Simpan Nombor dan kunci API masuk terus ke Mini CRM sebagai *New Lead*. Nombor dinormalkan ke E.164
+(`libphonenumber-js`), tiada pendua, event berganda diproses sekali, dan dashboard memaparkan jumlah lead,
+lead hari ini/minggu ini, mengikut sumber dan yang perlu di-follow-up. Untuk app WhatsApp Business biasa,
+pengguna kongsi kenalan/mesej ke app. Butiran: [`supabase/README.md`](supabase/README.md#lead-automatik-whatsapp-business-platform--meta-lead-ads).
+
 ---
 
 ## 🔒 Privasi
@@ -115,6 +123,8 @@ dynopro-auto-contact/
 │   ├── klasifikasi.html           # Smart WhatsApp Classification
 │   ├── wa-klasifikasi.js          # Hurai chat WhatsApp, pemadanan, buang data peribadi
 │   ├── awan.js / config.js        # Sambungan Supabase (kosong = mod telefon sahaja)
+│   ├── integrasi.html             # Lead automatik: sambung WhatsApp / Meta Lead Ads, status, log
+│   ├── kongsi.html                # Tambah lead manual / Share Target dari WhatsApp
 │   ├── manifest.webmanifest       # Maklumat pemasangan PWA
 │   ├── sw.js                      # Service worker (offline)
 │   ├── icons/                     # Ikon Dynopro

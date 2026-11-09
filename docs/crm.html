@@ -78,7 +78,18 @@
   .topacts .btn.alt{flex:0 0 auto;width:auto;padding:13px 16px}
 
   /* Ringkasan — setiap petak juga penapis */
-  .stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+  .stats .stat{padding:10px 12px}
+  .stats .stat b{font-size:21px}
+  .penapis{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:6px;margin-bottom:8px}
+  .penapis select,.penapis input{width:100%;min-width:0;border:1.5px solid var(--line);border-radius:11px;padding:8px 8px;
+    font-size:13px;color:var(--ink);background:#fff}
+  .penapis label{display:grid;gap:2px;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+  .ingat{display:flex;gap:10px;align-items:center;background:#fff3f0;border:1px solid #f6c9bd;border-radius:14px;padding:11px 13px;
+    margin-bottom:12px;font-size:13px;color:#8a2c17;cursor:pointer;width:100%;text-align:left}
+  .ingat b{font-weight:900}
+  .pill.src{--k:#4b5563;background:#f4f5f8}
+  .leadbox{background:#f4f7ff;border:1px solid #d6e0fb;border-radius:16px;padding:12px 15px;margin-bottom:12px;font-size:13px;line-height:1.5;display:grid;gap:4px}
   .stat{background:#fff;border:1.5px solid transparent;border-radius:16px;padding:12px 13px;
     text-align:left;cursor:pointer;display:block;color:var(--ink)}
   .stat b{display:block;font-size:24px;font-weight:900;line-height:1.15;color:var(--k,var(--brand-dk));
@@ -136,6 +147,7 @@
   .aibox{background:linear-gradient(135deg,#fdf4ff,#f4f5f8);border:1px solid #ecc6f3;border-radius:16px;padding:13px 15px;
     margin-bottom:12px;font-size:13px;line-height:1.5;color:#3b1a44;display:grid;gap:6px}
   .aibox b{color:#7a167a}
+  .k-dihubungi{--k:#0e7c86}
   .k-lead{--k:var(--s-lead)} .k-prospek{--k:var(--s-prospek)} .k-followup{--k:var(--s-followup)}
   .k-customer{--k:var(--s-customer)} .k-tidak{--k:var(--s-tidak)}
   .empty{padding:30px 22px;text-align:center;color:var(--muted);font-size:14px;line-height:1.6}
@@ -206,6 +218,11 @@
     <!-- PANEL SENARAI -->
     <section class="panel show" id="pList">
       <div id="banner"></div>
+      <a class="smart" id="integLink" href="integrasi.html" hidden>
+        <span style="font-size:26px">🔌</span>
+        <span><b>Lead automatik</b><span>WhatsApp Business Platform &amp; Meta Lead Ads masuk terus ke CRM</span></span>
+        <i>›</i>
+      </a>
       <a class="smart" id="smartLink" href="klasifikasi.html" hidden>
         <span style="font-size:26px">🤖</span>
         <span><b>Smart WhatsApp Classification</b><span>Muat naik chat WhatsApp — AI cadang kategori, produk dan tindakan susulan</span></span>
@@ -216,16 +233,29 @@
         <button class="btn alt" id="impBtn" type="button">Import</button>
       </div>
 
+      <button class="ingat" type="button" id="ingat" hidden></button>
       <div class="stats" id="stats">
-        <button class="stat" type="button" data-f="semua" aria-pressed="true"><b id="stSemua">0</b><span>Contacts</span><small id="stLead"></small></button>
-        <button class="stat k-prospek" type="button" data-f="prospek" aria-pressed="false"><b id="stProspek">0</b><span>Prospek</span><small></small></button>
-        <button class="stat k-followup" type="button" data-f="hubungi" aria-pressed="false"><b id="stFollow">0</b><span>Follow-up</span><small id="stDue"></small></button>
-        <button class="stat k-customer" type="button" data-f="customer" aria-pressed="false"><b id="stCustomer">0</b><span>Customer</span><small></small></button>
+        <button class="stat" type="button" data-f="semua" aria-pressed="true"><b id="stSemua">0</b><span>Total Leads</span><small id="stLead"></small></button>
+        <button class="stat k-followup" type="button" data-f="hubungi" aria-pressed="false"><b id="stFollow">0</b><span>Perlu follow-up</span><small id="stDue"></small></button>
+        <button class="stat k-lead" type="button" data-f="hari" aria-pressed="false"><b id="stHari">0</b><span>Baharu hari ini</span><small></small></button>
+        <button class="stat k-lead" type="button" data-f="minggu" aria-pressed="false"><b id="stMinggu">0</b><span>Baharu minggu ini</span><small></small></button>
+        <button class="stat k-customer" type="button" data-f="src:whatsapp" aria-pressed="false"><b id="stWa">0</b><span>WhatsApp Leads</span><small></small></button>
+        <button class="stat k-dihubungi" type="button" data-f="src:meta" aria-pressed="false"><b id="stMeta">0</b><span>Meta Ads Leads</span><small></small></button>
+        <button class="stat k-prospek" type="button" data-f="sedia" aria-pressed="false"><b id="stSedia">0</b><span>Kenalan sedia ada</span><small>bukan New Lead</small></button>
+        <button class="stat k-customer" type="button" data-f="customer" aria-pressed="false"><b id="stWon">0</b><span>Won</span><small></small></button>
       </div>
 
       <div class="search">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
         <input type="search" id="q" placeholder="Cari nama, nombor, produk, nota…" autocomplete="off" aria-label="Cari pelanggan">
+      </div>
+      <div class="penapis">
+        <label>Sumber<select id="fSrc" aria-label="Tapis sumber">
+          <option value="">Semua sumber</option><option value="whatsapp">WhatsApp</option><option value="meta">Meta Ads</option>
+          <option value="auto_contact">Auto Contact</option><option value="manual">Manual</option><option value="import">Import</option>
+          <option value="api">API</option><option value="lain">Lain-lain</option></select></label>
+        <label>Dari<input type="date" id="fDari" aria-label="Dicipta dari tarikh"></label>
+        <label>Hingga<input type="date" id="fHingga" aria-label="Dicipta hingga tarikh"></label>
       </div>
       <div class="chips" id="chips" role="group" aria-label="Tapis status"></div>
       <div class="sortrow">
@@ -236,6 +266,7 @@
             <option value="susulan">Tarikh follow-up</option>
             <option value="nama">Nama A–Z</option>
             <option value="dibuat">Terbaru ditambah</option>
+            <option value="hubungan">Hubungan terakhir</option>
           </select>
         </label>
       </div>
@@ -253,6 +284,7 @@
       <h2 id="fTitle">Pelanggan baharu</h2>
       <p class="sub" id="fSub">Isi apa yang anda tahu. Hanya nombor telefon yang wajib.</p>
       <form id="form" novalidate>
+        <div class="leadbox" id="fLead" hidden></div>
         <div class="aibox" id="fAi" hidden></div>
         <div class="card">
           <div class="f"><label for="fNama">Nama</label><input id="fNama" maxlength="80" autocomplete="off" placeholder="cth. Kak Nik Kuih"></div>
@@ -347,11 +379,11 @@
   var E = window.KemasEngine, C = window.DynoCRM;
   var STATUS = C.STATUS;
   var SLABEL = {}; STATUS.forEach(function(s){ SLABEL[s.id] = s.label; });
-  var SUMBER = ['Auto Contact','Manual','WhatsApp','Facebook','Instagram','TikTok','Shopee','Walk-in','Rujukan','Import','Lain-lain'];
+  var SUMBER = ['Auto Contact','Manual','WhatsApp','Meta Ads','Facebook','Instagram','TikTok','Shopee','Walk-in','Rujukan','Import','API','Lain-lain'];
   var HALAMAN = 50;
 
   var db = C.semua();
-  var view = { q:'', f:'semua', sort:'dikemas', shown:HALAMAN };
+  var view = { q:'', f:'semua', sort:'dikemas', shown:HALAMAN, src:'', dari:'', hingga:'' };
   var editing = null;      // kunci rekod yang sedang diedit, atau null
 
   // ---------- Bantuan ----------
@@ -375,6 +407,21 @@
     return (w[0].charAt(0) + (w[1] ? w[1].charAt(0) : '')).toUpperCase();
   }
   function waUrl(k){ return 'https://wa.me/' + k.replace(/\D/g,''); }
+  // Sumber lead: guna kod dari integrasi (sumber_lead) jika ada; jika tidak, label sumber.
+  function kodSumber(r){
+    if(r.sumber_lead) return r.sumber_lead === 'meta_lead_ads' ? 'meta' : r.sumber_lead;
+    var s = (r.sumber || '').toLowerCase();
+    if(s === 'whatsapp') return 'whatsapp';
+    if(s === 'meta ads') return 'meta';
+    if(s === 'auto contact') return 'auto_contact';
+    if(s === 'manual') return 'manual';
+    if(s === 'import') return 'import';
+    if(s === 'api') return 'api';
+    return 'lain';
+  }
+  var LABEL_SRC = { whatsapp:'WhatsApp', meta:'Meta Ads', auto_contact:'Auto Contact', manual:'Manual', import:'Import', api:'API' };
+  function tarikhTempatan(iso){ return iso ? tarikh(new Date(iso)) : ''; }
+  function awalMinggu(){ var d = new Date(); var hari = (d.getDay() + 6) % 7; d.setDate(d.getDate() - hari); return tarikh(d); }
   function perluHubungi(r){ return !!r.susulan && r.susulan <= hariIni() && r.status !== 'tidak' && r.status !== 'customer'; }
   function teksSusulan(s){
     if(!s) return null;
@@ -407,7 +454,8 @@
     return { id:r.id, nama:r.nama || '', emel:r.emel || '', produk:r.produk || '', status:r.status || 'lead',
              sumber:r.sumber || '', kumpulan:r.kumpulan || '', susulan:r.susulan || '', nota:r.nota || '',
              dibuat:r.created_at, dikemas:r.updated_at, kategori:r.kategori || '', kategori_disahkan:!!r.kategori_disahkan,
-             ringkasan:r.ringkasan || '', tindakan:r.tindakan || '', keyakinan:r.keyakinan };
+             ringkasan:r.ringkasan || '', tindakan:r.tindakan || '', keyakinan:r.keyakinan,
+             sumber_lead:r.sumber_lead || '', mesej_pertama:r.mesej_pertama || '', last_contact_at:r.last_contact_at || '' };
   }
   function keAwan(k, r){
     var x = { telefon:k, nama:(r.nama || '').slice(0,120), emel:(r.emel || '').slice(0,160), produk:(r.produk || '').slice(0,120),
@@ -441,7 +489,7 @@
     if(!awan || !awan.siap()){ el.hidden = true; return; }
     el.hidden = false;
     var u = awan.pengguna();
-    $('smartLink').hidden = false;
+    $('smartLink').hidden = false; $('integLink').hidden = false;
     if(u){
       el.innerHTML = '☁︎ Disimpan di awan · ' + esc(u.email || '') + ' · <button type="button" id="keluarBtn">Log keluar</button>';
       $('keluarBtn').addEventListener('click', function(){
@@ -521,10 +569,18 @@
     var q = view.q, qd = q.replace(/\D/g,'');
     var rows = Object.keys(db).map(function(k){ var r = db[k]; return { k:k, r:r }; }).filter(function(x){
       var r = x.r;
+      var dibuat = tarikhTempatan(r.dibuat);
       if(view.f === 'hubungi'){ if(!perluHubungi(r)) return false; }
+      else if(view.f === 'hari'){ if(dibuat !== hariIni()) return false; }
+      else if(view.f === 'minggu'){ if(dibuat < awalMinggu()) return false; }
+      else if(view.f === 'sedia'){ if(r.status === 'lead') return false; }
+      else if(view.f.indexOf('src:') === 0){ if(kodSumber(r) !== view.f.slice(4)) return false; }
       else if(view.f !== 'semua' && r.status !== view.f) return false;
+      if(view.src && kodSumber(r) !== view.src) return false;
+      if(view.dari && dibuat < view.dari) return false;
+      if(view.hingga && dibuat > view.hingga) return false;
       if(q){
-        var hay = [r.nama, r.emel, r.produk, r.nota, r.sumber, r.kumpulan, E.prettyPhone(x.k)].join(' ').toLowerCase();
+        var hay = [r.nama, r.emel, r.produk, r.nota, r.sumber, r.kumpulan, r.mesej_pertama, E.prettyPhone(x.k)].join(' ').toLowerCase();
         var tel = x.k.replace(/\D/g,''), tempatan = tel.indexOf('60') === 0 ? '0' + tel.slice(2) : tel;
         if(hay.indexOf(q) < 0 && !(qd.length >= 3 && (tel.indexOf(qd) > -1 || tempatan.indexOf(qd) > -1))) return false;
       }
@@ -535,6 +591,7 @@
       if(s === 'nama') return (a.r.nama || '￿').localeCompare(b.r.nama || '￿', 'ms', { numeric:true });
       if(s === 'susulan'){ var x = a.r.susulan || '9999', y = b.r.susulan || '9999'; return x < y ? -1 : x > y ? 1 : 0; }
       if(s === 'dibuat') return (b.r.dibuat || '').localeCompare(a.r.dibuat || '');
+      if(s === 'hubungan') return (b.r.last_contact_at || b.r.dibuat || '').localeCompare(a.r.last_contact_at || a.r.dibuat || '');
       return (b.r.dikemas || '').localeCompare(a.r.dikemas || '');
     });
     return rows;
@@ -544,16 +601,33 @@
 
   function render(){
     var keys = Object.keys(db);
-    var kira = { semua:keys.length, hubungi:0 };
+    var kira = { semua:keys.length, hubungi:0, hari:0, minggu:0, wa:0, meta:0, sedia:0 };
     STATUS.forEach(function(s){ kira[s.id] = 0; });
-    keys.forEach(function(k){ var r = db[k]; kira[r.status] = (kira[r.status] || 0) + 1; if(perluHubungi(r)) kira.hubungi++; });
+    var hi = hariIni(), am = awalMinggu();
+    keys.forEach(function(k){
+      var r = db[k], d = tarikhTempatan(r.dibuat), src = kodSumber(r);
+      kira[r.status] = (kira[r.status] || 0) + 1;
+      if(perluHubungi(r)) kira.hubungi++;
+      if(d === hi) kira.hari++;
+      if(d >= am) kira.minggu++;
+      if(src === 'whatsapp') kira.wa++;
+      if(src === 'meta') kira.meta++;
+      if(r.status !== 'lead') kira.sedia++;
+    });
 
     $('stSemua').textContent = kira.semua;
-    $('stProspek').textContent = kira.prospek;
     $('stFollow').textContent = kira.hubungi;
-    $('stCustomer').textContent = kira.customer;
-    $('stLead').textContent = kira.lead ? kira.lead + ' lead baharu' : '';
-    $('stDue').textContent = kira.hubungi ? 'perlu dihubungi' : 'Tiada tertunggak';
+    $('stHari').textContent = kira.hari;
+    $('stMinggu').textContent = kira.minggu;
+    $('stWa').textContent = kira.wa;
+    $('stMeta').textContent = kira.meta;
+    $('stSedia').textContent = kira.sedia;
+    $('stWon').textContent = kira.customer;
+    $('stLead').textContent = kira.lead ? kira.lead + ' New Lead' : '';
+    $('stDue').textContent = kira.hubungi ? 'hari ini / lewat' : 'Tiada tertunggak';
+    var ingat = $('ingat');
+    ingat.hidden = !kira.hubungi || view.f === 'hubungi';
+    ingat.innerHTML = '<span style="font-size:20px">🔔</span><span><b>' + kira.hubungi + ' lead</b> perlu dihubungi hari ini atau sudah lewat. Ketuk untuk lihat.</span>';
     Array.prototype.forEach.call(document.querySelectorAll('.stat'), function(b){ b.setAttribute('aria-pressed', b.dataset.f === view.f); });
     Array.prototype.forEach.call(document.querySelectorAll('.chip'), function(b){
       b.setAttribute('aria-pressed', b.dataset.f === view.f);
@@ -581,7 +655,8 @@
             '<span class="av">'+esc(initials(r.nama))+'</span>' +
             '<span class="who"><span class="nm'+(r.nama?'':' kosong')+'">'+esc(r.nama || 'Tanpa nama')+'</span>' +
             '<span class="ph">'+esc(meta)+'</span>' +
-            '<span class="tags"><span class="pill">'+esc(SLABEL[st] || 'Lead')+'</span>' +
+            '<span class="tags"><span class="pill">'+esc(SLABEL[st] || 'New Lead')+'</span>' +
+            (LABEL_SRC[kodSumber(r)] && (r.sumber_lead || kodSumber(r) === 'whatsapp' || kodSumber(r) === 'meta') ? '<span class="pill src">'+esc(LABEL_SRC[kodSumber(r)])+'</span>' : '') +
             (r.kategori ? '<span class="pill ai">🤖 '+esc(KAT[r.kategori] || '')+'</span>' : '') +
             (d && st !== 'tidak' ? '<span class="due'+(d.lewat?' lewat':'')+'">'+esc(d.t)+'</span>' : '') +
             '</span></span></button>' +
@@ -603,6 +678,10 @@
   var qT;
   $('q').addEventListener('input', function(){ clearTimeout(qT); var v = this.value; qT = setTimeout(function(){ view.q = v.trim().toLowerCase(); view.shown = HALAMAN; render(); }, 120); });
   $('sort').addEventListener('change', function(){ view.sort = this.value; render(); });
+  $('fSrc').addEventListener('change', function(){ view.src = this.value; view.shown = HALAMAN; render(); });
+  $('fDari').addEventListener('change', function(){ view.dari = this.value; view.shown = HALAMAN; render(); });
+  $('fHingga').addEventListener('change', function(){ view.hingga = this.value; view.shown = HALAMAN; render(); });
+  $('ingat').addEventListener('click', function(){ view.f = 'hubungi'; view.shown = HALAMAN; render(); });
   $('moreBtn').addEventListener('click', function(){ view.shown += HALAMAN; render(); });
 
   // ---------- Borang ----------
@@ -622,6 +701,13 @@
     setStatus(r.status || 'lead');
     $('fTelErr').hidden = true;
     $('fStamp').textContent = k ? 'Ditambah ' + papar(r.dibuat) + (r.dikemas && r.dikemas !== r.dibuat ? ' · dikemas kini ' + papar(r.dikemas) : '') : '';
+    var lb = $('fLead');
+    if(k && (r.mesej_pertama || r.last_contact_at || r.sumber_lead)){
+      lb.hidden = false;
+      lb.innerHTML = (r.sumber_lead ? '<div>📥 Lead dari <b>' + esc(LABEL_SRC[kodSumber(r)] || r.sumber) + '</b> · ' + esc(papar(r.dibuat)) + '</div>' : '') +
+        (r.mesej_pertama ? '<div>💬 “' + esc(r.mesej_pertama) + '”</div>' : '') +
+        (r.last_contact_at ? '<div>🕑 Hubungan terakhir: ' + esc(new Date(r.last_contact_at).toLocaleString('ms-MY', { dateStyle:'medium', timeStyle:'short' })) + '</div>' : '');
+    } else { lb.hidden = true; lb.innerHTML = ''; }
     var ai = $('fAi');
     if(k && r.kategori){
       ai.hidden = false;
@@ -677,7 +763,7 @@
       dibuat: lama ? lama.dibuat : t, dikemas: t
     };
     // Kekalkan medan awan (id, keputusan klasifikasi) — borang ini tidak mengubahnya
-    if(lama) ['id','kategori','kategori_disahkan','ringkasan','tindakan','keyakinan'].forEach(function(f){ if(lama[f] !== undefined) rec[f] = lama[f]; });
+    if(lama) ['id','kategori','kategori_disahkan','ringkasan','tindakan','keyakinan','sumber_lead','mesej_pertama','last_contact_at'].forEach(function(f){ if(lama[f] !== undefined) rec[f] = lama[f]; });
     if(editing && editing !== k) delete db[editing];
     db[k] = rec;
     simpan([k]);
@@ -740,11 +826,12 @@
   }
   function petaStatus(t){
     t = String(t||'').toLowerCase();
-    if(/prospe/.test(t)) return 'prospek';
-    if(/customer|pelanggan/.test(t)) return 'customer';
+    if(/won|customer|pelanggan/.test(t)) return 'customer';
+    if(/lost|inactive|tidak/.test(t)) return 'tidak';
+    if(/contacted|dihubungi/.test(t)) return 'dihubungi';
+    if(/interest|prospe|berminat/.test(t)) return 'prospek';
     if(/follow|susulan/.test(t)) return 'followup';
-    if(/inactive|tidak/.test(t)) return 'tidak';
-    if(/lead/.test(t)) return 'lead';
+    if(/lead|new/.test(t)) return 'lead';
     return '';
   }
   var RE_NOMBOR = /\+?\d[\d   \-().]{6,}\d/g;
@@ -892,6 +979,13 @@
     db = C.semua(); if($('pList').classList.contains('show')) render();
   });
   $('akaunBack').addEventListener('click', function(){ show('pList'); });
+
+  // Mod awan: lead dari webhook muncul tanpa muat semula halaman
+  function segarAwan(){
+    if(modAwan && document.visibilityState === 'visible' && $('pList').classList.contains('show')) muatAwan();
+  }
+  setInterval(segarAwan, 60000);
+  document.addEventListener('visibilitychange', segarAwan);
 
   render();
   if(awan && awan.siap()){

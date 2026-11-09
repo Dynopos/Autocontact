@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Lead Automatik — Dyno Mini CRM</title>
+<meta name="description" content="Sambung WhatsApp Business Platform dan Meta Lead Ads supaya lead baharu masuk terus ke Dyno Mini CRM.">
+<meta name="theme-color" content="#2A0550">
+<meta name="robots" content="noindex">
+<link rel="manifest" href="manifest-crm.webmanifest">
+<link rel="icon" href="icons/crm-favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/crm-apple-touch.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mini CRM">
+<style>
+  :root{
+    --brand:#8B2FD6; --brand-dk:#5B1094; --deep:#2A0550; --ink:#14091f;
+    --pink:#d63bd4; --pink-dk:#a3159f; --pink-bg:#fdeefc;
+    --muted:#6b6480; --line:#eae7f0; --glow:rgba(139,47,214,.40);
+    --ok:#1e8e4a; --warn:#b26a00; --bad:#c0392b; --wa:#128c4a; --meta:#1d5fd6;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+  [hidden]{display:none!important}
+  html,body{min-height:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:linear-gradient(170deg,#12021f 0%,#22043f 46%,#2E0757 100%);
+    background-attachment:fixed;color:var(--ink);display:flex;justify-content:center}
+  .app{width:100%;max-width:520px;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+  button,input,select,textarea{font-family:inherit}
+  :focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+  header{padding:calc(env(safe-area-inset-top) + 20px) 20px 12px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:64px;height:64px;flex:none;filter:drop-shadow(0 6px 16px rgba(214,75,232,.5))}
+  .logo img{width:100%;height:100%;display:block}
+  .brand h1{color:#fff;font-size:20px;font-weight:800;letter-spacing:-.3px}
+  .brand p{color:#c9b3e8;font-size:12.5px;margin-top:3px}
+  .nav{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:13px}
+  .nav a{color:#c9b3e8;font-size:13px;font-weight:700;text-decoration:none}
+  .akaun{margin-top:10px;color:#a996c8;font-size:12px}
+  .akaun button{background:none;border:none;color:#e5b8ff;font-weight:700;cursor:pointer;font-size:12px}
+  .sheet{background:#f0f2f5;margin-top:18px;border-radius:28px 28px 0 0;flex:1;
+    padding:22px 18px calc(env(safe-area-inset-bottom) + 26px);box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+  .panel{display:none}.panel.show{display:block}
+  h2{font-size:19px;font-weight:800;margin-bottom:6px}
+  h3{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin:22px 2px 9px;font-weight:800}
+  .sub{font-size:14px;color:var(--muted);line-height:1.55;margin-bottom:14px}
+  .btn{width:100%;border:none;border-radius:14px;padding:13px;font-size:15px;font-weight:700;color:#fff;
+    background:linear-gradient(135deg,#c040d8,#7C22CE 55%,#5B1094);cursor:pointer;box-shadow:0 8px 20px var(--glow);
+    display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+  .btn:disabled{opacity:.45;pointer-events:none;box-shadow:none}
+  .btn.alt{background:#fff;color:#5B1094;box-shadow:none;border:1.5px solid #dcc6f5;font-size:14px;padding:11px}
+  .btn.kecil{width:auto;padding:8px 12px;font-size:12.5px;border-radius:10px}
+  .btn.bahaya{background:#fff;color:var(--bad);border:1.5px solid #f3c6c6;box-shadow:none}
+  .linkbtn{background:none;border:none;color:var(--muted);font-size:13px;padding:11px;width:100%;cursor:pointer}
+  .card{background:#fff;border-radius:16px;padding:14px;margin-bottom:12px;border:1px solid #e6e7ee;display:grid;gap:11px}
+  .f>label{display:block;font-size:12.5px;font-weight:700;margin-bottom:6px}
+  .f input,.f select{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:10px 12px;font-size:16px;color:var(--ink);background:#fff}
+  .f input:focus{outline:none;border-color:var(--pink);box-shadow:0 0 0 3px rgba(214,59,212,.14)}
+  .hint{font-size:11.5px;margin-top:5px;line-height:1.45;color:var(--muted)}
+  .err{font-size:12.5px;color:var(--bad);font-weight:700}
+  .ok{font-size:12.5px;color:var(--ok);font-weight:700}
+  details.sambung{background:#fff;border-radius:16px;border:1px solid #e6e7ee;margin-bottom:10px;overflow:hidden}
+  details.sambung summary{list-style:none;cursor:pointer;padding:13px 14px;display:flex;gap:11px;align-items:center}
+  details.sambung summary::-webkit-details-marker{display:none}
+  details.sambung summary b{display:block;font-size:14.5px}
+  details.sambung summary span span{display:block;font-size:12px;color:var(--muted);margin-top:1px}
+  details.sambung summary i{margin-left:auto;font-style:normal;color:var(--muted);font-weight:900}
+  details.sambung[open] summary i{transform:rotate(90deg)}
+  details.sambung .isi{padding:0 14px 14px;display:grid;gap:11px}
+  .ikon,details.sambung summary .ikon,.integ .atas .ikon{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:19px;flex:none;margin:0;color:inherit}
+  .i-wa{background:#e9f7ef}.i-meta{background:#e9f0fe}.i-api{background:#f4f5f8}.i-kongsi{background:var(--pink-bg)}
+  .langkah{font-size:12.5px;line-height:1.6;color:#3b3550;background:#f8f7fb;border-radius:11px;padding:10px 12px}
+  .langkah ol{margin-left:18px}
+  .salin{display:flex;gap:6px;align-items:center}
+  .salin code{flex:1;min-width:0;overflow:auto;white-space:nowrap;font-size:12px;background:#f4f5f8;border:1px solid var(--line);border-radius:9px;padding:9px 10px}
+  .integ{background:#fff;border-radius:16px;border:1px solid #e6e7ee;margin-bottom:10px;padding:13px 14px;display:grid;gap:9px}
+  .integ .atas{display:flex;gap:11px;align-items:center}
+  .integ .atas .t{flex:1;min-width:0}
+  .integ .atas b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .integ .atas .t span{display:block;font-size:12px;color:var(--muted)}
+  .chip{flex:none;font-size:11px;font-weight:800;padding:3px 9px;border-radius:20px;border:1px solid currentColor;white-space:nowrap}
+  .c-ok{color:var(--ok)} .c-warn{color:var(--warn)} .c-bad{color:var(--bad)} .c-mati{color:#8a8496}
+  .stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;font-size:11.5px;color:var(--muted)}
+  .stat3 b{display:block;color:var(--ink);font-size:13px}
+  .ralatbox{font-size:12px;color:#7a1f16;background:#fff3f3;border:1px solid #f3c6c6;border-radius:10px;padding:8px 10px;word-break:break-word}
+  .bar2{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .togol{display:flex;gap:8px;align-items:center;font-size:13px;font-weight:700}
+  .togol input{width:18px;height:18px;accent-color:var(--brand)}
+  .log{background:#fff;border-radius:16px;border:1px solid #e6e7ee;overflow:hidden}
+  .lrow{display:flex;gap:10px;align-items:center;padding:10px 13px;border-bottom:1px solid var(--line);font-size:13px}
+  .lrow:last-child{border-bottom:none}
+  .lrow .t{flex:1;min-width:0}
+  .lrow .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lrow .t span{display:block;font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .empty{padding:20px;text-align:center;color:var(--muted);font-size:13.5px;background:#fff;border-radius:14px}
+  .kunci{font-size:13px;background:#fff8ea;border:1px solid #f1d6a4;border-radius:11px;padding:10px 12px;color:#7a4a00;display:grid;gap:8px}
+  .card,.integ,details.sambung .isi{grid-template-columns:minmax(0,1fr)}
+  .card>*,.integ>*,details.sambung .isi>*{min-width:0}
+  .integ .atas .chip{max-width:45%;overflow:hidden;text-overflow:ellipsis}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 18px);z-index:50;
+    max-width:calc(100% - 32px);background:var(--deep);color:#fff;border-radius:13px;padding:12px 16px;font-size:13.5px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="logo"><img src="icons/logo-mini-crm.webp" alt="Logo Dyno Mini CRM" width="64" height="64"></div>
+      <div><h1>Lead Automatik</h1><p>Dyno Auto Contact → Dyno Mini CRM</p></div>
+    </div>
+    <div class="nav"><a href="crm.html">← Mini CRM</a><a href="kongsi.html">📤 Tambah lead manual</a></div>
+    <div class="akaun" id="akaun"></div>
+  </header>
+
+  <div class="sheet">
+    <section class="panel" id="pTiada">
+      <h2>Belum disediakan</h2>
+      <p class="sub">Lead automatik memerlukan akaun awan Dyno Mini CRM. Pentadbir perlu melengkapkan tetapan Supabase
+        (lihat <b>supabase/README.md</b>).</p>
+      <a class="btn alt" href="crm.html">← Kembali ke Mini CRM</a>
+    </section>
+
+    <section class="panel" id="pMasuk">
+      <h2>Log masuk</h2>
+      <p class="sub">Integrasi dan lead disimpan dalam akaun anda. Hanya anda boleh melihatnya.</p>
+      <div id="loginBox"></div>
+    </section>
+
+    <section class="panel" id="pUtama">
+      <p class="sub">Lead baharu dari sumber yang disambung masuk terus ke Mini CRM sebagai <b>New Lead</b> — tanpa perlu
+        simpan kontak sendiri. Nombor yang sudah ada tidak diduakan; hanya hubungan terakhir dikemas kini.</p>
+
+      <h3>Integrasi anda</h3>
+      <div id="senaraiInteg"><div class="empty">Memuatkan…</div></div>
+
+      <h3>Sambung sumber baharu</h3>
+
+      <details class="sambung">
+        <summary><span class="ikon i-wa">🟢</span><span><b>WhatsApp Business Platform</b><span>Cloud API rasmi — setiap mesej masuk jadi lead</span></span><i>›</i></summary>
+        <div class="isi">
+          <div class="langkah"><ol>
+            <li>Nombor perniagaan anda mesti didaftarkan pada <b>WhatsApp Business Platform (Cloud API)</b> dan disambung
+              ke app Meta Dyno. App WhatsApp Business biasa di telefon <b>tidak</b> mempunyai API untuk membaca mesej —
+              untuk itu guna <a href="kongsi.html">Tambah lead manual</a>.</li>
+            <li>Di Meta Business Suite → WhatsApp Manager, salin <b>Phone number ID</b>.</li>
+            <li>Masukkan token akses (System User) yang boleh mengakses nombor itu. Token hanya digunakan sekali untuk
+              membuktikan pemilikan dan <b>tidak disimpan</b>.</li>
+          </ol></div>
+          <div class="f"><label for="waId">Phone number ID</label><input id="waId" inputmode="numeric" autocomplete="off" placeholder="cth. 109876543210123"></div>
+          <div class="f"><label for="waTok">Token akses</label><input id="waTok" type="password" autocomplete="off" placeholder="EAAG…"></div>
+          <div class="f"><label for="waNama">Nama (pilihan)</label><input id="waNama" maxlength="80" placeholder="cth. WhatsApp Kedai"></div>
+          <div id="waMsg"></div>
+          <button class="btn" type="button" id="waBtn">Sambung WhatsApp</button>
+          <div class="hint">URL webhook (ditetapkan sekali oleh pentadbir dalam app Meta Dyno):</div>
+          <div class="salin"><code id="urlWa"></code><button class="btn alt kecil" type="button" data-salin="urlWa">Salin</button></div>
+        </div>
+      </details>
+
+      <details class="sambung">
+        <summary><span class="ikon i-meta">Ⓜ️</span><span><b>Meta Lead Ads</b><span>Borang Facebook &amp; Instagram — lead masuk serta-merta</span></span><i>›</i></summary>
+        <div class="isi">
+          <div class="langkah"><ol>
+            <li>Dapatkan <b>Page ID</b> Facebook Page yang menjalankan iklan borang (Page → About / Page transparency).</li>
+            <li>Dapatkan <b>Page access token</b> untuk app Meta Dyno dengan kebenaran <code>leads_retrieval</code>,
+              <code>pages_manage_metadata</code>, <code>pages_show_list</code> dan <code>pages_read_engagement</code>.</li>
+            <li>Kami sahkan token, langgan webhook <b>leadgen</b> untuk Page itu, dan simpan token dalam bentuk
+              <b>tersulit</b> untuk mengambil butiran setiap lead.</li>
+          </ol></div>
+          <div class="f"><label for="mPage">Page ID</label><input id="mPage" inputmode="numeric" autocomplete="off" placeholder="cth. 445566778899"></div>
+          <div class="f"><label for="mTok">Page access token</label><input id="mTok" type="password" autocomplete="off" placeholder="EAAG…"></div>
+          <div id="mMsg"></div>
+          <button class="btn" type="button" id="mBtn">Sambung Page</button>
+          <div class="hint">URL webhook Page (ditetapkan sekali oleh pentadbir dalam app Meta Dyno):</div>
+          <div class="salin"><code id="urlMeta"></code><button class="btn alt kecil" type="button" data-salin="urlMeta">Salin</button></div>
+        </div>
+      </details>
+
+      <details class="sambung">
+        <summary><span class="ikon i-api">🔑</span><span><b>Kunci API</b><span>Zapier, Make atau sistem lain → POST /lead-capture</span></span><i>›</i></summary>
+        <div class="isi">
+          <div class="f"><label for="kNama">Nama kunci</label><input id="kNama" maxlength="80" placeholder="cth. Zapier"></div>
+          <button class="btn" type="button" id="kBtn">Cipta kunci API</button>
+          <div id="kHasil"></div>
+          <div class="hint">Endpoint:</div>
+          <div class="salin"><code id="urlApi"></code><button class="btn alt kecil" type="button" data-salin="urlApi">Salin</button></div>
+          <div class="langkah" style="font-family:ui-monospace,Menlo,monospace;font-size:11.5px;white-space:pre-wrap;overflow:auto">POST /functions/v1/lead-capture
+Authorization: Bearer dyno_…
+{ "phone_number": "+60123456789",
+  "contact_name": "Ahmad",
+  "lead_source": "api",
+  "first_message": "Nak tanya harga POS",
+  "external_lead_id": "event-123" }</div>
+        </div>
+      </details>
+
+      <a class="sambung" href="kongsi.html" style="display:flex;gap:11px;align-items:center;background:#fff;border-radius:16px;border:1px solid #e6e7ee;padding:13px 14px;text-decoration:none;color:inherit;margin-bottom:10px">
+        <span class="ikon i-kongsi">📤</span><span><b style="display:block;font-size:14.5px">Kongsi / tambah manual</b>
+        <span style="display:block;font-size:12px;color:var(--muted)">Untuk app WhatsApp Business biasa: kongsi kenalan atau tampal mesej</span></span>
+      </a>
+
+      <h3 style="display:flex;justify-content:space-between;align-items:center">Ralat yang belum selesai <button class="btn alt kecil" type="button" id="cubaBtn" hidden>Cuba semula</button></h3>
+      <div id="senaraiRalat"><div class="empty">Memuatkan…</div></div>
+
+      <h3>Lead terkini</h3>
+      <div id="senaraiLog"><div class="empty">Memuatkan…</div></div>
+      <p class="hint" style="margin-top:10px">Log lead disimpan mengikut tempoh retensi setiap integrasi (lalai 180 hari) dan
+        kemudian dipadam secara automatik. Kenalan dalam CRM tidak terjejas.</p>
+    </section>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="config.js"></script>
+<script src="awan.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var A = window.DynoAwan;
+  var JENIS = { whatsapp:{ ikon:'🟢', c:'i-wa', t:'WhatsApp Business Platform' }, meta_lead_ads:{ ikon:'Ⓜ️', c:'i-meta', t:'Meta Lead Ads' }, api:{ ikon:'🔑', c:'i-api', t:'Kunci API' } };
+  var SRC = { whatsapp:'WhatsApp', meta_lead_ads:'Meta Ads', auto_contact:'Auto Contact', manual:'Manual', import:'Import', api:'API' };
+  var KEP = { dicipta:['Kenalan baharu','c-ok'], dikemas_kini:['Kenalan sedia ada','c-mati'], ditolak:['Ditolak','c-bad'] };
+  var SEBAB = { nombor_tidak_sah:'Tiada nombor telefon yang sah' };
+
+  function esc(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  var toastT;
+  function toast(m){ var t=$('toast'); t.textContent=m; t.hidden=false; clearTimeout(toastT); toastT=setTimeout(function(){ t.hidden=true; },3200); }
+  function show(id){ ['pTiada','pMasuk','pUtama'].forEach(function(p){ $(p).classList.toggle('show', p===id); }); }
+  function bila(iso){
+    if(!iso) return '—';
+    var d = new Date(iso), s = (Date.now() - d.getTime())/1000;
+    if(s < 60) return 'baru tadi';
+    if(s < 3600) return Math.floor(s/60) + ' min lalu';
+    if(s < 86400) return Math.floor(s/3600) + ' jam lalu';
+    return d.toLocaleDateString('ms-MY', { day:'numeric', month:'short' });
+  }
+  function papar(t){ var m = /^\+60(\d{2})(\d{3,4})(\d{4})$/.exec(t || ''); return m ? '0'+m[1]+'-'+m[2]+' '+m[3] : (t || '—'); }
+
+  function mula(){
+    if(!A.siap()){ show('pTiada'); return; }
+    A.mula().then(function(u){ u ? masuk() : paparMasuk(); }, function(){ paparMasuk(); });
+  }
+  function paparMasuk(){ $('akaun').textContent=''; A.paparLogin($('loginBox'), masuk); show('pMasuk'); }
+  function masuk(){
+    var u = A.pengguna();
+    $('akaun').innerHTML = '☁︎ ' + esc(u.email || '') + ' · <button type="button" id="keluar">Log keluar</button>';
+    $('keluar').addEventListener('click', function(){ A.logKeluar().then(paparMasuk); });
+    $('urlWa').textContent = A.urlFungsi('whatsapp-webhook');
+    $('urlMeta').textContent = A.urlFungsi('meta-leads-webhook');
+    $('urlApi').textContent = A.urlFungsi('lead-capture');
+    show('pUtama'); segar();
+  }
+  function segar(){ muatInteg(); muatRalat(); muatLog(); }
+
+  // ---------- Status integrasi ----------
+  var integ = [];
+  function kesihatan(i){
+    if(!i.aktif) return ['Dimatikan','c-mati'];
+    if(i.last_error_at && (!i.last_success_at || i.last_error_at > i.last_success_at)) return ['Ada ralat','c-bad'];
+    if(!i.last_event_at) return ['Menunggu lead pertama','c-warn'];
+    return ['Berfungsi','c-ok'];
+  }
+  function muatInteg(){
+    A.senaraiIntegrasi().then(function(r){
+      integ = r;
+      if(!r.length){ $('senaraiInteg').innerHTML = '<div class="empty">Belum ada integrasi. Sambung sumber di bawah.</div>'; return; }
+      $('senaraiInteg').innerHTML = r.map(function(i){
+        var j = JENIS[i.jenis], k = kesihatan(i);
+        var id = i.jenis === 'api' ? esc(i.kunci_awalan || '') + '…' : 'ID ' + esc(i.external_id);
+        return '<div class="integ" data-id="'+i.id+'"><div class="atas"><span class="ikon '+j.c+'">'+j.ikon+'</span>'+
+          '<div class="t"><b>'+esc(i.nama || j.t)+'</b><span>'+j.t+' · '+id+'</span></div><span class="chip '+k[1]+'">'+k[0]+'</span></div>'+
+          '<div class="stat3"><div><b>'+i.jumlah_event+'</b>event diterima</div><div><b>'+bila(i.last_event_at)+'</b>event terakhir</div><div><b>'+bila(i.last_success_at)+'</b>berjaya terakhir</div></div>'+
+          (i.last_error && k[0] === 'Ada ralat' ? '<div class="ralatbox">'+esc(i.last_error)+' · '+bila(i.last_error_at)+'</div>' : '')+
+          '<div class="bar2"><label class="togol"><input type="checkbox" data-aktif'+(i.aktif?' checked':'')+'> Aktif</label>'+
+          '<label class="togol" style="font-weight:600">Simpan log <select data-retensi style="border:1px solid var(--line);border-radius:8px;padding:4px">'+
+            [30,90,180,365].map(function(d){ return '<option value="'+d+'"'+(i.retensi_hari===d?' selected':'')+'>'+d+' hari</option>'; }).join('')+
+          '</select></label><button class="btn bahaya kecil" type="button" data-padam style="margin-left:auto">Putuskan</button></div></div>';
+      }).join('');
+    }, function(e){ $('senaraiInteg').innerHTML = '<div class="empty">'+esc(e.message)+'</div>'; });
+  }
+  $('senaraiInteg').addEventListener('change', function(e){
+    var kad = e.target.closest('.integ'); if(!kad) return;
+    var ubah = e.target.hasAttribute('data-aktif') ? { aktif: e.target.checked } : e.target.hasAttribute('data-retensi') ? { retensi_hari: +e.target.value } : null;
+    if(ubah) A.kemasIntegrasi(kad.dataset.id, ubah).then(function(){ toast('Disimpan'); muatInteg(); }, function(err){ toast(err.message); muatInteg(); });
+  });
+  $('senaraiInteg').addEventListener('click', function(e){
+    var b = e.target.closest('[data-padam]'); if(!b) return;
+    if(b.dataset.sah !== '1'){ b.dataset.sah = '1'; b.textContent = 'Sahkan putus'; return; }
+    A.padamIntegrasi(b.closest('.integ').dataset.id).then(function(){ toast('Integrasi diputuskan. Lead sedia ada kekal dalam CRM.'); segar(); }, function(err){ toast(err.message); });
+  });
+
+  // ---------- Sambung ----------
+  function hantar(btn, msgEl, badan, berjaya){
+    btn.disabled = true; var asal = btn.textContent; btn.textContent = 'Menyemak dengan Meta…';
+    A.fungsi('integrasi', badan).then(function(r){
+      msgEl.innerHTML = '<div class="ok">✓ ' + esc(berjaya(r)) + '</div>'; segar();
+    }, function(e){ msgEl.innerHTML = '<div class="err">' + esc(e.message) + '</div>'; })
+    .then(function(){ btn.disabled = false; btn.textContent = asal; });
+  }
+  $('waBtn').addEventListener('click', function(){
+    var id = $('waId').value.replace(/\D/g,''), tok = $('waTok').value.trim();
+    if(!id || tok.length < 20){ $('waMsg').innerHTML = '<div class="err">Isi Phone number ID dan token akses.</div>'; return; }
+    hantar(this, $('waMsg'), { tindakan:'whatsapp', phone_number_id:id, access_token:tok, nama:$('waNama').value.trim() },
+      function(r){ $('waTok').value=''; return 'Disambung: ' + r.nama; });
+  });
+  $('mBtn').addEventListener('click', function(){
+    var id = $('mPage').value.replace(/\D/g,''), tok = $('mTok').value.trim();
+    if(!id || tok.length < 20){ $('mMsg').innerHTML = '<div class="err">Isi Page ID dan Page access token.</div>'; return; }
+    hantar(this, $('mMsg'), { tindakan:'meta_page', page_id:id, page_token:tok },
+      function(r){ $('mTok').value=''; return 'Disambung: ' + r.nama + '. Lead borang baharu akan masuk ke CRM.'; });
+  });
+  $('kBtn').addEventListener('click', function(){
+    var btn = this; btn.disabled = true;
+    A.fungsi('integrasi', { tindakan:'kunci_api', nama:$('kNama').value.trim() || 'Kunci API' }).then(function(r){
+      $('kHasil').innerHTML = '<div class="kunci"><b>Simpan kunci ini sekarang — ia tidak akan dipaparkan lagi.</b>'+
+        '<div class="salin"><code id="kunciBaru">'+esc(r.kunci)+'</code><button class="btn alt kecil" type="button" data-salin="kunciBaru">Salin</button></div></div>';
+      segar();
+    }, function(e){ $('kHasil').innerHTML = '<div class="err">'+esc(e.message)+'</div>'; }).then(function(){ btn.disabled = false; });
+  });
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('[data-salin]'); if(!b) return;
+    var t = $(b.dataset.salin).textContent;
+    (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function(){ toast('Disalin'); }, function(){
+      var r = document.createRange(); r.selectNodeContents($(b.dataset.salin)); var s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('Tekan lama untuk salin');
+    });
+  });
+
+  // ---------- Ralat & cuba semula ----------
+  function muatRalat(){
+    A.senaraiRalat().then(function(r){
+      $('cubaBtn').hidden = !r.some(function(x){ return x.sumber_lead === 'meta_lead_ads'; });
+      $('senaraiRalat').innerHTML = r.length ? '<div class="log">' + r.map(function(x){
+        return '<div class="lrow"><div class="t"><b>'+esc(SRC[x.sumber_lead] || x.sumber_lead)+' · '+esc(x.external_event_id || '')+'</b>'+
+          '<span>'+esc(x.ralat)+'</span><span>'+x.percubaan+' cubaan · '+bila(x.updated_at)+(x.sementara ? ' · akan dicuba semula' : '')+'</span></div>'+
+          '<button class="btn alt kecil" type="button" data-abai="'+x.id+'">Abaikan</button></div>';
+      }).join('') + '</div>' : '<div class="empty">Tiada ralat. 👍</div>';
+    }, function(e){ $('senaraiRalat').innerHTML = '<div class="empty">'+esc(e.message)+'</div>'; });
+  }
+  $('senaraiRalat').addEventListener('click', function(e){
+    var b = e.target.closest('[data-abai]'); if(!b) return;
+    A.abaikanRalat(b.dataset.abai).then(muatRalat, function(err){ toast(err.message); });
+  });
+  $('cubaBtn').addEventListener('click', function(){
+    var b = this; b.disabled = true; b.textContent = 'Mencuba…';
+    A.fungsi('lead-retry', {}).then(function(r){ toast(r.berjaya + ' lead dipulihkan, ' + r.gagal + ' masih gagal'); segar(); },
+      function(e){ toast(e.message); }).then(function(){ b.disabled = false; b.textContent = 'Cuba semula'; });
+  });
+
+  // ---------- Log lead ----------
+  function muatLog(){
+    A.senaraiLeadEvent(30).then(function(r){
+      $('senaraiLog').innerHTML = r.length ? '<div class="log">' + r.map(function(x){
+        var k = KEP[x.keputusan] || ['Diproses','c-mati'];
+        return '<div class="lrow"><div class="t"><b>'+esc(x.nama || papar(x.telefon))+'</b>'+
+          '<span>'+esc(SRC[x.sumber_lead] || x.sumber_lead)+' · '+esc(papar(x.telefon))+' · '+bila(x.diterima_at)+'</span>'+
+          (x.mesej ? '<span>“'+esc(x.mesej)+'”</span>' : '')+
+          (x.sebab ? '<span>'+esc(SEBAB[x.sebab] || x.sebab)+'</span>' : '')+'</div><span class="chip '+k[1]+'">'+k[0]+'</span></div>';
+      }).join('') + '</div>' : '<div class="empty">Belum ada lead diterima.</div>';
+    }, function(e){ $('senaraiLog').innerHTML = '<div class="empty">'+esc(e.message)+'</div>'; });
+  }
+  setInterval(function(){ if(document.visibilityState === 'visible' && $('pUtama').classList.contains('show')) segar(); }, 60000);
+
+  mula();
+})();
+</script>
+<script src="pasang.js" defer></script>
+</body>
+</html>

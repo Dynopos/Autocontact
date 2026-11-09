@@ -76,7 +76,7 @@
   }
 
   // ---------- Kenalan ----------
-  var LAJUR = 'id,telefon,nama,emel,produk,status,sumber,kumpulan,susulan,nota,kategori,kategori_disahkan,kategori_disahkan_at,ringkasan,tindakan,keyakinan,created_at,updated_at';
+  var LAJUR = 'id,telefon,nama,emel,produk,status,sumber,kumpulan,susulan,nota,kategori,kategori_disahkan,kategori_disahkan_at,ringkasan,tindakan,keyakinan,created_at,updated_at,sumber_lead,mesej_pertama,last_contact_at';
 
   function senaraiKenalan() {
     var semua = [], saiz = 1000;
@@ -174,6 +174,49 @@
     });
   }
 
+  // ---------- Lead automatik & integrasi ----------
+  /* Panggil Edge Function; pulangkan badan JSON atau buang Error (dengan .kod, .badan) */
+  function fungsi(nama, badan) {
+    return sb.functions.invoke(nama, { body: badan || {} }).then(function (r) {
+      if (!r.error) return r.data;
+      var ctx = r.error.context;
+      var p = ctx && typeof ctx.json === 'function' ? ctx.json().catch(function () { return {}; }) : Promise.resolve({});
+      return p.then(function (b) {
+        var e = new Error((b && b.mesej) || 'Permintaan gagal. Cuba lagi.');
+        e.kod = (b && b.ralat) || 'rangkaian'; e.badan = b; throw e;
+      });
+    });
+  }
+  /* leads: [{ phone_number, contact_name, lead_source, first_message, external_lead_id? }] */
+  function tangkapLead(leads) { return fungsi('lead-capture', { leads: leads }); }
+
+  var LAJUR_INT = 'id,jenis,nama,external_id,kunci_awalan,aktif,retensi_hari,jumlah_event,last_event_at,last_success_at,last_error_at,last_error,created_at';
+  function senaraiIntegrasi() {
+    return sb.from('integrations').select(LAJUR_INT).order('created_at', { ascending: true })
+      .then(function (r) { return semak(r, 'Integrasi tidak dapat dibaca'); });
+  }
+  function kemasIntegrasi(id, ubah) {
+    return sb.from('integrations').update(ubah).eq('id', id).select(LAJUR_INT)
+      .then(function (r) { return semak(r, 'Integrasi tidak dapat dikemas kini'); });
+  }
+  function padamIntegrasi(id) {
+    return sb.from('integrations').delete().eq('id', id).then(function (r) { semak(r, 'Integrasi tidak dapat dipadam'); });
+  }
+  function senaraiLeadEvent(had) {
+    return sb.from('lead_events').select('id,sumber_lead,kaedah,telefon,nama,mesej,diterima_at,keputusan,sebab,created_at')
+      .order('created_at', { ascending: false }).limit(had || 50)
+      .then(function (r) { return semak(r, 'Log lead tidak dapat dibaca'); });
+  }
+  function senaraiRalat() {
+    return sb.from('integration_errors').select('id,integration_id,sumber_lead,external_event_id,ralat,sementara,percubaan,selesai,created_at,updated_at')
+      .eq('selesai', false).order('updated_at', { ascending: false }).limit(50)
+      .then(function (r) { return semak(r, 'Log ralat tidak dapat dibaca'); });
+  }
+  function abaikanRalat(id) {
+    return sb.from('integration_errors').update({ selesai: true }).eq('id', id).then(function (r) { semak(r, 'Tidak dapat dikemas kini'); });
+  }
+  function urlFungsi(nama) { return cfg.supabaseUrl.replace(/\/$/, '') + '/functions/v1/' + nama; }
+
   function penggunaan() {
     var bulan = new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 7);
     return Promise.all([
@@ -232,6 +275,9 @@
     senaraiKenalan: senaraiKenalan, simpanKenalan: simpanKenalan, padamKenalan: padamKenalan,
     cariImport: cariImport, daftarImport: daftarImport, senaraiImport: senaraiImport, padamImport: padamImport,
     guna: guna, simpanTertunda: simpanTertunda, senaraiTertunda: senaraiTertunda, padamKlasifikasi: padamKlasifikasi,
-    klasifikasi: klasifikasi, penggunaan: penggunaan, paparLogin: paparLogin
+    klasifikasi: klasifikasi, penggunaan: penggunaan, paparLogin: paparLogin,
+    fungsi: fungsi, tangkapLead: tangkapLead, senaraiIntegrasi: senaraiIntegrasi, kemasIntegrasi: kemasIntegrasi,
+    padamIntegrasi: padamIntegrasi, senaraiLeadEvent: senaraiLeadEvent, senaraiRalat: senaraiRalat,
+    abaikanRalat: abaikanRalat, urlFungsi: urlFungsi
   };
 })(window);

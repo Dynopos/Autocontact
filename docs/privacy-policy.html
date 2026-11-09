@@ -73,8 +73,13 @@ Protection Act 2010 (Act 709)</strong>, as amended by the Personal Data Protecti
   <tr><td>Customer records you save in Mini CRM (name, phone, product, status, follow-up date, notes, and confirmed classification results)</td><td>To keep your CRM safe and available on your other devices</td><td>Supabase, in your account only. Access rules in the database stop any other user from reading or changing it</td></tr>
   <tr><td>WhatsApp chat export files you choose to analyse</td><td>To suggest a category, product, summary and next step</td><td>Read on your device only. The file is never uploaded</td></tr>
   <tr><td>Recent messages from that chat, after names, phone numbers, email addresses, IC numbers and links are removed on your device</td><td>Sent once for analysis</td><td>Processed by Anthropic (the Claude AI model) through our server function. We do not store the chat text</td></tr>
+  <tr><td>Leads from sources you connect (WhatsApp Business Platform number, Meta Lead Ads forms, API keys you create): phone number, name, first message or form answers (email addresses in forms are not stored), source and time</td><td>To create or update the customer in your CRM automatically</td><td>Supabase, in your account only. A log of each lead event is kept for the retention period you choose (30–365 days, default 180) and then deleted automatically; the customer record stays until you delete it</td></tr>
+  <tr><td>Meta Page access token (Lead Ads only)</td><td>To fetch the details of each new lead from Meta</td><td>Stored encrypted (AES-256-GCM) on our server side; never shown in the app. WhatsApp access tokens are used once to verify ownership and are not stored</td></tr>
   <tr><td>A fingerprint (hash) and file name of each analysed chat file, and a monthly count of analyses</td><td>To avoid analysing the same file twice and to apply usage limits</td><td>Supabase, in your account only</td></tr>
 </table>
+<p>For leads you capture, the people who contacted you are your customers: you are the data user for their
+data under the PDPA, and Dyno processes it on your behalf. Use their details to respond to their enquiry; obtain
+their consent before sending them marketing messages.</p>
 <p>AI suggestions are never saved automatically: you review and confirm each one. A customer is never marked
 as a Customer by the AI alone — only when you confirm the purchase.</p>
 <p>Supabase and Anthropic are service providers that process this data on our behalf and may store it outside
@@ -187,6 +192,12 @@ mempunyai pendaftaran akaun, tiada analitik, dan tiada iklan.</p>
   <li>Untuk analisis, <strong>mesej terkini</strong> chat itu dihantar sekali kepada Anthropic (model AI Claude) melalui
       fungsi pelayan kami, <strong>selepas nama, nombor telefon, emel, nombor IC dan pautan dibuang</strong> di dalam
       peranti anda. Kami tidak menyimpan teks chat tersebut.</li>
+  <li><strong>Lead dari sumber yang anda sambung</strong> (nombor WhatsApp Business Platform, borang Meta Lead Ads, kunci API):
+      nombor telefon, nama, mesej pertama atau jawapan borang (emel dalam borang tidak disimpan), sumber dan masa —
+      disimpan dalam akaun anda sahaja. Log setiap lead disimpan mengikut tempoh retensi pilihan anda (30–365 hari,
+      lalai 180) kemudian dipadam secara automatik. Token Page Meta disimpan tersulit; token WhatsApp hanya digunakan
+      sekali untuk mengesahkan pemilikan dan tidak disimpan. Untuk lead ini, <strong>anda</strong> ialah Pengguna Data
+      di bawah PDPA dan Dyno memprosesnya bagi pihak anda.</li>
   <li><strong>Cap jari (hash) dan nama fail</strong> setiap chat yang dianalisis serta kiraan analisis bulanan disimpan
       dalam akaun anda untuk mengelak analisis berulang dan menguatkuasakan had penggunaan.</li>
 </ul>

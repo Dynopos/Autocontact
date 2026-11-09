@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Tambah Lead — Dyno Mini CRM</title>
+<meta name="description" content="Kongsi kenalan atau mesej WhatsApp ke Dyno Mini CRM sebagai lead baharu.">
+<meta name="theme-color" content="#2A0550">
+<meta name="robots" content="noindex">
+<link rel="manifest" href="manifest-crm.webmanifest">
+<link rel="icon" href="icons/crm-favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/crm-apple-touch.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mini CRM">
+<style>
+  :root{ --brand:#8B2FD6; --deep:#2A0550; --ink:#14091f; --pink:#d63bd4; --muted:#6b6480; --line:#eae7f0; --glow:rgba(139,47,214,.40); --ok:#1e8e4a; --bad:#c0392b; }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+  [hidden]{display:none!important}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:linear-gradient(170deg,#12021f 0%,#22043f 46%,#2E0757 100%);
+    background-attachment:fixed;color:var(--ink);display:flex;justify-content:center;min-height:100vh}
+  .app{width:100%;max-width:520px;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+  button,input,select,textarea{font-family:inherit}
+  :focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+  header{padding:calc(env(safe-area-inset-top) + 20px) 20px 12px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .brand img{width:58px;height:58px;filter:drop-shadow(0 6px 16px rgba(214,75,232,.5))}
+  .brand h1{color:#fff;font-size:20px;font-weight:800}
+  .brand p{color:#c9b3e8;font-size:12.5px;margin-top:3px}
+  .nav{margin-top:12px;display:flex;gap:14px;flex-wrap:wrap}
+  .nav a{color:#c9b3e8;font-size:13px;font-weight:700;text-decoration:none}
+  .mod{margin-top:10px;color:#a996c8;font-size:12px}
+  .sheet{background:#f0f2f5;margin-top:18px;border-radius:28px 28px 0 0;flex:1;padding:22px 18px calc(env(safe-area-inset-bottom) + 26px);box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+  h2{font-size:19px;font-weight:800;margin-bottom:6px}
+  .sub{font-size:14px;color:var(--muted);line-height:1.55;margin-bottom:14px}
+  .card{background:#fff;border-radius:16px;padding:14px;margin-bottom:12px;border:1px solid #e6e7ee;display:grid;gap:11px}
+  .f>label{display:block;font-size:12.5px;font-weight:700;margin-bottom:6px}
+  .f input,.f select,.f textarea{width:100%;border:1.5px solid var(--line);border-radius:11px;padding:10px 12px;font-size:16px;color:var(--ink);background:#fff}
+  .f textarea{min-height:110px;resize:vertical;line-height:1.45}
+  .hint{font-size:11.5px;margin-top:5px;line-height:1.45;color:var(--muted)}
+  .btn{width:100%;border:none;border-radius:14px;padding:14px;font-size:15px;font-weight:700;color:#fff;background:linear-gradient(135deg,#c040d8,#7C22CE 55%,#5B1094);
+    cursor:pointer;box-shadow:0 8px 20px var(--glow);display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}
+  .btn:disabled{opacity:.45;pointer-events:none;box-shadow:none}
+  .btn.alt{background:#fff;color:#5B1094;box-shadow:none;border:1.5px solid #dcc6f5;font-size:14px;padding:11px}
+  .fail{border:2px dashed #d7b7e6;border-radius:14px;padding:14px;text-align:center;cursor:pointer;display:block;background:#fff;font-size:13.5px;font-weight:700}
+  .fail span{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:2px}
+  .calon{background:#fff;border-radius:14px;border:1px solid #e6e7ee;padding:12px;display:grid;gap:8px;margin-bottom:9px}
+  .calon .atas{display:flex;gap:10px;align-items:center}
+  .calon .atas b{flex:1;font-size:15px;font-variant-numeric:tabular-nums}
+  .calon input[type=text]{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;font-size:15px}
+  .calon .msg{font-size:12.5px;color:var(--muted);font-style:italic}
+  .chip{font-size:11px;font-weight:800;padding:3px 9px;border-radius:20px;border:1px solid currentColor}
+  .c-ok{color:var(--ok)} .c-mati{color:#8a8496} .c-bad{color:var(--bad)}
+  .tick{display:flex;gap:8px;align-items:center;font-size:13px}
+  .tick input{width:18px;height:18px;accent-color:var(--brand)}
+  .empty{padding:18px;text-align:center;color:var(--muted);font-size:13.5px;background:#fff;border-radius:14px}
+  .note{font-size:11.5px;color:#8a969c;text-align:center;margin-top:12px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><img src="icons/logo-mini-crm.webp" alt="Logo Dyno Mini CRM" width="58" height="58">
+      <div><h1>Tambah lead</h1><p>Kongsi dari WhatsApp atau tampal</p></div></div>
+    <div class="nav"><a href="crm.html">← Mini CRM</a><a href="integrasi.html">🔌 Lead automatik</a></div>
+    <div class="mod" id="mod"></div>
+  </header>
+  <div class="sheet">
+    <h2>Dari WhatsApp ke CRM</h2>
+    <p class="sub">App WhatsApp Business biasa tidak membenarkan app lain membaca mesej. Jadi bila pelanggan baharu
+      mesej anda: <b>kongsi kenalan</b> (fail .vcf) atau <b>salin mesej</b> mereka, kemudian masukkan di sini.
+      Di Android, selepas app dipasang, pilih <b>Mini CRM</b> terus dari menu Kongsi.</p>
+
+    <div class="card">
+      <div class="f"><label for="teks">Tampal mesej, nombor atau senarai</label>
+        <textarea id="teks" placeholder="cth.&#10;Ahmad 012-345 6789 nak tanya harga POS&#10;atau baris eksport chat: [10/11/26, 9:00 AM] Ahmad: Salam…"></textarea></div>
+      <label class="fail">📇 Pilih fail kenalan (.vcf)<span>dari WhatsApp → info kenalan → Kongsi</span>
+        <input type="file" id="vcf" accept=".vcf,.vcard,text/vcard,text/x-vcard" hidden></label>
+      <div class="f"><label for="sumber">Sumber lead</label>
+        <select id="sumber"><option value="whatsapp">WhatsApp (kongsi manual)</option><option value="manual">Lain-lain / manual</option></select>
+        <div class="hint">Pilih WhatsApp hanya jika pelanggan ini memang menghubungi anda melalui WhatsApp.</div></div>
+    </div>
+
+    <div id="senarai"></div>
+    <button class="btn" type="button" id="simpan" disabled>Simpan ke CRM</button>
+    <div class="note" id="nota">Pelanggan yang menghubungi anda dahulu boleh direkodkan sebagai lead. Gunakan nombor ini untuk
+      membalas pertanyaan mereka — bukan untuk mesej pemasaran tanpa persetujuan (PDPA).</div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="kemas-engine.js"></script>
+<script src="crm-store.js"></script>
+<script src="wa-klasifikasi.js"></script>
+<script src="awan.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var E = window.KemasEngine, C = window.DynoCRM, W = window.DynoWA, A = window.DynoAwan;
+  var calon = [], awan = false;
+
+  function esc(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function hariIni(){ var d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset()*60000).toISOString().slice(0,10); }
+  function cincangRingkas(s){ var h = 5381; for(var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0; return h.toString(36); }
+
+  // ---------- Hurai input ----------
+  var RE_NO = /\+?\d[\d   \-().]{6,}\d/g;
+  function hurai(teks){
+    var hasil = [];
+    if(/BEGIN:VCARD/i.test(teks)){
+      E.parseVCF(teks).forEach(function(c){ (c.phones || []).slice(0,1).forEach(function(p){ hasil.push({ tel:p, nama:c.name || '', mesej:'' }); }); });
+      return hasil;
+    }
+    var chat = W.huraiChat(teks, '');
+    if(chat.mesej.length){
+      // Baris eksport/salinan chat: pengirim (nama atau nombor) + mesej pertama mereka
+      chat.peserta.forEach(function(p){
+        var pertama = chat.mesej.filter(function(m){ return m.pengirim === p; })[0];
+        var nombor = W.telefonSah(p) || ((pertama.teks.match(RE_NO) || [])[0] || '');
+        if(nombor) hasil.push({ tel:nombor, nama: W.telefonSah(p) ? '' : p, mesej: pertama.teks });
+      });
+      return hasil;
+    }
+    teks.split(/\r?\n/).forEach(function(l){
+      var m = l.match(RE_NO); if(!m) return;
+      var baki = l.replace(RE_NO, ' ').replace(/\s+/g, ' ').trim();
+      var bahagian = baki.split(/\s+(?=(?:nak|mahu|tanya|saya|boleh|ada|harga|hi|salam|hello)\b)/i);
+      m.forEach(function(n){ hasil.push({ tel:n, nama: bahagian.length > 1 ? bahagian[0].replace(/[,:;\-]+$/,'') : (baki.length <= 40 ? baki : ''), mesej: bahagian.length > 1 ? bahagian.slice(1).join(' ') : (baki.length > 40 ? baki : '') }); });
+    });
+    return hasil;
+  }
+  function kemasKini(){
+    var dilihat = {};
+    calon = hurai($('teks').value).map(function(c){ c.k = C.kunci(c.tel); return c; })
+      .filter(function(c){ if(!c.k || dilihat[c.k]) return false; dilihat[c.k] = 1; return true; });
+    render();
+  }
+  function render(){
+    if(!calon.length){
+      $('senarai').innerHTML = $('teks').value.trim() ? '<div class="empty" style="margin-bottom:12px">Tiada nombor telefon yang sah dijumpai.</div>' : '';
+      $('simpan').disabled = true; $('simpan').textContent = 'Simpan ke CRM'; return;
+    }
+    $('senarai').innerHTML = calon.map(function(c, i){
+      return '<div class="calon"><div class="atas"><b>'+esc(E.prettyPhone(c.k))+'</b>'+
+        (c.hasil ? '<span class="chip '+c.hasil[1]+'">'+c.hasil[0]+'</span>' : '<label class="tick"><input type="checkbox" data-i="'+i+'" checked> Simpan</label>')+'</div>'+
+        '<input type="text" data-nama="'+i+'" value="'+esc(c.nama)+'" placeholder="Nama (pilihan)" maxlength="120"'+(c.hasil?' disabled':'')+'>'+
+        (c.mesej ? '<div class="msg">“'+esc(c.mesej.slice(0,200))+'”</div>' : '')+'</div>';
+    }).join('');
+    var n = calon.filter(function(c, i){ var t = document.querySelector('[data-i="'+i+'"]'); return !c.hasil && t && t.checked; }).length;
+    $('simpan').disabled = !n;
+    $('simpan').textContent = n ? 'Simpan ' + n + ' lead ke CRM' : 'Selesai';
+  }
+  $('senarai').addEventListener('change', function(e){
+    if(e.target.dataset.i) render();
+    if(e.target.dataset.nama) calon[+e.target.dataset.nama].nama = e.target.value.trim();
+  });
+  var t; $('teks').addEventListener('input', function(){ clearTimeout(t); t = setTimeout(kemasKini, 250); });
+  $('vcf').addEventListener('change', function(){
+    var f = this.files && this.files[0]; if(!f) return;
+    f.text().then(function(x){ $('teks').value = x; kemasKini(); }); this.value = '';
+  });
+
+  // ---------- Simpan ----------
+  $('simpan').addEventListener('click', function(){
+    var btn = this, sumber = $('sumber').value, hari = hariIni();
+    var pilih = calon.filter(function(c, i){ var x = document.querySelector('[data-i="'+i+'"]'); return !c.hasil && x && x.checked; });
+    if(!pilih.length) return;
+    btn.disabled = true; btn.textContent = 'Menyimpan…';
+    if(awan){
+      A.tangkapLead(pilih.map(function(c){
+        return { phone_number:c.k, contact_name:c.nama, lead_source:sumber, first_message:c.mesej,
+                 external_lead_id:'kongsi:' + c.k + ':' + hari + ':' + cincangRingkas(c.mesej || '') };
+      })).then(function(r){
+        r.keputusan.forEach(function(k, i){
+          pilih[i].hasil = k.status === 'dicipta' ? ['Lead baharu','c-ok'] : k.status === 'ditolak' ? ['Ditolak','c-bad'] : ['Sudah dalam CRM','c-mati'];
+        });
+        render();
+      }, function(e){ btn.disabled = false; btn.textContent = 'Cuba lagi'; alert(e.message); });
+      return;
+    }
+    // Mod telefon sahaja: simpan dalam storan Mini CRM tempatan
+    var db = C.semua(), kini = new Date().toISOString();
+    pilih.forEach(function(c){
+      if(db[c.k]){ db[c.k].last_contact_at = kini; db[c.k].dikemas = kini; c.hasil = ['Sudah dalam CRM','c-mati']; return; }
+      db[c.k] = { nama:c.nama, emel:'', produk:'', status:'lead', sumber: sumber === 'whatsapp' ? 'WhatsApp' : 'Manual', kumpulan:'',
+                  susulan:hari, nota:'', mesej_pertama:(c.mesej || '').slice(0,1000), last_contact_at:kini, dibuat:kini, dikemas:kini };
+      c.hasil = ['Lead baharu','c-ok'];
+    });
+    if(!C.tulis(db)) alert('Storan telefon penuh atau disekat.');
+    render();
+  });
+
+  // ---------- Mula: mod & teks dari menu Kongsi (Web Share Target) ----------
+  var q = new URLSearchParams(location.search);
+  var dikongsi = [q.get('title'), q.get('text'), q.get('url')].filter(Boolean).join('\n');
+  if(dikongsi){ $('teks').value = dikongsi; kemasKini(); }
+  function paparMod(){ $('mod').textContent = awan ? '☁︎ Disimpan ke akaun awan' : '📱 Disimpan dalam telefon ini (log masuk di Mini CRM untuk simpan di awan)'; }
+  paparMod();
+  if(A.siap()) A.mula().then(function(u){ awan = !!u; paparMod(); }, function(){});
+})();
+</script>
+<script src="pasang.js" defer></script>
+</body>
+</html>
