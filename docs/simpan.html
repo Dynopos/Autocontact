@@ -504,6 +504,8 @@
 <script src="simpan-fail.js"></script>
 <script src="kemas-engine.js"></script>
 <script src="crm-store.js"></script>
+<script src="config.js"></script>
+<script src="awan.js"></script>
 <script src="ocr.js" defer></script>
 <script>
 (function(){
@@ -921,6 +923,7 @@
     }
     $('doneBadge').textContent = cur.fresh.length + ' kontak dalam fail' +
       (keCrm ? ' \u00b7 ' + keCrm + ' masuk Mini CRM' : '');
+    segerakAwan(cur.fresh.map(function(n, i){ return { telefon:n, nama:label(cur.start + i) }; }));
     refreshMemo();
     refreshKuota();
     show(2);
@@ -996,6 +999,26 @@
       msg.textContent = 'Kod itu tidak sah. Semak semula ejaannya.';
     }
   });
+
+  // ---------- Segerak ke akaun awan Mini CRM (jika log masuk) ----------
+  // Nombor baharu terus masuk CRM berpusat sebagai New Lead (sumber Auto Contact),
+  // tanpa pengguna perlu memindahkan apa-apa. Tanpa log masuk, rekod kekal dalam telefon.
+  function segerakAwan(senarai){
+    var A = window.DynoAwan;
+    if(!A || !A.siap() || !senarai.length) return;
+    A.mula().then(function(u){
+      if(!u) return;
+      var leads = senarai.map(function(x){ return { phone_number:x.telefon, contact_name:x.nama, lead_source:'auto_contact' }; });
+      var kerja = [];
+      for(var i = 0; i < leads.length; i += 200) kerja.push(A.tangkapLead(leads.slice(i, i + 200)));
+      return Promise.all(kerja).then(function(r){
+        var baru = 0; r.forEach(function(x){ x.keputusan.forEach(function(k){ if(k.status === 'dicipta') baru++; }); });
+        $('doneBadge').textContent += ' \u00b7 \u2601\ufe0e ' + baru + ' baharu di akaun';
+      });
+    }).catch(function(){
+      $('doneBadge').textContent += ' \u00b7 belum disegerakkan (luar talian) — buka Mini CRM untuk pindahkan';
+    });
+  }
 
   // ---------- Pemulihan ----------
   // App merekod nombor sebagai "sudah disimpan" sebaik sahaja fail dijana.

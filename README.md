@@ -44,6 +44,33 @@ nama yang sama seperti dalam telefon. Dari situ pengguna boleh:
 Rekod disimpan dalam `localStorage` (kunci `dyno_crm`) melalui
 [`docs/crm-store.js`](docs/crm-store.js) — sama seperti rekod lain, tiada server.
 
+Pilihan **akaun awan** (Supabase): selepas log masuk dengan kod emel, rekod disimpan dalam akaun
+pengguna dengan Row Level Security, dan rekod dalam telefon boleh dipindahkan dengan satu butang.
+
+**4. Smart WhatsApp Classification** — [`docs/klasifikasi.html`](docs/klasifikasi.html)
+
+Muat naik beberapa fail *Export Chat* WhatsApp (.txt / .zip) serentak. Telefon menghurai mesej,
+memadankan pelanggan dengan CRM (yang tidak pasti masuk *Semakan manual*), membuang data peribadi,
+dan Claude mencadangkan kategori (Prospek – Tanya harga / Berminat / Hampir membeli, Support,
+Customer – Perlu semakan pembelian, Tidak diketahui), produk, ringkasan, tindakan susulan dan tahap
+keyakinan. Pengguna menyemak dan mengesahkan sebelum apa-apa disimpan; Customer hanya ditanda selepas
+pembelian disahkan. Pemasangan pelayan: [`supabase/README.md`](supabase/README.md).
+
+**5. Lead automatik** — [`docs/integrasi.html`](docs/integrasi.html), [`docs/kongsi.html`](docs/kongsi.html)
+
+Lead baharu dari **WhatsApp Business Platform (Cloud API)**, **Meta Lead Ads** (Facebook/Instagram), alat
+Simpan Nombor dan kunci API masuk terus ke Mini CRM sebagai *New Lead*. Nombor dinormalkan ke E.164
+(`libphonenumber-js`), tiada pendua, event berganda diproses sekali, dan dashboard memaparkan jumlah lead,
+lead hari ini/minggu ini, mengikut sumber dan yang perlu di-follow-up. Untuk app WhatsApp Business biasa,
+pengguna kongsi kenalan/mesej ke app. Butiran: [`supabase/README.md`](supabase/README.md#lead-automatik-whatsapp-business-platform--meta-lead-ads).
+
+**6. App Android — WhatsApp Business biasa** — [`android/`](android/README.md)
+
+*"Setiap Lead Berharga. Jangan Biar Ia Hilang."* App Android natif yang membaca notifikasi WhatsApp Business
+(dengan kebenaran pengguna) dan menghantar nombor atau username pelanggan — hanya bila benar-benar dipaparkan —
+terus ke Mini CRM. Notifikasi yang hanya ada nama masuk ke *Lead belum disahkan*. Had teknikal dan senarai semak
+ujian telefon: [`android/README.md`](android/README.md).
+
 ---
 
 ## 🔒 Privasi
@@ -100,6 +127,11 @@ dynopro-auto-contact/
 │   ├── kemas-engine.js            # Enjin pendua & normalisasi nombor
 │   ├── crm.html                   # Mini CRM — status, follow-up, nota
 │   ├── crm-store.js               # Storan rekod Mini CRM (localStorage)
+│   ├── klasifikasi.html           # Smart WhatsApp Classification
+│   ├── wa-klasifikasi.js          # Hurai chat WhatsApp, pemadanan, buang data peribadi
+│   ├── awan.js / config.js        # Sambungan Supabase (kosong = mod telefon sahaja)
+│   ├── integrasi.html             # Lead automatik: sambung WhatsApp / Meta Lead Ads, status, log
+│   ├── kongsi.html                # Tambah lead manual / Share Target dari WhatsApp
 │   ├── manifest.webmanifest       # Maklumat pemasangan PWA
 │   ├── sw.js                      # Service worker (offline)
 │   ├── icons/                     # Ikon Dynopro
@@ -107,9 +139,10 @@ dynopro-auto-contact/
 │   ├── README-WEB.md              # 🚀 Panduan lancar web
 │   ├── PANDUAN-PLAY-STORE.md      # Untuk kemudian
 │   └── JUSTIFIKASI-CONTACTS.md    # Untuk kemudian
-├── lib/main.dart                  # Versi Android native (direhatkan)
-├── pubspec.yaml
-├── .github/workflows/build.yml    # Bina APK — manual sahaja
+├── supabase/                      # Pangkalan data, RLS, Edge Function classify-chat
+├── tests/                         # Ujian pembaca chat
+├── android/                       # App Android natif (Kotlin): tangkap lead dari notifikasi WhatsApp Business
+├── .github/workflows/android.yml  # Ujian + bina APK debug pada setiap perubahan android/
 └── README.md
 ```
 

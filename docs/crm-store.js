@@ -17,12 +17,14 @@
   var K = 'dyno_crm';
   var mem = null;          // sandaran bila localStorage disekat
 
+  // id kekal (data lama & pangkalan data); label ikut aliran jualan
   var STATUS = [
-    { id: 'lead',     label: 'Lead' },
-    { id: 'prospek',  label: 'Prospek' },
-    { id: 'followup', label: 'Follow-up' },
-    { id: 'customer', label: 'Customer' },
-    { id: 'tidak',    label: 'Tidak aktif' }
+    { id: 'lead',      label: 'New Lead' },
+    { id: 'dihubungi', label: 'Contacted' },
+    { id: 'prospek',   label: 'Interested' },
+    { id: 'followup',  label: 'Follow-up' },
+    { id: 'customer',  label: 'Won' },
+    { id: 'tidak',     label: 'Lost' }
   ];
 
   function kunci(raw) {

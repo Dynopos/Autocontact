@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Smart WhatsApp Classification — Dyno Mini CRM</title>
+<meta name="description" content="Muat naik eksport chat WhatsApp, dan AI cadangkan kategori pelanggan, produk diminati, ringkasan dan tindakan susulan. Anda sahkan sebelum disimpan.">
+<meta name="theme-color" content="#2A0550">
+<meta name="robots" content="noindex">
+<link rel="manifest" href="manifest-crm.webmanifest">
+<link rel="icon" href="icons/crm-favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/crm-apple-touch.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mini CRM">
+<link rel="canonical" href="https://minicrm.my/klasifikasi.html">
+<style>
+  :root{
+    --brand:#8B2FD6; --brand-dk:#5B1094; --deep:#2A0550; --ink:#14091f;
+    --pink:#d63bd4; --pink-dk:#a3159f; --pink-bg:#fdeefc;
+    --silver:#c9ccd6; --silver-bg:#f4f5f8;
+    --muted:#6b6480; --line:#eae7f0; --glow:rgba(139,47,214,.40);
+    --ok:#1e8e4a; --warn:#b26a00; --bad:#c0392b;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+  [hidden]{display:none!important}
+  html,body{min-height:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:linear-gradient(170deg,#12021f 0%,#22043f 46%,#2E0757 100%);
+    background-attachment:fixed;color:var(--ink);display:flex;justify-content:center}
+  .app{width:100%;max-width:520px;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+  button,input,select,textarea{font-family:inherit}
+  :focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+
+  header{padding:calc(env(safe-area-inset-top) + 20px) 20px 12px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:64px;height:64px;flex:none;filter:drop-shadow(0 6px 16px rgba(214,75,232,.5))}
+  .logo img{width:100%;height:100%;display:block}
+  .brand h1{color:#fff;font-size:20px;font-weight:800;letter-spacing:-.3px;line-height:1.2}
+  .brand h1 span{background:linear-gradient(90deg,#ff7bf5,#c9ccd6);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .brand p{color:#c9b3e8;font-size:12.5px;margin-top:3px}
+  .nav{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:13px}
+  .nav a,.nav button{color:#c9b3e8;font-size:13px;font-weight:700;text-decoration:none;background:none;border:none;cursor:pointer;padding:0}
+  .akaun{margin-top:10px;color:#a996c8;font-size:12px}
+
+  .sheet{background:#f0f2f5;margin-top:18px;border-radius:28px 28px 0 0;flex:1;
+    padding:22px 18px calc(env(safe-area-inset-bottom) + 26px);
+    box-shadow:0 -10px 40px rgba(0,0,0,.25);display:flex;flex-direction:column}
+  .panel{display:none;flex:1;flex-direction:column;animation:rise .35s cubic-bezier(.2,.8,.2,1)}
+  .panel.show{display:flex}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.panel{animation:none}}
+
+  h2{font-size:19px;font-weight:800;margin-bottom:6px}
+  .sub{font-size:14px;color:var(--muted);line-height:1.55;margin-bottom:14px}
+
+  .btn{width:100%;border:none;border-radius:16px;padding:15px;font-size:15.5px;font-weight:700;
+    color:#fff;background:linear-gradient(135deg,#c040d8,#7C22CE 55%,#5B1094);cursor:pointer;
+    box-shadow:0 9px 24px var(--glow);transition:.18s;text-decoration:none;
+    display:flex;align-items:center;justify-content:center;gap:9px}
+  .btn:active{transform:translateY(2px)}
+  .btn:disabled{opacity:.45;pointer-events:none;box-shadow:none}
+  .btn.alt{background:#fff;color:#5B1094;box-shadow:none;border:1.5px solid #dcc6f5;font-size:14.5px;padding:13px}
+  .btn.kecil{width:auto;padding:9px 14px;font-size:13px;border-radius:11px}
+  .linkbtn{background:none;border:none;color:var(--muted);font-size:13px;padding:11px;width:100%;cursor:pointer}
+
+  .card{background:#fff;border-radius:16px;padding:15px;margin-bottom:12px;display:grid;gap:12px;border:1px solid #e6e7ee}
+  .f>label,.f>.lbl{display:block;font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:6px}
+  .f input:not([type=checkbox]):not([type=radio]),.f select,.f textarea{width:100%;border:1.5px solid var(--line);border-radius:11px;
+    padding:10px 12px;font-size:16px;color:var(--ink);background:#fff}
+  .f textarea{resize:vertical;min-height:70px;line-height:1.45}
+  .f input:focus,.f select:focus,.f textarea:focus{outline:none;border-color:var(--pink);box-shadow:0 0 0 3px rgba(214,59,212,.14)}
+  .hint{font-size:11.5px;margin-top:6px;line-height:1.45;color:var(--muted)}
+  .err{font-size:12.5px;margin-top:6px;color:var(--bad);font-weight:700}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:380px){.two{grid-template-columns:1fr}}
+
+  .privasi{background:linear-gradient(135deg,#fdf4ff,#f4f5f8);border:1px solid #ecd2f3;border-radius:14px;padding:12px 14px;
+    font-size:12.5px;color:#5b2a68;line-height:1.55;margin-bottom:12px}
+  .privasi ul{margin:6px 0 0 18px}
+  .kuota{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--muted);font-weight:700;margin-bottom:12px}
+  .kuota .kbar{flex:1;height:7px;background:#e7e1ef;border-radius:5px;overflow:hidden}
+  .kuota .kbar i{display:block;height:100%;background:linear-gradient(90deg,#ff7bf5,#8B2FD6);width:0}
+
+  .drop{border:2px dashed #d7b7e6;border-radius:16px;padding:22px 16px;text-align:center;cursor:pointer;display:block;background:#fff}
+  .drop.hot{border-color:var(--pink);background:var(--pink-bg)}
+  .drop b{display:block;font-size:15px;margin-top:8px}
+  .drop span{display:block;margin-top:3px;font-size:12.5px;color:var(--muted)}
+
+  .fail{background:#fff;border-radius:14px;border:1px solid #e6e7ee;overflow:hidden;margin-bottom:12px}
+  .frow{display:flex;gap:10px;align-items:center;padding:11px 13px;border-bottom:1px solid var(--line)}
+  .frow:last-child{border-bottom:none}
+  .frow .t{flex:1;min-width:0}
+  .frow .t b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .frow .t span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chip{flex:none;font-size:11px;font-weight:800;padding:3px 9px;border-radius:20px;border:1px solid currentColor;white-space:nowrap}
+  .chip.ok{color:var(--ok)} .chip.warn{color:var(--warn)} .chip.mati{color:#8a8496} .chip.ai{color:var(--pink-dk);background:var(--pink-bg)}
+  .chip.bad{color:var(--bad)}
+
+  .bar{height:8px;background:#e7e1ef;border-radius:5px;overflow:hidden;margin:16px 0 10px}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#ff7bf5,#8B2FD6);width:0;transition:width .3s}
+
+  /* Kad keputusan */
+  .hasil{background:#fff;border-radius:18px;border:1px solid #e6e7ee;margin-bottom:14px;overflow:hidden}
+  .hasil.off{opacity:.6}
+  .hhead{display:flex;gap:10px;align-items:flex-start;padding:13px 14px;background:linear-gradient(135deg,#faf5ff,#f4f5f8);border-bottom:1px solid var(--line)}
+  .hhead .t{flex:1;min-width:0}
+  .hhead b{display:block;font-size:15px}
+  .hhead span{display:block;font-size:12px;color:var(--muted);margin-top:2px;word-break:break-word}
+  .hbody{padding:13px 14px;display:grid;gap:12px}
+  .sebab{font-size:12.5px;color:#5b2a68;background:var(--pink-bg);border-radius:10px;padding:8px 10px;line-height:1.45}
+  .amaran{font-size:12.5px;border-radius:10px;padding:9px 11px;line-height:1.45;border:1px solid #f1d6a4;background:#fff8ea;color:#7a4a00}
+  .amaran.merah{border-color:#f3c6c6;background:#fff3f3;color:#7a1f16}
+  .tick{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;line-height:1.4;cursor:pointer}
+  .tick input{margin-top:2px;width:18px;height:18px;accent-color:var(--brand);flex:none}
+  .pilihan{display:grid;gap:7px}
+  .pilihan label{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;padding:9px 10px;border:1.5px solid var(--line);border-radius:11px;cursor:pointer}
+  .pilihan label:has(input:checked){border-color:var(--pink);background:#fff7fe}
+  .pilihan input{margin-top:2px;accent-color:var(--pink);flex:none}
+  .pilihan small{display:block;color:var(--muted);font-size:12px}
+  .simpanbar{position:sticky;bottom:calc(env(safe-area-inset-bottom) + 10px);margin-top:4px}
+
+  .ringkas{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:6px 0 16px}
+  .ringkas div{background:#fff;border-radius:14px;padding:12px 8px;text-align:center}
+  .ringkas b{display:block;font-size:24px;font-weight:900;color:var(--brand-dk);font-variant-numeric:tabular-nums}
+  .ringkas span{font-size:10.5px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+  .empty{padding:26px 18px;text-align:center;color:var(--muted);font-size:14px;line-height:1.6;background:#fff;border-radius:16px}
+  .note{font-size:11.5px;color:#8a969c;text-align:center;margin-top:12px;line-height:1.5}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 18px);z-index:50;
+    max-width:calc(100% - 32px);background:var(--deep);color:#fff;border-radius:13px;padding:12px 16px;font-size:13.5px;
+    font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="logo"><img src="icons/logo-mini-crm.webp" alt="Logo Dyno Mini CRM" width="64" height="64"></div>
+      <div>
+        <h1>Smart WhatsApp <span>Classification</span></h1>
+        <p>Dyno Mini CRM — AI cadang, anda sahkan</p>
+      </div>
+    </div>
+    <div class="nav">
+      <a href="crm.html">← Mini CRM</a>
+      <button type="button" id="navManual" hidden>Semakan manual</button>
+      <button type="button" id="navSejarah" hidden>Sejarah import</button>
+    </div>
+    <div class="akaun" id="akaun"></div>
+  </header>
+
+  <div class="sheet">
+
+    <!-- Tiada tetapan awan -->
+    <section class="panel" id="pTiada">
+      <h2>Belum disediakan</h2>
+      <p class="sub">Smart WhatsApp Classification memerlukan akaun Dyno Mini CRM di awan. Pentadbir app perlu
+        mengisi tetapan Supabase dalam <b>config.js</b> dahulu (lihat <b>supabase/README.md</b> dalam repo).</p>
+      <a class="btn alt" href="crm.html">← Kembali ke Mini CRM</a>
+    </section>
+
+    <!-- Log masuk -->
+    <section class="panel" id="pMasuk">
+      <h2>Log masuk</h2>
+      <p class="sub">Keputusan klasifikasi disimpan dalam akaun anda supaya selamat dan boleh dibuka dari telefon lain.
+        Hanya anda boleh melihat data akaun anda.</p>
+      <div id="loginBox"></div>
+    </section>
+
+    <!-- Muat naik -->
+    <section class="panel" id="pMuat">
+      <h2>Muat naik chat WhatsApp</h2>
+      <p class="sub">Dalam WhatsApp: buka chat → <b>⋮ / nama kenalan → Export chat → Without media</b>.
+        Pilih beberapa fail serentak (.txt atau .zip).</p>
+
+      <div class="kuota" id="kuota" hidden><span id="kuotaTeks"></span><div class="kbar"><i id="kuotaBar"></i></div></div>
+
+      <div class="privasi">
+        <b>🔒 Privasi anda</b>
+        <ul>
+          <li>Fail chat dibaca dalam telefon ini sahaja — <b>tidak dimuat naik</b>.</li>
+          <li>Untuk analisis, hanya mesej terkini dihantar kepada AI (Claude oleh Anthropic) selepas
+            <b>nama, nombor telefon, emel, IC dan pautan dibuang</b>. Teks chat itu tidak disimpan oleh Dyno Mini CRM.</li>
+          <li>Hanya keputusan yang anda sahkan disimpan dalam akaun anda.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="f"><label for="namaSaya">Nama atau nombor WhatsApp anda</label>
+          <input id="namaSaya" autocomplete="off" maxlength="60" placeholder="seperti tertera dalam fail chat, cth. Bob Dyno">
+          <div class="hint">Untuk membezakan mesej anda daripada mesej pelanggan.</div></div>
+        <label class="drop" id="drop">
+          <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#a3159f" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5-5 5 5"/><path d="M12 5v13"/></svg>
+          <b>Pilih fail eksport chat</b>
+          <span>.txt atau .zip — boleh pilih banyak serentak</span>
+          <input type="file" id="failInput" accept=".txt,.zip,text/plain,application/zip" multiple hidden>
+        </label>
+      </div>
+
+      <div id="senaraiFail"></div>
+
+      <label class="tick" style="margin:2px 2px 12px"><input type="checkbox" id="padamSelepas" checked>
+        <span>Padam isi chat dari telefon ini sebaik sahaja keputusan disimpan</span></label>
+      <button class="btn" type="button" id="analisisBtn" disabled>Analisis</button>
+      <div class="note">AI hanya mencadangkan. Tiada apa disimpan sehingga anda semak dan sahkan.</div>
+    </section>
+
+    <!-- Proses -->
+    <section class="panel" id="pProses">
+      <h2>Menganalisis chat…</h2>
+      <p class="sub" id="prosesMsg">Menyediakan…</p>
+      <div class="bar"><i id="prosesBar"></i></div>
+      <div class="note">Hanya petikan tanpa data peribadi dihantar untuk analisis.</div>
+    </section>
+
+    <!-- Semak keputusan -->
+    <section class="panel" id="pSemak">
+      <h2>Semak cadangan AI</h2>
+      <p class="sub" id="semakSub">Betulkan apa-apa yang tidak tepat, kemudian sahkan untuk simpan.</p>
+      <div id="senaraiHasil"></div>
+      <div class="simpanbar"><button class="btn" type="button" id="simpanBtn">Sahkan &amp; simpan</button></div>
+      <button class="linkbtn" type="button" id="batalSemak">← Kembali tanpa menyimpan</button>
+    </section>
+
+    <!-- Selesai -->
+    <section class="panel" id="pSiap">
+      <h2>Disimpan</h2>
+      <div class="ringkas">
+        <div><b id="smSimpan">0</b><span>Disimpan</span></div>
+        <div><b id="smManual">0</b><span>Semakan manual</span></div>
+        <div><b id="smKekal">0</b><span>Kategori kekal</span></div>
+      </div>
+      <p class="sub" id="siapMsg"></p>
+      <a class="btn" href="crm.html">Buka Mini CRM</a>
+      <button class="btn alt" type="button" id="lagiBtn" style="margin-top:10px">Proses chat lain</button>
+    </section>
+
+    <!-- Semakan manual -->
+    <section class="panel" id="pManual">
+      <h2>Semakan manual</h2>
+      <p class="sub">Chat ini tidak dapat dipadankan dengan pasti kepada pelanggan dalam CRM. Pilih pelanggan
+        yang betul atau masukkan nombor untuk mencipta kenalan baharu.</p>
+      <div id="senaraiManual"></div>
+      <button class="linkbtn" type="button" id="manualBalik">← Kembali</button>
+    </section>
+
+    <!-- Sejarah -->
+    <section class="panel" id="pSejarah">
+      <h2>Sejarah import</h2>
+      <p class="sub">Rekod fail yang pernah dianalisis (hanya nama fail dan cap jari, bukan isi chat).
+        Memadam rekod membolehkan fail yang sama dianalisis semula; kenalan dalam CRM tidak terjejas.</p>
+      <div id="senaraiSejarah"></div>
+      <button class="linkbtn" type="button" id="sejarahBalik">← Kembali</button>
+    </section>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="config.js"></script>
+<script src="kemas-engine.js"></script>
+<script src="wa-klasifikasi.js"></script>
+<script src="awan.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $ = function(id){ return document.getElementById(id); };
+  var W = window.DynoWA, A = window.DynoAwan, E = window.KemasEngine;
+  var KLABEL = {}; W.KATEGORI.forEach(function(k){ KLABEL[k.id] = k.label; });
+  var SERENTAK = 2;
+
+  var fail = [];        // fail yang dipilih: { nama, teks, hash, chat, saya, info, sudah }
+  var hasil = [];       // keputusan analisis bagi setiap fail sedia
+  var kenalan = [];     // kenalan CRM (dari awan)
+  var kenalanId = {};
+
+  // ---------- Bantuan ----------
+  function esc(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function sGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function sSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  var toastT;
+  function toast(m){ var t=$('toast'); t.textContent=m; t.hidden=false; clearTimeout(toastT); toastT=setTimeout(function(){ t.hidden=true; },3200); }
+  function show(id){
+    ['pTiada','pMasuk','pMuat','pProses','pSemak','pSiap','pManual','pSejarah'].forEach(function(p){ $(p).classList.toggle('show', p===id); });
+    window.scrollTo(0,0);
+  }
+  function tarikhTambah(n, dari){
+    var d = dari ? new Date(dari+'T00:00:00') : new Date();
+    var kini = new Date(); kini.setHours(0,0,0,0);
+    if(d < kini) d = kini;                    // jangan cadang tarikh yang sudah lepas
+    d.setDate(d.getDate()+n);
+    return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);
+  }
+  function papar(tel){ return E.prettyPhone(tel); }
+  function tahap(k){
+    if(k >= 0.75) return { t:'Keyakinan tinggi', c:'ok' };
+    if(k >= 0.5) return { t:'Keyakinan sederhana', c:'warn' };
+    return { t:'Keyakinan rendah', c:'bad' };
+  }
+  function pilihanKategori(id, nilai){
+    return '<select id="'+id+'">' + W.KATEGORI.map(function(k){
+      return '<option value="'+k.id+'"'+(k.id===nilai?' selected':'')+'>'+esc(k.label)+'</option>';
+    }).join('') + '</select>';
+  }
+
+  // ---------- Mula ----------
+  function mula(){
+    if(!A.siap()){ show('pTiada'); return; }
+    A.mula().then(function(u){ if(u) masuk(); else paparMasuk(); }, function(){ paparMasuk(); });
+  }
+  function paparMasuk(){
+    $('akaun').textContent = '';
+    $('navManual').hidden = true; $('navSejarah').hidden = true;
+    A.paparLogin($('loginBox'), function(){ masuk(); });
+    show('pMasuk');
+  }
+  function masuk(){
+    var u = A.pengguna();
+    $('akaun').innerHTML = '☁︎ ' + esc(u.email || '') + ' · <button type="button" id="keluarBtn" style="background:none;border:none;color:#e5b8ff;font-weight:700;cursor:pointer;font-size:12px">Log keluar</button>';
+    $('keluarBtn').addEventListener('click', function(){ A.logKeluar().then(function(){ fail=[]; hasil=[]; paparMasuk(); }); });
+    $('navManual').hidden = false; $('navSejarah').hidden = false;
+    show('pMuat');
+    muatKenalan();
+    segarKuota();
+    kiraManual();
+  }
+  function muatKenalan(){
+    return A.senaraiKenalan().then(function(r){
+      kenalan = r; kenalanId = {}; r.forEach(function(c){ kenalanId[c.id] = c; });
+    }, function(e){ toast(e.message); });
+  }
+  function segarKuota(){
+    A.penggunaan().then(function(q){
+      $('kuota').hidden = false;
+      $('kuotaTeks').textContent = 'Analisis AI bulan ini: ' + q.jumlah + ' / ' + q.had;
+      $('kuotaBar').style.width = Math.min(100, q.had ? q.jumlah/q.had*100 : 100) + '%';
+    }, function(){});
+  }
+  function kiraManual(){
+    A.senaraiTertunda().then(function(r){
+      $('navManual').textContent = 'Semakan manual' + (r.length ? ' ('+r.length+')' : '');
+    }, function(){});
+  }
+
+  // ---------- Pilih fail ----------
+  $('namaSaya').value = sGet('dyno_wa_nama') || '';
+  $('namaSaya').addEventListener('change', function(){ sSet('dyno_wa_nama', this.value.trim()); kemasKiniFail(); });
+
+  function bacaSatu(f){
+    if(/\.zip$/i.test(f.name)){
+      return f.arrayBuffer().then(W.bacaZip).then(function(isi){
+        return isi.map(function(x){ return { nama: f.name, teks: x.teks }; });
+      }).catch(function(){ return [{ nama: f.name, teks: '', rosak: true }]; });
+    }
+    return f.text().then(function(t){ return [{ nama: f.name, teks: t }]; });
+  }
+  function pilihFail(senarai){
+    var files = Array.prototype.slice.call(senarai || []);
+    if(!files.length) return;
+    Promise.all(files.map(bacaSatu)).then(function(arr){
+      var baru = [].concat.apply([], arr);
+      return Promise.all(baru.map(function(x){
+        return W.cincang(x.teks).then(function(h){ x.hash = h; return x; });
+      }));
+    }).then(function(baru){
+      baru.forEach(function(x){
+        if(fail.some(function(y){ return y.hash === x.hash; })) return;   // fail sama dipilih dua kali
+        x.chat = W.huraiChat(x.teks, x.nama);
+        fail.push(x);
+      });
+      return A.cariImport(fail.map(function(x){ return x.hash; })).catch(function(){ return []; });
+    }).then(function(ada){
+      var peta = {}; ada.forEach(function(r){ peta[r.file_hash] = r; });
+      fail.forEach(function(x){ x.sudah = peta[x.hash] || null; });
+      kemasKiniFail();
+    });
+    $('failInput').value = '';
+  }
+  function kemasKiniFail(){
+    var saya = W.kenalPastiSaya(fail.map(function(x){ return x.chat; }), $('namaSaya').value.trim());
+    fail.forEach(function(x, i){ x.saya = saya[i]; x.info = x.rosak ? { status:'rosak' } : W.sediakan(x.chat, x.saya); });
+    renderFail();
+  }
+  function renderFail(){
+    var el = $('senaraiFail');
+    if(!fail.length){ el.innerHTML = ''; $('analisisBtn').disabled = true; $('analisisBtn').textContent = 'Analisis'; return; }
+    var perluNama = false;
+    el.innerHTML = '<div class="fail">' + fail.map(function(x, i){
+      var s = x.info.status, chip, label = x.chat.namaFail || x.nama;
+      if(s === 'sedia'){
+        label = x.info.telefon ? papar(x.info.telefon) : x.info.label;
+        chip = x.sudah && !x.ulang ? '<span class="chip mati">Sudah diproses</span>' : '<span class="chip ok">Sedia</span>';
+      }
+      else if(s === 'kumpulan') chip = '<span class="chip mati">Chat kumpulan</span>';
+      else if(s === 'perlu_nama'){ chip = '<span class="chip warn">Perlu nama anda</span>'; perluNama = true; }
+      else if(s === 'rosak') chip = '<span class="chip bad">Fail rosak</span>';
+      else chip = '<span class="chip mati">Tiada mesej pelanggan</span>';
+      var sub = s === 'sedia' ? x.info.bilMesej + ' mesej · ' + x.info.bilPelanggan + ' dari pelanggan'
+              : s === 'kumpulan' ? x.info.bilangan + ' peserta — tidak dianalisis'
+              : s === 'perlu_nama' ? 'Peserta: ' + x.info.peserta.join(' / ')
+              : esc(x.nama);
+      var ulang = (s === 'sedia' && x.sudah) ? '<button class="btn alt kecil" type="button" data-ulang="'+i+'">'+(x.ulang?'Langkau':'Analisis semula')+'</button>' : '';
+      return '<div class="frow"><div class="t"><b>'+esc(label)+'</b><span>'+esc(sub)+(x.sudah?' · diproses '+new Date(x.sudah.created_at).toLocaleDateString('ms-MY'):'')+'</span></div>'+chip+ulang+
+        '<button class="btn alt kecil" type="button" data-buang="'+i+'" aria-label="Buang fail">×</button></div>';
+    }).join('') + '</div>' +
+      (perluNama ? '<div class="amaran" style="margin-bottom:12px">Isi <b>nama WhatsApp anda</b> di atas supaya kami tahu mesej mana daripada pelanggan.</div>' : '');
+    var n = sasaran().length;
+    $('analisisBtn').disabled = !n;
+    $('analisisBtn').textContent = n ? 'Analisis ' + n + ' chat dengan AI' : 'Tiada chat sedia untuk dianalisis';
+  }
+  function sasaran(){ return fail.filter(function(x){ return x.info && x.info.status === 'sedia' && (!x.sudah || x.ulang); }); }
+  $('senaraiFail').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    if(b.dataset.buang){ fail.splice(+b.dataset.buang, 1); kemasKiniFail(); }
+    if(b.dataset.ulang){ var x = fail[+b.dataset.ulang]; x.ulang = !x.ulang; renderFail(); }
+  });
+  $('failInput').addEventListener('change', function(){ pilihFail(this.files); });
+  var drop = $('drop');
+  ['dragenter','dragover'].forEach(function(ev){ drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add('hot'); }); });
+  ['dragleave','drop'].forEach(function(ev){ drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove('hot'); }); });
+  drop.addEventListener('drop', function(e){ if(e.dataTransfer) pilihFail(e.dataTransfer.files); });
+
+  // ---------- Analisis ----------
+  function produkSedia(){
+    var p = {}; kenalan.forEach(function(c){ if(c.produk) p[c.produk] = 1; });
+    return Object.keys(p).slice(0, 30);
+  }
+  $('analisisBtn').addEventListener('click', function(){
+    var senarai = sasaran(); if(!senarai.length) return;
+    var produk = produkSedia();
+    hasil = senarai.map(function(x){
+      var padan = W.padankan(x.info.label, kenalan, x.chat.namaFail);
+      var muatan = W.binaMuatan(x.chat, x.saya, x.info.label, padan.kenalan && padan.kenalan.nama);
+      var akhir = x.chat.mesej.length ? x.chat.mesej[x.chat.mesej.length-1].tarikh : '';
+      return { fail:x, padan:padan, muatan:muatan, akhir:akhir, keputusan:null, ralat:null };
+    });
+    show('pProses');
+    var siap = 0, i = 0, berhenti = false;
+    function tanda(){ $('prosesBar').style.width = Math.round(siap/hasil.length*100)+'%'; $('prosesMsg').textContent = 'Chat ' + Math.min(siap+1, hasil.length) + ' daripada ' + hasil.length + '…'; }
+    tanda();
+    function pekerja(){
+      if(i >= hasil.length) return Promise.resolve();
+      var h = hasil[i++];
+      if(berhenti || !h.muatan){
+        h.ralat = berhenti ? 'Had analisis AI bulan ini sudah dicapai.' : 'Tiada mesej pelanggan untuk dianalisis.';
+        siap++; tanda(); return pekerja();
+      }
+      return A.klasifikasi({ mesej: h.muatan.mesej, produk_sedia: produk }).then(function(r){
+        h.keputusan = r.keputusan;
+      }, function(e){
+        h.ralat = e.message;
+        if(e.kod === 'had_bulanan') berhenti = true;
+        if(e.kod === 'perlu_log_masuk') berhenti = true;
+      }).then(function(){ siap++; tanda(); return pekerja(); });
+    }
+    var kerja = []; for(var k = 0; k < SERENTAK; k++) kerja.push(pekerja());
+    Promise.all(kerja).then(function(){ segarKuota(); renderSemak(); show('pSemak'); });
+  });
+
+  // ---------- Pratonton keputusan ----------
+  function renderSemak(){
+    var ok = hasil.filter(function(h){ return h.keputusan; }).length;
+    $('semakSub').textContent = ok + ' daripada ' + hasil.length + ' chat dianalisis. Betulkan apa-apa yang tidak tepat, kemudian sahkan untuk simpan.';
+    $('senaraiHasil').innerHTML = hasil.map(kadHasil).join('');
+    hasil.forEach(function(h, i){ if(h.keputusan) segarKad(i); });
+    kiraSimpan();
+  }
+  function kadHasil(h, i){
+    var x = h.fail, p = h.padan, nama = x.info.telefon ? papar(x.info.telefon) : x.info.label;
+    var pill = p.status === 'dipadankan' ? '<span class="chip ok">Dipadankan</span>'
+             : p.status === 'baharu' ? '<span class="chip ai">Kenalan baharu</span>'
+             : '<span class="chip warn">Perlu semakan</span>';
+    var kepala = '<div class="hhead"><div class="t"><b>'+esc(nama)+'</b><span>'+esc(x.nama)+'</span></div>'+pill+'</div>';
+    if(!h.keputusan){
+      return '<div class="hasil off" id="kad'+i+'">'+kepala+'<div class="hbody"><div class="amaran merah">'+esc(h.ralat || 'Analisis gagal.')+'</div>'+
+        '<button class="btn alt kecil" type="button" data-cuba="'+i+'">Cuba lagi</button></div></div>';
+    }
+    var k = h.keputusan, t = tahap(k.keyakinan);
+
+    var padanHtml;
+    if(p.status === 'dipadankan'){
+      padanHtml = '<div class="f"><span class="lbl">Pelanggan dalam CRM</span><div class="sebab" style="background:#f4f5f8;color:var(--ink)">'+
+        esc(p.kenalan.nama || 'Tanpa nama')+' · '+esc(papar(p.kenalan.telefon))+'</div></div>';
+    } else if(p.status === 'baharu'){
+      padanHtml = '<div class="f"><label for="nm'+i+'">Nama kenalan baharu ('+esc(papar(p.telefon))+')</label>'+
+        '<input id="nm'+i+'" maxlength="120" value="'+esc(W.telefonSah(x.info.label) ? (x.chat.namaFail && !W.telefonSah(x.chat.namaFail) ? x.chat.namaFail : '') : x.info.label)+'" placeholder="pilihan"></div>';
+    } else {
+      padanHtml = '<div class="f"><span class="lbl">Padankan "'+esc(x.info.label)+'" dengan</span><div class="pilihan">' +
+        p.calon.map(function(c, j){
+          return '<label><input type="radio" name="pd'+i+'" value="c:'+c.id+'"'+(j===0?' checked':'')+'><span>'+esc(c.nama||'Tanpa nama')+'<small>'+esc(papar(c.telefon))+'</small></span></label>';
+        }).join('') +
+        '<label><input type="radio" name="pd'+i+'" value="baru"><span>Kenalan baharu<small>masukkan nombor telefon pelanggan</small></span></label>' +
+        '<label><input type="radio" name="pd'+i+'" value="manual"'+(p.calon.length?'':' checked')+'><span>Simpan dalam senarai semakan manual<small>pilih pelanggan kemudian</small></span></label>' +
+        '</div><div id="telBox'+i+'" hidden style="margin-top:8px"><input id="tel'+i+'" type="tel" inputmode="tel" placeholder="012-345 6789"><div class="err" id="telErr'+i+'" hidden></div></div></div>';
+    }
+
+    return '<div class="hasil" id="kad'+i+'">'+kepala+'<div class="hbody">'+
+      '<label class="tick"><input type="checkbox" id="ik'+i+'"'+(k.kategori==='tidak_diketahui'?'':' checked')+'><span><b>Simpan keputusan ini</b></span></label>'+
+      padanHtml +
+      '<div class="f"><label for="kt'+i+'">Kategori <span class="chip '+t.c+'" style="margin-left:6px">'+t.t+' · '+Math.round(k.keyakinan*100)+'%</span></label>'+pilihanKategori('kt'+i, k.kategori)+'</div>'+
+      (k.sebab ? '<div class="sebab">🤖 '+esc(k.sebab)+'</div>' : '')+
+      '<div id="konflik'+i+'"></div>'+
+      '<div id="beli'+i+'"></div>'+
+      '<div class="f"><label for="pr'+i+'">Produk diminati</label><input id="pr'+i+'" maxlength="120" value="'+esc(k.produk)+'"></div>'+
+      '<div class="f"><label for="rk'+i+'">Ringkasan perbualan</label><textarea id="rk'+i+'" maxlength="1000">'+esc(k.ringkasan)+'</textarea></div>'+
+      '<div class="f"><label for="td'+i+'">Tindakan susulan</label><input id="td'+i+'" maxlength="300" value="'+esc(k.tindakan)+'"></div>'+
+      '<div class="two"><div class="f"><label for="ss'+i+'">Tarikh follow-up</label><input id="ss'+i+'" type="date" value="'+tarikhTambah(k.susulan_hari, h.akhir)+'"></div>'+
+      '<div class="f" style="display:flex;align-items:flex-end"><label class="tick"><input type="checkbox" id="sk'+i+'" checked><span>Tetapkan tarikh follow-up</span></label></div></div>'+
+      (h.muatan && h.muatan.dipotong ? '<div class="hint">Chat panjang: hanya mesej terkini dianalisis.</div>' : '')+
+      '</div></div>';
+  }
+  // Kawalan yang bergantung pada pilihan semasa: konflik kategori & pengesahan pembelian
+  function kenalanSasaran(i){
+    var h = hasil[i], p = h.padan;
+    if(p.status === 'dipadankan') return p.kenalan;
+    if(p.status === 'semak'){
+      var r = document.querySelector('input[name="pd'+i+'"]:checked');
+      if(r && r.value.indexOf('c:') === 0) return kenalanId[r.value.slice(2)] || null;
+    }
+    return null;
+  }
+  function segarKad(i){
+    var kat = $('kt'+i).value, c = kenalanSasaran(i);
+    var konflik = c && c.kategori_disahkan && c.kategori && c.kategori !== kat;
+    $('konflik'+i).innerHTML = konflik
+      ? '<div class="amaran">Kategori pelanggan ini sudah disahkan sebagai <b>'+esc(KLABEL[c.kategori])+'</b>.'+
+        '<label class="tick" style="margin-top:8px"><input type="checkbox" id="gk'+i+'"><span>Ganti dengan <b>'+esc(KLABEL[kat])+'</b></span></label>'+
+        '<div class="hint">Jika tidak ditanda, kategori asal dikekalkan; ringkasan dan tindakan tetap dikemas kini.</div></div>' : '';
+    var k = hasil[i].keputusan;
+    $('beli'+i).innerHTML = kat === 'customer_semak'
+      ? '<div class="amaran">AI mengesan tanda pembelian'+(k.bukti_pembelian ? ': <i>“'+esc(k.bukti_pembelian)+'”</i>' : '')+'. '+
+        'Pelanggan <b>tidak</b> ditanda Customer sehingga anda sahkan pembelian (cth. bayaran diterima).'+
+        '<label class="tick" style="margin-top:8px"><input type="checkbox" id="pb'+i+'"><span>Saya sudah sahkan pembelian ini — tandakan sebagai <b>Customer</b></span></label></div>'
+      : '';
+    var p = hasil[i].padan;
+    if(p.status === 'semak'){
+      var r = document.querySelector('input[name="pd'+i+'"]:checked');
+      $('telBox'+i).hidden = !(r && r.value === 'baru');
+    }
+  }
+  $('senaraiHasil').addEventListener('change', function(e){
+    var kad = e.target.closest('.hasil'); if(!kad) return;
+    var i = +kad.id.slice(3);
+    if(e.target.id === 'ik'+i) kad.classList.toggle('off', !e.target.checked);
+    if(e.target.id === 'kt'+i || e.target.name === 'pd'+i) segarKad(i);
+    kiraSimpan();
+  });
+  $('senaraiHasil').addEventListener('click', function(e){
+    var b = e.target.closest('[data-cuba]'); if(!b) return;
+    var i = +b.dataset.cuba, h = hasil[i];
+    b.disabled = true; b.textContent = 'Menganalisis…';
+    A.klasifikasi({ mesej: h.muatan.mesej, produk_sedia: produkSedia() }).then(function(r){
+      h.keputusan = r.keputusan; h.ralat = null;
+    }, function(err){ h.ralat = err.message; }).then(function(){
+      var div = document.createElement('div'); div.innerHTML = kadHasil(h, i);
+      $('kad'+i).replaceWith(div.firstChild);
+      if(h.keputusan) segarKad(i);
+      kiraSimpan(); segarKuota();
+    });
+  });
+  function kiraSimpan(){
+    var n = hasil.filter(function(h, i){ return h.keputusan && $('ik'+i) && $('ik'+i).checked; }).length;
+    $('simpanBtn').disabled = !n;
+    $('simpanBtn').textContent = n ? 'Sahkan & simpan ' + n + ' keputusan' : 'Tiada keputusan dipilih';
+  }
+  $('batalSemak').addEventListener('click', function(){ hasil = []; show('pMuat'); });
+
+  // ---------- Simpan ----------
+  function nilai(id){ var el = $(id); return el ? el.value.trim() : ''; }
+  function tanda(id){ var el = $(id); return !!(el && el.checked); }
+
+  $('simpanBtn').addEventListener('click', function(){
+    var btn = this;
+    // Sahkan nombor bagi pilihan "kenalan baharu" dahulu
+    var salah = false;
+    hasil.forEach(function(h, i){
+      if(!h.keputusan || !tanda('ik'+i) || h.padan.status !== 'semak') return;
+      var r = document.querySelector('input[name="pd'+i+'"]:checked');
+      if(r && r.value === 'baru'){
+        var t = W.telefonSah(nilai('tel'+i)), err = $('telErr'+i);
+        err.hidden = !!t; err.textContent = 'Masukkan nombor telefon yang sah.';
+        if(!t){ salah = true; $('kad'+i).scrollIntoView({ behavior:'smooth', block:'center' }); }
+      }
+    });
+    if(salah) return;
+
+    btn.disabled = true; btn.textContent = 'Menyimpan…';
+    var kira = { simpan:0, manual:0, kekal:0, ralat:0 }, importId = {};
+    function idImport(x){
+      if(importId[x.hash]) return Promise.resolve(importId[x.hash]);
+      return A.daftarImport({ file_hash: x.hash, file_name: x.nama.slice(0, 200), message_count: x.chat.mesej.length })
+        .then(function(r){ importId[x.hash] = r.id; return r.id; });
+    }
+    var tugasan = hasil.map(function(h, i){
+      if(!h.keputusan || !tanda('ik'+i)) return null;
+      return function(){
+        var x = h.fail, p = h.padan, kat = nilai('kt'+i);
+        var data = {
+          p_kategori: kat,
+          p_produk: nilai('pr'+i), p_ringkasan: nilai('rk'+i), p_tindakan: nilai('td'+i),
+          p_keyakinan: h.keputusan.keyakinan,
+          p_susulan: tanda('sk'+i) && nilai('ss'+i) ? nilai('ss'+i) : null,
+          p_pembelian_disahkan: kat === 'customer_semak' && tanda('pb'+i),
+          p_ganti_kategori: tanda('gk'+i),
+          p_sender_label: x.info.label.slice(0, 120)
+        };
+        var manual = false;
+        if(p.status === 'dipadankan') data.p_contact_id = p.kenalan.id;
+        else if(p.status === 'baharu'){ data.p_telefon = p.telefon; data.p_nama = nilai('nm'+i); }
+        else {
+          var r = document.querySelector('input[name="pd'+i+'"]:checked'), v = r ? r.value : 'manual';
+          if(v.indexOf('c:') === 0) data.p_contact_id = v.slice(2);
+          else if(v === 'baru'){ data.p_telefon = W.telefonSah(nilai('tel'+i)); data.p_nama = W.telefonSah(x.info.label) ? '' : x.info.label; }
+          else manual = true;
+        }
+        return idImport(x).then(function(imp){
+          if(manual){
+            return A.simpanTertunda({
+              import_id: imp, sender_label: x.info.label.slice(0, 120), sender_phone: null,
+              calon: p.calon.map(function(c){ return c.id; }), kategori: kat,
+              produk: data.p_produk, ringkasan: data.p_ringkasan, tindakan: data.p_tindakan,
+              keyakinan: data.p_keyakinan, susulan_hari: h.keputusan.susulan_hari
+            }).then(function(){ kira.manual++; });
+          }
+          data.p_import_id = imp;
+          return A.guna(data).then(function(res){ kira.simpan++; if(res && res.kategori_dikekalkan) kira.kekal++; });
+        }).catch(function(){ kira.ralat++; });
+      };
+    }).filter(Boolean);
+
+    tugasan.reduce(function(p, t){ return p.then(t); }, Promise.resolve()).then(function(){
+      $('smSimpan').textContent = kira.simpan; $('smManual').textContent = kira.manual; $('smKekal').textContent = kira.kekal;
+      $('siapMsg').textContent = (kira.ralat ? kira.ralat + ' keputusan gagal disimpan — cuba lagi. ' : '') +
+        (kira.manual ? 'Chat yang belum dipadankan ada dalam Semakan manual. ' : '') +
+        (tanda('padamSelepas') ? 'Isi chat sudah dipadam dari telefon ini.' : '');
+      if(tanda('padamSelepas')){ fail = []; hasil = []; renderFail(); }
+      else { fail.forEach(function(x){ x.sudah = x.sudah || { created_at: new Date().toISOString() }; x.ulang = false; }); renderFail(); }
+      btn.disabled = false;
+      muatKenalan(); kiraManual();
+      show('pSiap');
+    });
+  });
+  $('lagiBtn').addEventListener('click', function(){ hasil = []; show('pMuat'); });
+
+  // ---------- Semakan manual ----------
+  var tertunda = [];
+  $('navManual').addEventListener('click', bukaManual);
+  $('manualBalik').addEventListener('click', function(){ show('pMuat'); });
+  function bukaManual(){
+    show('pManual');
+    $('senaraiManual').innerHTML = '<div class="empty">Memuatkan…</div>';
+    Promise.all([muatKenalan(), A.senaraiTertunda()]).then(function(r){
+      tertunda = r[1]; renderManual();
+    }, function(e){ $('senaraiManual').innerHTML = '<div class="empty">'+esc(e.message)+'</div>'; });
+  }
+  function renderManual(){
+    if(!tertunda.length){ $('senaraiManual').innerHTML = '<div class="empty">Tiada chat menunggu semakan. 👍</div>'; kiraManual(); return; }
+    $('senaraiManual').innerHTML = tertunda.map(function(t, i){
+      var calon = (t.calon || []).map(function(id){ return kenalanId[id]; }).filter(Boolean);
+      return '<div class="hasil" id="mn'+i+'"><div class="hhead"><div class="t"><b>'+esc(t.sender_label || 'Tanpa nama')+'</b>'+
+        '<span>'+esc(KLABEL[t.kategori])+' · '+new Date(t.created_at).toLocaleDateString('ms-MY')+'</span></div><span class="chip warn">Perlu semakan</span></div>'+
+        '<div class="hbody">'+(t.ringkasan ? '<div class="sebab">'+esc(t.ringkasan)+'</div>' : '')+
+        '<div class="f"><span class="lbl">Pelanggan</span><div class="pilihan">'+
+          calon.map(function(c, j){ return '<label><input type="radio" name="mp'+i+'" value="c:'+c.id+'"'+(j===0?' checked':'')+'><span>'+esc(c.nama||'Tanpa nama')+'<small>'+esc(papar(c.telefon))+'</small></span></label>'; }).join('')+
+          '<label><input type="radio" name="mp'+i+'" value="cari"'+(calon.length?'':' checked')+'><span>Pilih pelanggan lain<small>cari nama atau nombor</small></span></label>'+
+          '<label><input type="radio" name="mp'+i+'" value="baru"><span>Kenalan baharu<small>masukkan nombor telefon</small></span></label>'+
+        '</div>'+
+        '<input id="mcari'+i+'" list="senaraiKenalanDl" placeholder="Taip nama atau nombor pelanggan" style="margin-top:8px">'+
+        '<input id="mtel'+i+'" type="tel" inputmode="tel" placeholder="012-345 6789" style="margin-top:8px" hidden>'+
+        '<div class="err" id="merr'+i+'" hidden></div></div>'+
+        '<div class="f"><label for="mkt'+i+'">Kategori</label>'+pilihanKategori('mkt'+i, t.kategori)+'</div>'+
+        '<div id="mbeli'+i+'"></div>'+
+        '<div class="two"><button class="btn kecil" type="button" data-msimpan="'+i+'" style="width:100%">Simpan</button>'+
+        '<button class="btn alt kecil" type="button" data-mbuang="'+i+'" style="width:100%">Buang</button></div>'+
+        '</div></div>';
+    }).join('') + '<datalist id="senaraiKenalanDl">' + kenalan.map(function(c){
+      return '<option value="'+esc((c.nama||'Tanpa nama')+' · '+papar(c.telefon))+'">';
+    }).join('') + '</datalist>';
+    tertunda.forEach(function(_, i){ segarManual(i); });
+    kiraManual();
+  }
+  function segarManual(i){
+    var r = document.querySelector('input[name="mp'+i+'"]:checked'), v = r ? r.value : '';
+    $('mcari'+i).hidden = v !== 'cari';
+    $('mtel'+i).hidden = v !== 'baru';
+    $('mbeli'+i).innerHTML = $('mkt'+i).value === 'customer_semak'
+      ? '<label class="tick"><input type="checkbox" id="mpb'+i+'"><span>Saya sudah sahkan pembelian — tandakan sebagai <b>Customer</b></span></label>' : '';
+  }
+  $('senaraiManual').addEventListener('change', function(e){
+    var kad = e.target.closest('.hasil'); if(kad) segarManual(+kad.id.slice(2));
+  });
+  $('senaraiManual').addEventListener('click', function(e){
+    var b = e.target.closest('button'); if(!b) return;
+    if(b.dataset.mbuang){
+      var t = tertunda[+b.dataset.mbuang];
+      A.padamKlasifikasi(t.id).then(function(){ tertunda.splice(+b.dataset.mbuang, 1); renderManual(); }, function(e){ toast(e.message); });
+      return;
+    }
+    if(!b.dataset.msimpan) return;
+    var i = +b.dataset.msimpan, t = tertunda[i], err = $('merr'+i);
+    var r = document.querySelector('input[name="mp'+i+'"]:checked'), v = r ? r.value : '';
+    var data = { p_kategori: $('mkt'+i).value, p_produk: t.produk, p_ringkasan: t.ringkasan, p_tindakan: t.tindakan,
+                 p_keyakinan: t.keyakinan, p_classification_id: t.id, p_sender_label: t.sender_label,
+                 p_pembelian_disahkan: $('mkt'+i).value === 'customer_semak' && tanda('mpb'+i),
+                 p_susulan: t.susulan_hari != null ? tarikhTambah(t.susulan_hari) : null };
+    if(v.indexOf('c:') === 0) data.p_contact_id = v.slice(2);
+    else if(v === 'cari'){
+      var q = $('mcari'+i).value.trim(), qd = q.replace(/\D/g,'');
+      var c = kenalan.filter(function(k){ return (k.nama||'Tanpa nama')+' · '+papar(k.telefon) === q; })[0] ||
+              (qd.length >= 8 ? kenalan.filter(function(k){ return k.telefon === W.telefonSah(q); })[0] : null);
+      if(!c){ err.textContent = 'Pilih pelanggan daripada senarai cadangan.'; err.hidden = false; return; }
+      data.p_contact_id = c.id;
+    } else if(v === 'baru'){
+      var tel = W.telefonSah($('mtel'+i).value);
+      if(!tel){ err.textContent = 'Masukkan nombor telefon yang sah.'; err.hidden = false; return; }
+      data.p_telefon = tel; data.p_nama = t.sender_label;
+    }
+    err.hidden = true; b.disabled = true;
+    A.guna(data).then(function(res){
+      toast(res && res.kategori_dikekalkan ? 'Disimpan — kategori disahkan sedia ada dikekalkan' : 'Disimpan ke CRM');
+      tertunda.splice(i, 1); muatKenalan().then(renderManual);
+    }, function(e){ b.disabled = false; toast(e.message); });
+  });
+
+  // ---------- Sejarah import ----------
+  $('navSejarah').addEventListener('click', bukaSejarah);
+  $('sejarahBalik').addEventListener('click', function(){ show('pMuat'); });
+  function bukaSejarah(){
+    show('pSejarah');
+    $('senaraiSejarah').innerHTML = '<div class="empty">Memuatkan…</div>';
+    A.senaraiImport().then(function(r){
+      $('senaraiSejarah').innerHTML = r.length ? '<div class="fail">' + r.map(function(x){
+        return '<div class="frow"><div class="t"><b>'+esc(x.file_name || 'Chat')+'</b><span>'+x.message_count+' mesej · '+
+          new Date(x.created_at).toLocaleString('ms-MY')+'</span></div>'+
+          '<button class="btn alt kecil" type="button" data-padam="'+x.id+'">Padam</button></div>';
+      }).join('') + '</div>' : '<div class="empty">Belum ada import.</div>';
+    }, function(e){ $('senaraiSejarah').innerHTML = '<div class="empty">'+esc(e.message)+'</div>'; });
+  }
+  $('senaraiSejarah').addEventListener('click', function(e){
+    var b = e.target.closest('[data-padam]'); if(!b) return;
+    if(b.dataset.sah !== '1'){ b.dataset.sah = '1'; b.textContent = 'Sahkan padam'; b.style.color = 'var(--bad)'; return; }
+    A.padamImport(b.dataset.padam).then(function(){ toast('Rekod import dipadam'); bukaSejarah(); kiraManual(); }, function(err){ toast(err.message); });
+  });
+
+  mula();
+})();
+</script>
+<script src="pasang.js" defer></script>
+</body>
+</html>
